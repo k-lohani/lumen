@@ -448,11 +448,6 @@ export default function HomePageClient({ initial }: HomePageClientProps) {
                           style={{ fontFamily: "var(--font-fraunces)" }}
                         >
                           {selected.display_name}
-                          {patientSlug === "hero" && (
-                            <span className="ml-2 align-middle rounded-md border border-copper/30 bg-copper/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-copper">
-                              Recommended demo
-                            </span>
-                          )}
                         </h2>
                         <p className="mt-1 text-sm text-ink-muted">
                           {selected.primary_diagnosis}
