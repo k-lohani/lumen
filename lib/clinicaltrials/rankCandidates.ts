@@ -1,5 +1,6 @@
-import type { PatientProfile } from "../types";
+import type { GeoFilter, PatientProfile } from "../types";
 import type { CTGovStudy } from "./client";
+import { sitesNearGeo } from "./geoSites";
 
 interface ProtocolSection {
   conditionsModule?: { conditions?: string[] };
@@ -30,7 +31,8 @@ function keywordOverlap(text: string, keywords: string[]): number {
 export function rankCandidates(
   studies: CTGovStudy[],
   profile: PatientProfile,
-  topK: number
+  topK: number,
+  geoFilter?: GeoFilter
 ): CTGovStudy[] {
   const keywords = [
     profile.diagnosis.primary,
@@ -51,6 +53,12 @@ export function rankCandidates(
 
     for (const b of profile.biomarkers) {
       if (text.includes(b.name.toLowerCase())) score += 12;
+    }
+
+    if (geoFilter) {
+      const nearby = sitesNearGeo(study.raw, geoFilter);
+      if (nearby.length > 0) score += 15 + nearby.length * 2;
+      else score -= 3;
     }
 
     if (

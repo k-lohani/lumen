@@ -1,0 +1,138 @@
+{
+  "patient_id": "hero",
+  "highlight_criterion_id": "NCT07070232-EX01",
+  "results": [
+    {
+      "criterion_id": "NCT07174388-G01",
+      "trial_id": "NCT07174388",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07174388-G02",
+      "trial_id": "NCT07174388",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07174388-G03",
+      "trial_id": "NCT07174388",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07174388-G04",
+      "trial_id": "NCT07174388",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07174388-G05",
+      "trial_id": "NCT07174388",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07174388-G06",
+      "trial_id": "NCT07174388",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07174388-C9-01",
+      "trial_id": "NCT07174388",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07174388-E01",
+      "trial_id": "NCT07174388",
+      "state": "NOT_MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07174388-E02",
+      "trial_id": "NCT07174388",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07174388-E03",
+      "trial_id": "NCT07174388",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07070232-1C01",
+      "trial_id": "NCT07070232",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07070232-1C02",
+      "trial_id": "NCT07070232",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07070232-1C03",
+      "trial_id": "NCT07070232",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07070232-1C04",
+      "trial_id": "NCT07070232",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07070232-1C05",
+      "trial_id": "NCT07070232",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT07070232-EX01",
+      "trial_id": "NCT07070232",
+      "state": "MET",
+      "rationale": "Naive model guesses without chart evidence (no echo on file)."
+    },
+    {
+      "criterion_id": "NCT07070232-EX02",
+      "trial_id": "NCT07070232",
+      "state": "NOT_MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT06348927-I01",
+      "trial_id": "NCT06348927",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT06348927-I02",
+      "trial_id": "NCT06348927",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT06348927-I03",
+      "trial_id": "NCT06348927",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT06348927-I04",
+      "trial_id": "NCT06348927",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    },
+    {
+      "criterion_id": "NCT06348927-E01",
+      "trial_id": "NCT06348927",
+      "state": "MET",
+      "rationale": "Heuristic keyword match — forced MET/NOT_MET, no citation."
+    }
+  ]
+}

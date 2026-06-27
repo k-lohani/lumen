@@ -11,12 +11,15 @@ async function throttle(): Promise<void> {
   lastRequestAt = Date.now();
 }
 
+import type { GeoFilter } from "../types";
+
 export interface CTGovSearchParams {
   condition?: string;
   terms?: string[];
   intervention?: string;
   status?: string[];
   phases?: string[];
+  geo?: GeoFilter;
   pageSize?: number;
   pageToken?: string;
 }
@@ -116,6 +119,13 @@ export async function searchStudies(
       .map((p) => `AREA[Phase]${p}`)
       .join(" OR ");
     searchParams.set("filter.advanced", phaseFilter);
+  }
+  if (params.geo) {
+    const { lat, lng, radiusMi } = params.geo;
+    searchParams.set(
+      "filter.geo",
+      `distance(${lat},${lng},${radiusMi}mi)`
+    );
   }
   searchParams.set("pageSize", String(params.pageSize ?? 25));
   searchParams.set("sort", "LastUpdatePostDate:desc");

@@ -5,25 +5,65 @@ import type { TrialVerdict } from "@/lib/types";
 import { humanizeTrialStatus } from "@/lib/clinicaltrials/client";
 import { ActionableGapCallout } from "./ActionableGapCallout";
 import { CriterionRow } from "./CriterionRow";
+import {
+  NaiveCompareRow,
+  type NaiveResult,
+} from "./NaiveComparePanel";
 import { ReachabilityBadge } from "./ReachabilityBadge";
+import { ResolutionLoopCard } from "./ResolutionLoopCard";
 import { VerdictBadge } from "./VerdictBadge";
 
 interface TrialCardProps {
   trial: TrialVerdict;
+  naiveCompare?: boolean;
+  naiveResults?: NaiveResult[];
+  highlightCriterionId?: string;
+  onSimulateResolution?: (trialId: string) => void;
+  resolutionResolved?: boolean;
+  simulatingResolution?: boolean;
+  defaultExpanded?: boolean;
 }
 
-export function TrialCard({ trial }: TrialCardProps) {
-  const [expanded, setExpanded] = useState(false);
+export function TrialCard({
+  trial,
+  naiveCompare,
+  naiveResults,
+  highlightCriterionId,
+  onSimulateResolution,
+  resolutionResolved,
+  simulatingResolution,
+  defaultExpanded = false,
+}: TrialCardProps) {
+  const [expanded, setExpanded] = useState(defaultExpanded);
   const nctUrl = `https://clinicaltrials.gov/study/${trial.trial_id}`;
 
+  const showResolution =
+    trial.verdict === "CONDITIONALLY_ELIGIBLE" &&
+    trial.actionable_gap &&
+    onSimulateResolution &&
+    trial.trial_id === "NCT07070232";
+
   return (
-    <article className="group overflow-hidden rounded-2xl border border-rule bg-paper shadow-[var(--shadow-soft)] transition-shadow hover:shadow-[var(--shadow-lift)]">
+    <article
+      className={`group overflow-hidden rounded-2xl border bg-paper shadow-[var(--shadow-soft)] transition-all hover:shadow-[var(--shadow-lift)] ${
+        resolutionResolved && trial.verdict === "ELIGIBLE"
+          ? "border-sage/50 ring-2 ring-sage/20"
+          : "border-rule"
+      }`}
+    >
       <div className="p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <VerdictBadge verdict={trial.verdict} />
               <ReachabilityBadge rank={trial.reachability_rank} />
+              {trial.recruiting_sites_nearby != null &&
+                trial.recruiting_sites_nearby > 0 && (
+                  <span className="rounded-md border border-copper/25 bg-copper/10 px-2.5 py-0.5 text-[11px] font-semibold text-copper">
+                    {trial.recruiting_sites_nearby} recruiting site
+                    {trial.recruiting_sites_nearby === 1 ? "" : "s"} nearby
+                  </span>
+                )}
               <span className="rounded-md border border-sage/20 bg-sage-light px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-sage-dark">
                 {trial.cohort_label}
               </span>
@@ -56,17 +96,39 @@ export function TrialCard({ trial }: TrialCardProps) {
                 </>
               )}
             </div>
+            {trial.nearest_sites && trial.nearest_sites.length > 0 && (
+              <p className="mt-2 text-xs text-ink-muted">
+                Nearest:{" "}
+                {trial.nearest_sites
+                  .slice(0, 2)
+                  .map((s) =>
+                    [s.facility, s.city, s.state].filter(Boolean).join(", ")
+                  )
+                  .join(" · ")}
+              </p>
+            )}
             <p className="mt-2 text-[11px] text-ink-faint">
               Registry updated {trial.registry_synced_at} · ClinicalTrials.gov
             </p>
           </div>
         </div>
 
-        {trial.verdict === "CONDITIONALLY_ELIGIBLE" && trial.actionable_gap && (
-          <div className="mt-5">
-            <ActionableGapCallout gap={trial.actionable_gap} />
-          </div>
+        {showResolution && (
+          <ResolutionLoopCard
+            gap={trial.actionable_gap!}
+            onSimulate={() => onSimulateResolution!(trial.trial_id)}
+            simulating={simulatingResolution}
+            resolved={resolutionResolved}
+          />
         )}
+
+        {trial.verdict === "CONDITIONALLY_ELIGIBLE" &&
+          trial.actionable_gap &&
+          !showResolution && (
+            <div className="mt-5">
+              <ActionableGapCallout gap={trial.actionable_gap} />
+            </div>
+          )}
 
         <button
           type="button"
@@ -85,9 +147,26 @@ export function TrialCard({ trial }: TrialCardProps) {
 
       {expanded && (
         <div className="border-t border-rule bg-parchment/50 px-6">
-          {trial.criteria.map((result) => (
-            <CriterionRow key={result.criterion.criterion_id} result={result} />
-          ))}
+          {trial.criteria.map((result) => {
+            const naive = naiveResults?.find(
+              (n) => n.criterion_id === result.criterion.criterion_id
+            );
+            const highlighted =
+              result.criterion.criterion_id === highlightCriterionId;
+
+            return (
+              <div key={result.criterion.criterion_id}>
+                <CriterionRow result={result} highlighted={highlighted} />
+                {naiveCompare && naive && (
+                  <NaiveCompareRow
+                    naive={naive}
+                    lumen={result}
+                    highlighted={highlighted}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </article>

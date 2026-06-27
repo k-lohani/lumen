@@ -1,5 +1,6 @@
 import type {
   DiscoveryMetadata,
+  GeoFilter,
   IngestedTrial,
   PatientProfile,
   SearchSummary,
@@ -36,6 +37,7 @@ export async function discoverTrialsForPatient(
     patientUuid?: string | null;
     fallbackDiagnosis?: string;
     skipCache?: boolean;
+    geoFilter?: GeoFilter;
   } = {}
 ): Promise<{ trials: IngestedTrial[]; discovery: DiscoveryMetadata }> {
   const profileHash = computeProfileHash(profile);
@@ -43,7 +45,11 @@ export async function discoverTrialsForPatient(
 
   if (opts.patientUuid && !opts.skipCache) {
     const cached = await getDiscoveryCache(opts.patientUuid, profileHash);
-    if (cached) {
+    if (
+      cached &&
+      JSON.stringify(cached.search_params.geo ?? null) ===
+        JSON.stringify(opts.geoFilter ?? null)
+    ) {
       const studies = await fetchStudies(cached.nct_ids);
       const trials: IngestedTrial[] = [];
       for (const study of studies) {
@@ -64,7 +70,8 @@ export async function discoverTrialsForPatient(
 
   const { params, summary } = buildSearchQuery(
     profile,
-    opts.fallbackDiagnosis
+    opts.fallbackDiagnosis,
+    opts.geoFilter
   );
 
   let studies = await searchAllStudies(params, topK * 2);
@@ -74,7 +81,7 @@ export async function discoverTrialsForPatient(
     studies = mergeStudiesByNct(studies, pinnedStudies);
   }
 
-  const ranked = rankCandidates(studies, profile, topK);
+  const ranked = rankCandidates(studies, profile, topK, opts.geoFilter);
   const nctIds = ranked.map((s) => s.nctId);
 
   if (opts.patientUuid) {

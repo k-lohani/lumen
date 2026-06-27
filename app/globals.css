@@ -134,3 +134,14 @@ select.lumen-select {
 .section-eligible { border-left: 3px solid var(--sage); }
 .section-conditional { border-left: 3px solid var(--honey); }
 .section-excluded { border-left: 3px solid var(--crimson); }
+
+@media print {
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white;
+  }
+}

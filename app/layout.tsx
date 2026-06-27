@@ -24,9 +24,9 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lumen — Clinical Trial Matching",
+  title: "Lumen — Clinical Trial Pre-Screening Copilot",
   description:
-    "Criterion-by-criterion clinical trial eligibility matching with chart-cited evidence.",
+    "Criterion-by-criterion pre-screening for research coordinators — cited evidence, actionable gaps, geo-aware trial discovery.",
 };
 
 export default function RootLayout({
@@ -53,12 +53,12 @@ export default function RootLayout({
                 Lumen
               </span>
               <span className="hidden text-[10px] font-medium uppercase tracking-[0.2em] text-ink-faint sm:inline">
-                Trial matching
+                Pre-screening copilot
               </span>
             </Link>
             <div className="flex items-center gap-1">
               <Link
-                href="/results?patientSlug=hero"
+                href="/results?patientSlug=hero&demo=1"
                 className="rounded-md px-3 py-1.5 text-sm font-medium text-ink-muted transition-colors hover:bg-parchment-deep hover:text-ink lumen-focus"
               >
                 Results

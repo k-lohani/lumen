@@ -1,4 +1,5 @@
 import type {
+  GeoFilter,
   IngestedTrial,
   PipelineOptions,
   PipelineResult,
@@ -8,6 +9,7 @@ import type {
 import { computeChartHash } from "../chartHash";
 import { getCachedProfile, saveCachedProfile } from "../db/profileCache";
 import { discoverTrialsForPatient } from "../clinicaltrials/discoverTrials";
+import { enrichVerdictWithGeo } from "../clinicaltrials/geoSites";
 import { attachResolvingActions, aggregateVerdict } from "./aggregate";
 import { decomposeCriteria } from "./decomposeCriteria";
 import { evaluateCriteria } from "./evaluateCriteria";
@@ -42,7 +44,8 @@ async function matchTrial(
   chart: RawChart,
   trial: IngestedTrial,
   profile: Awaited<ReturnType<typeof extractProfile>>,
-  options: PipelineOptions
+  options: PipelineOptions,
+  trialRaw?: Record<string, unknown>
 ): Promise<TrialVerdict> {
   const { cohort, label } = await selectCohort(trial, profile, {
     pinnedMode: options.pinnedMode,
@@ -64,7 +67,7 @@ async function matchTrial(
     actionable_gap
   );
 
-  return {
+  const base: TrialVerdict = {
     trial_id: trial.nct_id,
     trial_title: trial.title,
     phase: trial.phase,
@@ -77,6 +80,11 @@ async function matchTrial(
     actionable_gap,
     reachability_rank,
   };
+
+  if (options.geoFilter && trialRaw) {
+    return enrichVerdictWithGeo(base, trialRaw, options.geoFilter);
+  }
+  return base;
 }
 
 export async function runPipeline(
@@ -105,13 +113,35 @@ export async function runPipeline(
     const result = await discoverTrialsForPatient(profile, {
       patientUuid: options.patientUuid,
       skipCache: options.skipDiscoveryCache,
+      geoFilter: options.geoFilter,
     });
     trials = result.trials;
     discovery = result.discovery;
   }
 
+  const trialRaws = new Map<string, Record<string, unknown>>();
+  if (options.geoFilter && !options.pinnedMode) {
+    for (const t of trials) {
+      try {
+        const { fetchStudy } = await import("../clinicaltrials/client");
+        const study = await fetchStudy(t.nct_id);
+        trialRaws.set(t.nct_id, study.raw);
+      } catch {
+        // skip geo enrichment if fetch fails
+      }
+    }
+  }
+
   const verdicts = await Promise.all(
-    trials.map((trial) => matchTrial(chart, trial, profile, options))
+    trials.map((trial) =>
+      matchTrial(
+        chart,
+        trial,
+        profile,
+        options,
+        trialRaws.get(trial.nct_id)
+      )
+    )
   );
 
   return {

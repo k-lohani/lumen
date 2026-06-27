@@ -1,115 +1,161 @@
 # Lumen
 
-Clinical trial eligibility matching with per-criterion evidence, chart citations, and actionable gaps for unknown criteria. Lumen extracts a structured patient profile from clinical documentation, discovers recruiting trials on ClinicalTrials.gov, routes each patient to the correct cohort, and evaluates every inclusion/exclusion criterion with line-level citations.
+**Clinical trial pre-screening copilot** for research coordinators and research nurses.
 
-## Features
+Lumen reads de-identified chart notes, discovers recruiting trials on ClinicalTrials.gov, routes patients to the correct cohort, and evaluates every inclusion/exclusion criterion with chart-line citations. Coordinators get a reviewable pre-screen — not a black-box match score — with actionable gaps when data is missing and a PI-ready summary to hand off.
 
-- **Patient packages** — de-identified chart lines with document metadata, loaded from Supabase or local fixtures
-- **Dynamic trial discovery** — profile-driven ClinicalTrials.gov v2 search with relevance ranking and top-K cap
-- **Criterion-level adjudication** — MET / NOT_MET / UNKNOWN states with verbatim evidence spans
-- **Faithfulness gate** — citations must match source chart text
-- **Actionable gaps** — resolvable missing data surfaced for conditionally eligible trials
-- **Reachability ranking** — trials ordered by proximity to enrollment
-- **Dual operating modes** — live CT.gov discovery (default) and pinned 3-trial regression
+Built for a **3-minute hackathon demo** with an offline fixture path (sub-second, no live API calls) and a full **live pipeline** for Q&A.
 
-## How it works
+---
 
-1. Extract a structured profile from the patient chart (diagnosis, biomarkers, prior therapies, performance status)
-2. Search ClinicalTrials.gov for recruiting trials matching the profile
-3. Route the patient to the correct trial cohort when eligibility defines multiple arms
-4. Decompose eligibility text into atomic criteria and evaluate each against chart lines
-5. Aggregate verdicts: **Eligible now**, **One step away**, or **Not eligible**
+## What you see in the app
 
-## Tech stack
+### Home (`/`)
 
-| Layer | Technology |
-|-------|------------|
-| Framework | Next.js 16 (App Router) |
-| UI | React 19, Tailwind CSS 4 |
-| Language | TypeScript |
-| Database | Supabase Postgres (server-side service role) |
-| LLM | Anthropic Claude — Sonnet for evaluation, Haiku for extraction/routing |
-| External API | ClinicalTrials.gov API v2 |
+Two intake paths:
+
+**Demo patients** (recommended for presentations)
+- Select **Margaret Chen** (hero patient — EGFR ex19, post-osimertinib, ECOG 1)
+- Set patient site: **New York, NY** with radius 25 / 50 / 100 mi
+- Review chart excerpt and discovery preview sidebar
+- Click **Run pre-screen**
+
+**Paste chart**
+- Paste a de-identified oncology note (or use the placeholder sample)
+- **Parse chart** → line preview
+- **Extract profile** → structured preview (diagnosis, biomarkers, prior therapy, ECOG)
+- **Run pre-screen** (demo uses pre-cached output)
+
+### Results (`/results`)
+
+- **Patient story** and plain-language verdict summary
+- Three buckets: **Eligible now** · **One step away** · **Not eligible**
+- Per-trial cards with cohort label, CT.gov link, **recruiting sites nearby** badge
+- Expandable criteria rows: MET / NOT_MET / **Needs verification** with chart-line citations
+- **Compare to naive AI** (demo) — side-by-side forced-guess baseline vs grounded Lumen; highlights LVEF fabrication row
+- **Simulate result added** (demo) — one-step-away trial flips to Eligible now after echo is added
+- **Copy pre-screen summary** — markdown artifact for PI handoff
+- **Print** and decision-support boundary footer
+
+---
+
+## 3-minute demo script
+
+With `DEMO_MODE=1` (see [Quick start](#quick-start)):
+
+| Time | Beat |
+|------|------|
+| 0:00 | Open app — coordinator pain: hours pre-screening one patient; few enroll |
+| 0:30 | Margaret Chen → NYC 50 mi → **Run pre-screen** |
+| 1:00 | Results: 1 eligible · 1 one-step-away · 1 excluded — cited criteria + site badges |
+| 1:40 | Toggle **Compare to naive AI** — naive fabricates LVEF; Lumen says UNKNOWN |
+| 2:20 | **Simulate result added** on NCT07070232 → **Eligible now** (2 eligible trials) |
+| 2:45 | **Copy pre-screen summary** — PI handoff + decision-support line |
+
+Paste intake: brief mention or Q&A; demo path uses `paste-demo` fixture.
+
+---
 
 ## Quick start
 
 ```bash
 cd lumen
 cp .env.example .env
-# Add ANTHROPIC_API_KEY (required for discovery mode)
-# Optionally add SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY for persistence
 npm install
 npm run dev
 ```
 
-Open **http://localhost:3005**, select a patient, and click **Run eligibility match**.
+Open **http://localhost:3005**.
 
-Without Supabase, patients and pinned trial fixtures load from `data/charts/` and `data/trials/`. Every match runs live against ClinicalTrials.gov.
-
-## Supabase setup (recommended)
-
-Persistent caching (profiles, discovery results, match verdicts, decomposed criteria, cohort routing) requires Supabase.
-
-1. Create a Supabase project and set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in `.env`
-2. Apply migrations in order from `supabase/migrations/`:
-   - `001_lumen_initial_schema.sql` — patients, charts, trials, match cache
-   - `002_patient_profile_cache.sql` — extracted profile cache
-   - `003_discovery_cache.sql` — CT.gov discovery cache
-   - `004_cohort_cache.sql` — cohort routing cache
-3. Seed demo data:
+For hackathon / presentation, keep these in `.env`:
 
 ```bash
-npm run seed-supabase
+DEMO_MODE=1
+NEXT_PUBLIC_DEMO_MODE=1
 ```
 
-Optional: sync pinned trial registry data from ClinicalTrials.gov:
+Results load from committed fixtures in `data/demo/` — no live CT.gov or uncached LLM on the scripted path.
+
+To regenerate fixtures after pipeline changes:
 
 ```bash
-npm run sync-trials
+npm run generate-demo-fixtures
 ```
 
-## Patient fixtures
+For live mode (Q&A), set `DEMO_MODE=0`, add `ANTHROPIC_API_KEY`, and optionally Supabase credentials.
 
-| Slug | Patient | Scenario |
-|------|---------|----------|
-| `hero` | Margaret Chen | EGFR+ NSCLC, post-osimertinib progression |
-| `variant-echo-on-file` | Margaret Chen (variant) | Echo/LVEF documentation on file |
-| `variant-prior-tki` | James Park | Prior TKI therapy, exclusion patterns |
+---
 
-Golden profiles for regression live in `data/charts/*.profile.golden.json`.
+## How the pipeline works
+
+```
+Chart → extractProfile → discoverTrials (CT.gov)
+  → selectCohort → decomposeCriteria → evaluateCriteria
+  → faithfulness gate → aggregateVerdict → rank → UI
+```
+
+| Stage | What it does |
+|-------|----------------|
+| **extractProfile** | Haiku LLM → structured diagnosis, biomarkers, prior therapies, ECOG |
+| **discoverTrials** | CT.gov v2 search by condition + biomarkers; geo filter optional; rank + top-K cap |
+| **selectCohort** | Route patient to correct trial arm |
+| **decomposeCriteria** | Split eligibility text into atomic criteria |
+| **evaluateCriteria** | Sonnet → MET / NOT_MET / UNKNOWN per criterion with evidence spans |
+| **faithfulness gate** | Citations must appear verbatim in chart; failures → UNKNOWN |
+| **aggregateVerdict** | Eligible now / One step away / Not eligible + cheapest actionable gap |
+| **rank** | Reachability score orders trials for coordinator review |
+
+---
 
 ## Operating modes
 
-| Mode | Trigger | Trials evaluated |
-|------|---------|------------------|
-| **Discovery** (default) | UI, `POST /api/match` | CT.gov search + optional `LUMEN_PINNED_NCTS` |
-| **Pinned regression** | `pinnedMode: true`, `assert-verdicts`, `test-pipeline` | Fixed 3-trial demo spine |
+| Mode | When | Behavior |
+|------|------|----------|
+| **Demo fixtures** | `DEMO_MODE=1`, `demo: true`, or `?demo=1` | Serves `data/demo/*.json`; sub-second responses |
+| **Live discovery** | Default without demo flag | CT.gov + Claude; Supabase caches (24h) when configured |
+| **Pinned regression** | `pinnedMode: true`, CLI scripts | Fixed 3 trials; rule-based eval; deterministic |
 
-### Pinned regression expected verdicts
+### Hero patient (Margaret Chen) — pinned verdicts
 
 | Trial | NCT | Verdict |
 |-------|-----|---------|
-| A — BNT326/BNT327 | NCT07070232 | CONDITIONALLY_ELIGIBLE (LVEF/echo UNKNOWN) |
-| B — Sunvozertinib 1L | NCT06348927 | EXCLUDED (prior osimertinib) |
-| C — External Control Arm | NCT07174388 | ELIGIBLE |
+| BNT326/BNT327 | NCT07070232 | One step away (LVEF/echo UNKNOWN) |
+| Sunvozertinib 1L | NCT06348927 | Not eligible (prior osimertinib) |
+| External Control Arm | NCT07174388 | Eligible now |
+
+---
+
+## API
+
+| Method | Route | Purpose |
+|--------|-------|---------|
+| `GET` | `/api/patients` | List patients |
+| `GET` | `/api/patients/[slug]` | Patient package + chart lines |
+| `POST` | `/api/match` | Run pre-screen (`patientSlug`, `demo`, `chart`, `geoFilter`, `pinnedMode`) |
+| `POST` | `/api/profile` | Extract profile from pasted chart |
+| `GET` | `/api/trials?patientSlug=` | Discovery preview |
+| `POST` | `/api/trials` | Force fresh discovery (live) |
+| `GET` | `/api/demo/[fixture]` | Demo JSON (`naive-baseline`, `resolution-after-echo`, `golden-profile`) |
+
+---
 
 ## Environment variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `ANTHROPIC_API_KEY` | Yes (discovery) | LLM for profile, cohort, criteria, evaluation |
-| `ANTHROPIC_MODEL_EVAL` | No | Default `claude-sonnet-4-6` |
-| `ANTHROPIC_MODEL_CHEAP` | No | Default `claude-haiku-4-5` |
-| `SUPABASE_URL` | Recommended | Server-side database URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | Recommended | Never expose to the browser |
-| `LUMEN_TRIAL_NCTS` | No | Pinned regression NCT list |
-| `LUMEN_PINNED_NCTS` | No | Always merge into discovery results |
-| `LUMEN_MAX_DISCOVERED_TRIALS` | No | Default `10` |
-| `LUMEN_CTGOV_STATUS` | No | Default `RECRUITING` |
-| `LUMEN_CTGOV_PHASES` | No | Default `PHASE2,PHASE3,PHASE4` |
-| `LUMEN_ENTAILMENT_CHECK` | No | Optional entailment re-check (not yet wired) |
+See [`.env.example`](.env.example).
 
-See `.env.example` for the full template.
+| Variable | Purpose |
+|----------|---------|
+| `DEMO_MODE` / `NEXT_PUBLIC_DEMO_MODE` | Offline demo fixtures (hackathon default) |
+| `ANTHROPIC_API_KEY` | Required for live pipeline |
+| `ANTHROPIC_MODEL_EVAL` | Criterion evaluation (default Sonnet) |
+| `ANTHROPIC_MODEL_CHEAP` | Profile + routing (default Haiku) |
+| `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` | Persistence + caching (server only) |
+| `LUMEN_TRIAL_NCTS` | Pinned regression trial list |
+| `LUMEN_MAX_DISCOVERED_TRIALS` | Discovery cap (default 10) |
+| `LUMEN_CTGOV_STATUS` | e.g. `RECRUITING` |
+| `LUMEN_CTGOV_PHASES` | e.g. `PHASE2,PHASE3,PHASE4` |
+
+---
 
 ## Scripts
 
@@ -117,78 +163,81 @@ See `.env.example` for the full template.
 |---------|-------------|
 | `npm run dev` | Dev server on port **3005** |
 | `npm run build` | Production build |
-| `npm run start` | Start production server |
-| `npm run lint` | ESLint |
-| `npm run fetch-trials` | Download pinned NCT JSON to `data/trials/` |
-| `npm run sync-trials` | Sync pinned trials from CT.gov into Supabase |
-| `npm run seed-supabase` | Seed patients, charts, and trials |
-| `npm run test-pipeline` | Run pinned pipeline + refresh `data/cache/hero-verdicts.json` |
-| `npm run assert-verdicts` | Regression checks (`--pinned` or `--discovery`) |
-| `npm run eval` | Eval harness → `data/eval/results.json` (42 gold pairs) |
+| `npm run generate-demo-fixtures` | Regenerate `data/demo/` from pipeline + cache |
+| `npm run assert-verdicts -- --pinned` | 3-trial regression (no API key) |
+| `npm run assert-verdicts -- --discovery` | Live CT.gov smoke test |
+| `npm run test-pipeline` | Refresh `data/cache/hero-verdicts.json` |
+| `npm run eval` | 42-pair eval harness |
+| `npm run seed-supabase` | Seed Supabase from fixtures |
+| `npm run fetch-trials` | Download pinned NCT JSON |
+| `npm run sync-trials` | Sync trials to Supabase |
 
-### Regression testing
+---
 
-```bash
-# Pinned 3-trial regression (rule-based eval, no API key required)
-npm run assert-verdicts -- --pinned
+## Patient fixtures
 
-# Live CT.gov discovery smoke test (requires ANTHROPIC_API_KEY)
-npm run assert-verdicts -- --discovery
-```
+| Slug | Patient | Notes |
+|------|---------|-------|
+| `hero` | Margaret Chen | **Recommended demo** — EGFR ex19, post-osimertinib, no echo on file |
+| `variant-echo-on-file` | Margaret Chen + echo | LVEF 58%; used for resolution-after-echo fixture |
+| `variant-prior-tki` | James Park | Prior TKI exclusion patterns |
 
-## API routes
+Charts: `data/charts/`. Golden profiles: `*.profile.golden.json`. Demo output: `data/demo/`.
 
-| Method | Route | Description |
-|--------|-------|-------------|
-| `GET` | `/api/patients` | List patient summaries |
-| `GET` | `/api/patients/[slug]` | Full patient package with chart lines |
-| `POST` | `/api/match` | Run eligibility pipeline (`{ patientSlug, pinnedMode? }`) |
-| `GET` | `/api/trials?patientSlug=` | Last discovery preview for a patient |
-| `POST` | `/api/trials` | Force fresh CT.gov discovery (`{ patientSlug }`) |
+---
 
-Match verdicts are cached in Supabase for 24 hours when configured. Cache is transparent to the UI.
-
-## Architecture
+## Project layout
 
 ```
-Patient chart → extractProfile → discoverTrials (CT.gov)
-  → selectCohort → decomposeCriteria → evaluateCriteria
-  → faithfulness gate → aggregateVerdict → rank → UI
+app/                    Pages + API routes
+components/             TrialCard, CriterionRow, resolution loop, naive compare, …
+lib/pipeline/           Matching pipeline
+lib/clinicaltrials/     CT.gov client, discovery, geo ranking
+lib/demo/               Demo mode + fixture loaders
+lib/intake/             Paste chart parser + sessionStorage
+lib/export/             Coordinator summary markdown
+data/demo/              Committed hackathon fixtures
+data/charts/            Patient fixtures
+data/trials/            Pinned trial JSON + criteria cache
+supabase/migrations/    Schema (001–004)
+eval/                   42-pair eval + baselines
+scripts/                CLI utilities
 ```
 
-Key directories:
+---
 
-```
-app/                  Next.js pages and API routes
-components/           TrialCard, CriterionRow, VerdictBadge, …
-lib/pipeline/         Matching pipeline stages
-lib/clinicaltrials/   CT.gov client, discovery, search, ranking
-lib/db/               Supabase accessors with file fallbacks
-data/charts/          Patient fixtures and golden profiles
-data/trials/          Pinned trial JSON and criteria cache
-supabase/migrations/  Database schema (001–004)
-eval/                 Eval harness and baselines
-scripts/              CLI utilities
-```
+## Supabase (optional)
+
+For live caching across sessions:
+
+1. Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`
+2. Apply migrations `001`–`004` in `supabase/migrations/`
+3. Run `npm run seed-supabase`
+
+---
+
+## Evaluation
+
+- 42 labeled criterion pairs in `data/eval/labeled-pairs.json`
+- `npm run eval` compares Lumen vs naive and grounded baselines
+- Latest metrics in `data/eval/results.json`
+
+---
 
 ## Deploy (Vercel)
 
 ```bash
 vercel link
 vercel env add ANTHROPIC_API_KEY
-vercel env add SUPABASE_URL
-vercel env add SUPABASE_SERVICE_ROLE_KEY
+vercel env add DEMO_MODE          # 1 for demo deploy, 0 for live
+vercel env add NEXT_PUBLIC_DEMO_MODE
 vercel deploy
 ```
 
-`vercel.json` sets `maxDuration: 300` on `/api/match` for live discovery and evaluation runs. Apply Supabase migrations and run `seed-supabase` against your production database before first use.
+`vercel.json` sets `maxDuration: 300` on `/api/match` for live runs.
 
-## Evaluation
-
-- 42 labeled criterion pairs in `data/eval/labeled-pairs.json`
-- `npm run eval` compares Lumen against naive and grounded baselines
-- The `/eval` web route is disabled; use the CLI harness
+---
 
 ## Limitations
 
-Research prototype using synthetic de-identified charts. Not intended for clinical decision-making. CT.gov discovery is heuristic and capped. LLM outputs require human review.
+Research prototype with synthetic de-identified charts. **Decision support only** — coordinators review and the PI confirms; Lumen never enrolls patients or issues final rulings. LLM outputs and CT.gov discovery require human verification. Not for clinical use without validation.

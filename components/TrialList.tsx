@@ -1,8 +1,15 @@
 import type { TrialVerdict, Verdict } from "@/lib/types";
 import { TrialCard } from "./TrialCard";
+import type { NaiveResult } from "./NaiveComparePanel";
 
 interface TrialListProps {
   verdicts: TrialVerdict[];
+  naiveCompare?: boolean;
+  naiveResults?: NaiveResult[];
+  highlightCriterionId?: string;
+  onSimulateResolution?: (trialId: string) => void;
+  resolvedTrials?: Set<string>;
+  simulatingTrialId?: string | null;
 }
 
 const SECTIONS: {
@@ -15,14 +22,14 @@ const SECTIONS: {
   {
     verdict: "ELIGIBLE",
     title: "Eligible now",
-    description: "All inclusion criteria met with no blocking unknowns.",
+    description: "Ready to hand off to PI — all criteria met.",
     accentClass: "section-eligible",
     numberClass: "text-sage-dark",
   },
   {
     verdict: "CONDITIONALLY_ELIGIBLE",
     title: "One step away",
-    description: "Eligible except for resolvable missing data.",
+    description: "Order missing test or document — then eligible.",
     accentClass: "section-conditional",
     numberClass: "text-honey-dark",
   },
@@ -39,7 +46,15 @@ function sortByRank(trials: TrialVerdict[]): TrialVerdict[] {
   return [...trials].sort((a, b) => b.reachability_rank - a.reachability_rank);
 }
 
-export function TrialList({ verdicts }: TrialListProps) {
+export function TrialList({
+  verdicts,
+  naiveCompare,
+  naiveResults,
+  highlightCriterionId,
+  onSimulateResolution,
+  resolvedTrials,
+  simulatingTrialId,
+}: TrialListProps) {
   const grouped = SECTIONS.map((section) => ({
     ...section,
     trials: sortByRank(
@@ -86,7 +101,19 @@ export function TrialList({ verdicts }: TrialListProps) {
                 className="animate-fade-up"
                 style={{ animationDelay: `${sectionIdx * 0.1 + i * 0.06}s` }}
               >
-                <TrialCard trial={trial} />
+                <TrialCard
+                  trial={trial}
+                  naiveCompare={naiveCompare}
+                  naiveResults={naiveResults}
+                  highlightCriterionId={highlightCriterionId}
+                  onSimulateResolution={onSimulateResolution}
+                  resolutionResolved={resolvedTrials?.has(trial.trial_id)}
+                  simulatingResolution={simulatingTrialId === trial.trial_id}
+                  defaultExpanded={
+                    trial.trial_id === "NCT07070232" &&
+                    section.verdict === "CONDITIONALLY_ELIGIBLE"
+                  }
+                />
               </div>
             ))}
           </div>

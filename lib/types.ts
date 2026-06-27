@@ -83,6 +83,13 @@ export interface CriterionResult {
 
 export type Verdict = "ELIGIBLE" | "CONDITIONALLY_ELIGIBLE" | "EXCLUDED";
 
+export interface GeoFilter {
+  lat: number;
+  lng: number;
+  radiusMi: number;
+  label: string;
+}
+
 export interface TrialVerdict {
   trial_id: string;
   trial_title: string;
@@ -95,6 +102,8 @@ export interface TrialVerdict {
   criteria: CriterionResult[];
   actionable_gap: ActionableGap | null;
   reachability_rank: number;
+  recruiting_sites_nearby?: number;
+  nearest_sites?: { facility: string; city: string; state?: string }[];
 }
 
 export interface PinnedTrial {
@@ -176,6 +185,7 @@ export interface SearchSummary {
   terms: string[];
   status: string[];
   phases: string[];
+  geo?: GeoFilter;
 }
 
 export interface DiscoveryMetadata {
@@ -191,6 +201,7 @@ export interface PipelineOptions {
   skipDiscoveryCache?: boolean;
   pinnedMode?: boolean;
   patientUuid?: string | null;
+  geoFilter?: GeoFilter;
 }
 
 export interface PipelineResult {

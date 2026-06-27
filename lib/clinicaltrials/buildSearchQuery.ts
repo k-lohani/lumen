@@ -1,4 +1,4 @@
-import type { PatientProfile, SearchSummary } from "../types";
+import type { GeoFilter, PatientProfile, SearchSummary } from "../types";
 import type { CTGovSearchParams } from "./client";
 import {
   configuredDiscoveryPhases,
@@ -44,7 +44,8 @@ function buildSearchTerms(profile: PatientProfile): string[] {
 
 export function buildSearchQuery(
   profile: PatientProfile,
-  fallbackDiagnosis?: string
+  fallbackDiagnosis?: string,
+  geoFilter?: GeoFilter
 ): { params: CTGovSearchParams; summary: SearchSummary } {
   const status = configuredDiscoveryStatuses();
   const phases = configuredDiscoveryPhases();
@@ -57,6 +58,7 @@ export function buildSearchQuery(
       terms: terms.length ? terms : undefined,
       status,
       phases,
+      geo: geoFilter,
       pageSize: 25,
     },
     summary: {
@@ -64,6 +66,7 @@ export function buildSearchQuery(
       terms,
       status,
       phases,
+      geo: geoFilter,
     },
   };
 }

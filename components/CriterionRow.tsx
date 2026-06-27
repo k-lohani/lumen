@@ -14,7 +14,7 @@ const STATE_STYLES = {
     border: "border-crimson/30",
   },
   UNKNOWN: {
-    label: "Unknown",
+    label: "Needs verification",
     dot: "bg-honey",
     text: "text-honey-dark",
     border: "border-honey/30",
@@ -23,18 +23,30 @@ const STATE_STYLES = {
 
 interface CriterionRowProps {
   result: CriterionResult;
+  highlighted?: boolean;
 }
 
-export function CriterionRow({ result }: CriterionRowProps) {
-  const { criterion, state, evidence_span, rationale, resolving_action, faithfulness, evidence_line_id } =
-    result;
+export function CriterionRow({ result, highlighted }: CriterionRowProps) {
+  const {
+    criterion,
+    state,
+    evidence_span,
+    rationale,
+    resolving_action,
+    faithfulness,
+    evidence_line_id,
+  } = result;
   const style = STATE_STYLES[state];
   const unverified =
     !faithfulness.substring_ok ||
     (faithfulness.entailment_ok !== undefined && !faithfulness.entailment_ok);
 
   return (
-    <div className="border-b border-rule py-5 last:border-b-0">
+    <div
+      className={`border-b border-rule py-5 last:border-b-0 ${
+        highlighted ? "bg-honey-light/20 -mx-2 px-2 rounded-lg" : ""
+      }`}
+    >
       <div className="flex items-start gap-4">
         <span
           className={`mt-2 h-2.5 w-2.5 shrink-0 rounded-full ${style.dot}`}
@@ -76,7 +88,7 @@ export function CriterionRow({ result }: CriterionRowProps) {
 
           {state === "UNKNOWN" && resolving_action && (
             <p className="mt-3 rounded-lg border border-honey/25 bg-honey-light/60 px-3 py-2 text-sm text-honey-dark">
-              <span className="font-semibold">Next step:</span>{" "}
+              <span className="font-semibold">Next step for care team:</span>{" "}
               {resolving_action.action}
               {resolving_action.threshold && (
                 <span className="text-honey-dark/80">
@@ -92,6 +104,16 @@ export function CriterionRow({ result }: CriterionRowProps) {
               Citation could not be verified against source record.
             </p>
           )}
+
+          <p className="mt-2 text-[10px] text-ink-faint">
+            Sonnet evaluation · faithfulness{" "}
+            {faithfulness.substring_ok ? "verified" : "failed"}
+            {evidence_line_id
+              ? ` · chart line ${evidence_line_id}`
+              : state === "UNKNOWN"
+                ? " · no supporting chart line"
+                : ""}
+          </p>
         </div>
       </div>
     </div>

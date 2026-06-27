@@ -12,7 +12,8 @@
     "seed-supabase": "tsx scripts/seed-supabase.ts",
     "test-pipeline": "tsx scripts/test-pipeline.ts",
     "assert-verdicts": "tsx scripts/assert-verdicts.ts",
-    "eval": "tsx eval/runEval.ts"
+    "eval": "tsx eval/runEval.ts",
+    "generate-demo-fixtures": "tsx scripts/generate-demo-fixtures.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.106.0",
