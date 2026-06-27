@@ -10,7 +10,13 @@ import type {
   PipelineProgressEvent,
   RawChart,
 } from "../types";
-import { applyFaithfulnessGate, applyEntailmentGate, ruleBasedEntailmentCheck, type EntailmentCheck } from "./verifyCitation";
+import {
+  applyFaithfulnessGate,
+  applyEntailmentGate,
+  ruleBasedEntailmentCheck,
+  type EntailmentCheck,
+} from "./verifyCitation";
+import { applySymbolicCheck } from "./symbolicChecks";
 
 const BATCH_SIZE = 10;
 
@@ -569,20 +575,13 @@ export async function evaluateCriteria(
     }
   }
 
-  const substringResults = criteria.map((c) => {
-    const raw = rawById.get(c.criterion_id) ?? {
-      criterion_id: c.criterion_id,
-      state: "UNKNOWN" as const,
-      evidence_line_id: null,
-      evidence_span: null,
-      rationale: "No evaluation produced for this criterion.",
-    };
-    return toCriterionResult(c, raw, rawChart, chart.lines);
-  });
-
   const runEntailment = useRuleBased || entailmentEnabled();
   if (!runEntailment) {
-    return substringResults;
+    return criteria.map((c) => {
+      const raw = rawById.get(c.criterion_id)!;
+      const result = toCriterionResult(c, raw, rawChart, chart.lines);
+      return applySymbolicCheck(c, profile, result);
+    });
   }
 
   if (opts?.nct_id && opts?.onProgress && !useRuleBased) {
@@ -594,6 +593,11 @@ export async function evaluateCriteria(
     });
   }
 
+  const substringResults = criteria.map((c) =>
+    toCriterionResult(c, rawById.get(c.criterion_id)!, rawChart, chart.lines)
+  );
+
+  // ruleBasedEntailmentCheck runs only in pinned/CI mode (useRuleBased), not live LLM path.
   let usedRuleBased = useRuleBased;
   let entailmentMap: Map<string, EntailmentCheck>;
   if (usedRuleBased) {
@@ -614,6 +618,7 @@ export async function evaluateCriteria(
   return criteria.map((c) => {
     const raw = rawById.get(c.criterion_id)!;
     const check = entailmentMap.get(c.criterion_id);
-    return toCriterionResult(c, raw, rawChart, chart.lines, check);
+    const result = toCriterionResult(c, raw, rawChart, chart.lines, check);
+    return applySymbolicCheck(c, profile, result);
   });
 }

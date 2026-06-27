@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { computeChartHash, computeProfileHash } from "@/lib/chartHash";
-import { getCachedVerdicts, saveVerdicts } from "@/lib/db/matchCache";
+import { getCachedVerdicts } from "@/lib/db/matchCache";
 import {
   getDiscoveryCache,
   getLastDiscoveryForPatient,
@@ -8,14 +8,20 @@ import {
 import { getCachedProfile } from "@/lib/db/profileCache";
 import { ensurePatientRecord } from "@/lib/db/ensurePatient";
 import { getPatientWithChart } from "@/lib/db/patients";
+import { loadGoldenMatch } from "@/lib/demo/loadFixtures";
 import { runMatch } from "@/lib/pipeline/runMatch";
-import { disableCache, useLiveLlm, usePinnedTrials } from "@/lib/productConfig";
+import {
+  demoTrialLimit,
+  disableCache,
+  isDemoMode,
+  useLiveLlm,
+  usePinnedTrials,
+} from "@/lib/productConfig";
 import { formatLlmError, isAnthropicUnavailableError } from "@/lib/llm";
 import { sseLine } from "@/lib/sse";
 import type {
   GeoFilter,
   PatientProfile,
-  PipelineOptions,
   PipelineProgressEvent,
   RawChart,
   TrialVerdict,
@@ -28,6 +34,7 @@ interface MatchRequest {
   chart?: RawChart;
   geoFilter?: GeoFilter;
   profile?: PatientProfile;
+  demoMode?: boolean;
 }
 
 interface MatchPayload {
@@ -35,6 +42,7 @@ interface MatchPayload {
   mrn: string;
   display_name: string;
   matched_at: string;
+  patient_story?: string;
   discovered_trials?: number;
   search_summary?: {
     condition: string;
@@ -46,6 +54,9 @@ interface MatchPayload {
   verdicts: TrialVerdict[];
   persisted?: boolean;
   session?: boolean;
+  demo?: boolean;
+  partial?: boolean;
+  partial_note?: string;
 }
 
 function matchPipelineOptions(
@@ -53,7 +64,7 @@ function matchPipelineOptions(
   patientUuid: string | null,
   geoFilter?: GeoFilter,
   onProgress?: (event: PipelineProgressEvent) => void
-): PipelineOptions {
+) {
   const liveLlm = useLiveLlm();
   return {
     patientUuid,
@@ -70,12 +81,20 @@ function wantsStream(request: Request): boolean {
   return (request.headers.get("accept") ?? "").includes("text/event-stream");
 }
 
+function geoMatches(
+  cached?: GeoFilter,
+  requested?: GeoFilter
+): boolean {
+  return JSON.stringify(cached ?? null) === JSON.stringify(requested ?? null);
+}
+
 async function tryCachedMatch(
   patientSlug: string,
   patient: { mrn: string; display_name: string },
   patientUuid: string,
   chartHash: string,
-  pinnedMode: boolean
+  pinnedMode: boolean,
+  geoFilter?: GeoFilter
 ): Promise<MatchPayload | null> {
   if (disableCache() || pinnedMode) return null;
 
@@ -89,6 +108,9 @@ async function tryCachedMatch(
     const profileHash = computeProfileHash(profile);
     const discovery = await getDiscoveryCache(patientUuid, profileHash);
     if (discovery) {
+      if (!geoMatches(discovery.search_params.geo, geoFilter)) {
+        return null;
+      }
       discovered_trials = discovery.nct_ids.length;
       search_summary = discovery.search_params;
     }
@@ -96,6 +118,9 @@ async function tryCachedMatch(
   if (!discovered_trials) {
     const last = await getLastDiscoveryForPatient(patientUuid);
     if (last) {
+      if (!geoMatches(last.search_params.geo, geoFilter)) {
+        return null;
+      }
       discovered_trials = last.nct_ids.length;
       search_summary = last.search_params;
     }
@@ -110,6 +135,22 @@ async function tryCachedMatch(
     search_summary,
     verdicts: cached.verdicts,
     persisted: true,
+  };
+}
+
+function buildDemoPayload(patientSlug: string): MatchPayload {
+  const golden = loadGoldenMatch();
+  return {
+    patientSlug,
+    mrn: golden.mrn,
+    display_name: golden.display_name,
+    matched_at: golden.matched_at,
+    patient_story: golden.patient_story,
+    discovered_trials: golden.discovered_trials,
+    search_summary: golden.search_summary,
+    verdicts: golden.verdicts.slice(0, demoTrialLimit()),
+    persisted: false,
+    demo: true,
   };
 }
 
@@ -139,11 +180,9 @@ async function runFreshMatch(
   );
 
   let matchedAt = new Date().toISOString();
-  if (opts.patientUuid) {
-    matchedAt = await saveVerdicts(
-      opts.patientUuid,
-      chartHash,
-      result.verdicts
+  if (opts.patientUuid && !disableCache()) {
+    matchedAt = await import("@/lib/db/matchCache").then((m) =>
+      m.saveVerdicts(opts.patientUuid!, chartHash, result.verdicts)
     );
   }
 
@@ -152,12 +191,43 @@ async function runFreshMatch(
     mrn: opts.mrn,
     display_name: opts.display_name,
     matched_at: matchedAt,
+    patient_story: result.patient_story,
     discovered_trials: result.discovery.discovered_trials,
     search_summary: result.discovery.search_summary,
     verdicts: result.verdicts,
     persisted: opts.persisted ?? Boolean(opts.patientUuid),
     session: opts.session,
+    partial: result.partial,
+    partial_note: result.partial_note,
   };
+}
+
+function streamDemoMatch(patientSlug: string): Response {
+  const golden = loadGoldenMatch();
+  const payload = buildDemoPayload(patientSlug);
+  const { readable, writable } = new TransformStream();
+  const writer = writable.getWriter();
+  const enc = new TextEncoder();
+
+  void (async () => {
+    try {
+      for (const event of golden.demo_trail ?? []) {
+        await writer.write(enc.encode(sseLine("progress", event)));
+        await new Promise((r) => setTimeout(r, 80));
+      }
+      await writer.write(enc.encode(sseLine("done", payload)));
+    } finally {
+      await writer.close();
+    }
+  })();
+
+  return new Response(readable, {
+    headers: {
+      "Content-Type": "text/event-stream; charset=utf-8",
+      "Cache-Control": "no-cache, no-transform",
+      Connection: "keep-alive",
+    },
+  });
 }
 
 function streamMatch(
@@ -172,14 +242,28 @@ function streamMatch(
       const payload = await run(async (event) => {
         await writer.write(enc.encode(sseLine("progress", event)));
       });
-      await writer.write(enc.encode(sseLine("done", payload)));
+      if (payload.partial && payload.verdicts.length === 0) {
+        await writer.write(
+          enc.encode(
+            sseLine("error", {
+              message:
+                payload.partial_note ??
+                "Unable to complete eligibility analysis. Please try again.",
+            })
+          )
+        );
+      } else {
+        await writer.write(enc.encode(sseLine("done", payload)));
+      }
     } catch (error) {
       console.error("Match pipeline error:", error);
       await writer.write(
         enc.encode(
           sseLine("error", {
             message:
-              "Unable to complete eligibility analysis. Please try again.",
+              isAnthropicUnavailableError(error)
+                ? formatLlmError(error)
+                : "Unable to complete eligibility analysis. Please try again.",
           })
         )
       );
@@ -208,6 +292,12 @@ export async function POST(request: Request) {
   const patientSlug = body.patientSlug ?? body.chartId ?? "hero";
   const pinnedMode = body.pinnedMode ?? usePinnedTrials();
   const streaming = wantsStream(request);
+  const demoMode = isDemoMode(body.demoMode);
+
+  if (demoMode && !body.chart && patientSlug === "hero") {
+    if (streaming) return streamDemoMatch(patientSlug);
+    return NextResponse.json(buildDemoPayload(patientSlug));
+  }
 
   try {
     if (body.chart) {
@@ -252,11 +342,22 @@ export async function POST(request: Request) {
           patient,
           patientUuid,
           chartHash,
-          pinnedMode
+          pinnedMode,
+          body.geoFilter
         )
       : null;
 
     if (cached) {
+      if (streaming) {
+        return streamMatch(async (onProgress) => {
+          onProgress({
+            type: "stage_end",
+            stage: "complete",
+            message: "Loaded cached pre-screen",
+          });
+          return cached;
+        });
+      }
       return NextResponse.json(cached);
     }
 

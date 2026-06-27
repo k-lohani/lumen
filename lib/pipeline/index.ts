@@ -17,8 +17,12 @@ import { decomposeCriteria } from "./decomposeCriteria";
 import { evaluateCriteria } from "./evaluateCriteria";
 import { extractProfile } from "./extractProfile";
 import { loadPinnedTrials } from "./ingestTrials";
+import { mapPool } from "./mapPool";
+import { buildPatientStory } from "./patientStory";
 import { computeReachabilityRank, rankVerdicts } from "./rank";
 import { selectCohort } from "./selectCohort";
+
+const TRIAL_CONCURRENCY = 3;
 
 function emit(
   options: PipelineOptions,
@@ -27,11 +31,17 @@ function emit(
   options.onProgress?.(event);
 }
 
+function stageTimer() {
+  const start = Date.now();
+  return () => Date.now() - start;
+}
+
 async function extractProfileCached(
   chart: RawChart,
   options: PipelineOptions
 ): Promise<Awaited<ReturnType<typeof extractProfile>>> {
   const chartHash = computeChartHash(chart);
+  const elapsed = stageTimer();
 
   emit(options, {
     type: "stage_start",
@@ -39,13 +49,14 @@ async function extractProfileCached(
     message: "Extracting patient profile from chart…",
   });
 
-  if (options.patientUuid && !options.useGoldenProfile) {
+  if (options.patientUuid && !options.useGoldenProfile && !disableCache()) {
     const cached = await getCachedProfile(options.patientUuid, chartHash);
     if (cached) {
       emit(options, {
         type: "stage_end",
         stage: "profile",
         message: "Patient profile ready",
+        duration_ms: elapsed(),
         meta: {
           primary: cached.diagnosis.primary,
           biomarkers: cached.biomarkers.map((b) => b.name),
@@ -59,7 +70,7 @@ async function extractProfileCached(
     useGoldenProfile: options.useGoldenProfile,
   });
 
-  if (options.patientUuid) {
+  if (options.patientUuid && !disableCache()) {
     await saveCachedProfile(options.patientUuid, chartHash, profile);
   }
 
@@ -67,6 +78,7 @@ async function extractProfileCached(
     type: "stage_end",
     stage: "profile",
     message: "Patient profile extracted",
+    duration_ms: elapsed(),
     meta: {
       primary: profile.diagnosis.primary,
       biomarkers: profile.biomarkers.map((b) => b.name),
@@ -100,7 +112,7 @@ async function matchTrial(
     type: "trial_step",
     nct_id: trial.nct_id,
     step: "cohort",
-    meta: { cohort, label },
+    meta: { cohort, label, reason: `Routed to ${label}` },
   });
 
   onProgress?.({
@@ -167,8 +179,10 @@ export async function runPipeline(
 
   let trials: IngestedTrial[];
   let discovery;
+  let studyRaws = new Map<string, Record<string, unknown>>();
 
   if (options.pinnedMode) {
+    const elapsed = stageTimer();
     emit(options, {
       type: "stage_start",
       stage: "discovery",
@@ -190,12 +204,14 @@ export async function runPipeline(
       type: "stage_end",
       stage: "discovery",
       message: `Loaded ${trials.length} pinned trials`,
+      duration_ms: elapsed(),
       meta: { count: trials.length, nct_ids: discovery.nct_ids },
     });
   } else {
     const geoLabel = options.geoFilter
       ? ` within ${options.geoFilter.radiusMi} mi of ${options.geoFilter.label}`
       : "";
+    const elapsed = stageTimer();
     emit(options, {
       type: "stage_start",
       stage: "discovery",
@@ -209,11 +225,13 @@ export async function runPipeline(
     });
     trials = result.trials;
     discovery = result.discovery;
+    studyRaws = result.studyRaws;
 
     emit(options, {
       type: "stage_end",
       stage: "discovery",
       message: `Found ${trials.length} recruiting trials`,
+      duration_ms: elapsed(),
       meta: {
         count: trials.length,
         from_cache: discovery.from_cache,
@@ -224,21 +242,9 @@ export async function runPipeline(
     });
   }
 
-  const trialRaws = new Map<string, Record<string, unknown>>();
-  if (options.geoFilter && !options.pinnedMode) {
-    for (const t of trials) {
-      try {
-        const { fetchStudy } = await import("../clinicaltrials/client");
-        const study = await fetchStudy(t.nct_id);
-        trialRaws.set(t.nct_id, study.raw);
-      } catch {
-        // skip geo enrichment if fetch fails
-      }
-    }
-  }
-
   const total = trials.length;
   let completed = 0;
+  const trialElapsed = stageTimer();
 
   emit(options, {
     type: "stage_start",
@@ -246,24 +252,29 @@ export async function runPipeline(
     message: `Evaluating eligibility for ${total} trial${total === 1 ? "" : "s"}…`,
   });
 
-  const verdicts = await Promise.all(
-    trials.map(async (trial, index) => {
-      emit(options, {
-        type: "trial_start",
-        nct_id: trial.nct_id,
-        title: trial.title,
-        index: index + 1,
-        total,
-      });
+  const verdicts: TrialVerdict[] = [];
+  let trialFailures = 0;
 
+  await mapPool(trials, TRIAL_CONCURRENCY, async (trial, index) => {
+    const trialStart = stageTimer();
+    emit(options, {
+      type: "trial_start",
+      nct_id: trial.nct_id,
+      title: trial.title,
+      index: index + 1,
+      total,
+    });
+
+    try {
       const v = await matchTrial(
         chart,
         trial,
         profile,
         options,
-        trialRaws.get(trial.nct_id)
+        studyRaws.get(trial.nct_id)
       );
 
+      verdicts.push(v);
       completed++;
       emit(options, {
         type: "trial_done",
@@ -271,16 +282,23 @@ export async function runPipeline(
         verdict: v.verdict,
         index: completed,
         total,
+        duration_ms: trialStart(),
       });
-
-      return v;
-    })
-  );
+    } catch (error) {
+      trialFailures++;
+      console.error(`Trial ${trial.nct_id} evaluation failed:`, error);
+      emit(options, {
+        type: "error",
+        message: `Could not evaluate ${trial.nct_id}`,
+      });
+    }
+  });
 
   emit(options, {
     type: "stage_end",
     stage: "trial",
     message: "Eligibility analysis complete",
+    duration_ms: trialElapsed(),
     meta: {
       eligible: verdicts.filter((v) => v.verdict === "ELIGIBLE").length,
       conditional: verdicts.filter(
@@ -294,12 +312,19 @@ export async function runPipeline(
     type: "stage_end",
     stage: "complete",
     message: "Pre-screen ready",
+    duration_ms: 0,
   });
 
   return {
     verdicts: rankVerdicts(verdicts),
     profile,
     discovery,
+    patient_story: buildPatientStory(profile, options.geoFilter),
+    partial: trialFailures > 0 || undefined,
+    partial_note:
+      trialFailures > 0
+        ? `${trialFailures} trial${trialFailures === 1 ? "" : "s"} could not be evaluated — showing ${verdicts.length} completed result${verdicts.length === 1 ? "" : "s"}.`
+        : undefined,
   };
 }
 

@@ -211,6 +211,7 @@ export type PipelineProgressEvent =
       stage: PipelineStage;
       message: string;
       meta?: Record<string, unknown>;
+      duration_ms?: number;
     }
   | {
       type: "trial_start";
@@ -231,6 +232,7 @@ export type PipelineProgressEvent =
       verdict: string;
       index: number;
       total: number;
+      duration_ms?: number;
     }
   | { type: "error"; message: string };
 
@@ -238,4 +240,7 @@ export interface PipelineResult {
   verdicts: TrialVerdict[];
   profile: PatientProfile;
   discovery: DiscoveryMetadata;
+  patient_story?: string;
+  partial?: boolean;
+  partial_note?: string;
 }

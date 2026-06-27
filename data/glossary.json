@@ -5,5 +5,6 @@
   "ECOG": "Eastern Cooperative Oncology Group performance status (0–5); lower scores mean the patient is more active.",
   "NSCLC": "Non-small cell lung cancer — the most common type of lung cancer.",
   "TKI": "Tyrosine kinase inhibitor — a targeted therapy that blocks cancer growth signals.",
-  "RECIST": "Response Evaluation Criteria in Solid Tumors — standard rules for measuring tumor size on scans."
+  "RECIST": "Response Evaluation Criteria in Solid Tumors — standard rules for measuring tumor size on scans.",
+  "HER2": "Human epidermal growth factor receptor 2 — a protein that promotes cancer cell growth; target in breast cancer trials."
 }

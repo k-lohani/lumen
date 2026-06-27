@@ -58,10 +58,10 @@ export default function RootLayout({
             </Link>
             <div className="flex items-center gap-1">
               <Link
-                href="/results?patientSlug=hero"
+                href="/eval"
                 className="rounded-md px-3 py-1.5 text-sm font-medium text-ink-muted transition-colors hover:bg-parchment-deep hover:text-ink lumen-focus"
               >
-                Results
+                Eval
               </Link>
             </div>
           </div>

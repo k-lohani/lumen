@@ -1,13 +1,9 @@
 "use client";
 
 import type { CriterionResult } from "@/lib/types";
+import type { NaiveResult } from "@/lib/demo/loadFixtures";
 
-interface NaiveResult {
-  criterion_id: string;
-  trial_id: string;
-  state: "MET" | "NOT_MET";
-  rationale: string;
-}
+export type { NaiveResult };
 
 interface NaiveComparePanelProps {
   enabled: boolean;
@@ -107,5 +103,3 @@ export function NaiveCompareRow({
     </div>
   );
 }
-
-export type { NaiveResult };

@@ -1,9 +1,12 @@
+import { disableCache } from "../productConfig";
 import { tryGetSupabaseAdmin } from "../supabase/server";
 
 export async function getCachedCohort(
   nctId: string,
   profileHash: string
 ): Promise<{ cohort: string; label: string } | null> {
+  if (disableCache()) return null;
+
   const db = tryGetSupabaseAdmin();
   if (!db) return null;
 
@@ -25,6 +28,8 @@ export async function saveCachedCohort(
   cohort: string,
   label: string
 ): Promise<void> {
+  if (disableCache()) return;
+
   const db = tryGetSupabaseAdmin();
   if (!db) return;
 

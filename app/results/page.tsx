@@ -11,9 +11,12 @@ import {
 } from "react";
 import { AgentTrail } from "@/components/AgentTrail";
 import { DecisionSupportBanner } from "@/components/DecisionSupportBanner";
+import { NaiveCompareToggle } from "@/components/NaiveComparePanel";
 import { PatientStoryHeader } from "@/components/PatientStoryHeader";
 import { TrialList } from "@/components/TrialList";
 import { VerdictSummaryBar } from "@/components/VerdictSummaryBar";
+import { loadNaiveBaselineClient } from "@/lib/demo/naiveClient";
+import { applyEchoResolution } from "@/lib/demo/resolutionClient";
 import { buildCoordinatorSummary, COMPLIANCE_LINE } from "@/lib/export/coordinatorSummary";
 import { loadSessionChart, loadSessionProfile } from "@/lib/intake/sessionChart";
 import { consumeSse } from "@/lib/sse";
@@ -34,6 +37,9 @@ interface MatchResponse {
     geo?: GeoFilter;
   };
   verdicts: TrialVerdict[];
+  demo?: boolean;
+  partial?: boolean;
+  partial_note?: string;
   error?: string;
 }
 
@@ -69,9 +75,12 @@ function ResultsContent() {
     searchParams.get("chartId") ??
     "hero";
   const source = searchParams.get("source");
+  const demoMode = searchParams.get("demo") === "1";
   const geoParam = searchParams.get("geo");
   const geoFilter = useMemo(() => parseGeoParam(geoParam), [geoParam]);
   const fetchGenRef = useRef(0);
+
+  const naiveBaseline = useMemo(() => loadNaiveBaselineClient(), []);
 
   const [data, setData] = useState<MatchResponse | null>(null);
   const [verdicts, setVerdicts] = useState<TrialVerdict[]>([]);
@@ -79,6 +88,11 @@ function ResultsContent() {
   const [loading, setLoading] = useState(true);
   const [trail, setTrail] = useState<PipelineProgressEvent[]>([]);
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
+  const [naiveCompare, setNaiveCompare] = useState(false);
+  const [resolvedTrials, setResolvedTrials] = useState<Set<string>>(new Set());
+  const [simulatingTrialId, setSimulatingTrialId] = useState<string | null>(
+    null
+  );
 
   useLayoutEffect(() => {
     const fetchId = ++fetchGenRef.current;
@@ -92,6 +106,7 @@ function ResultsContent() {
       setLoading(true);
       setError(null);
       setTrail([]);
+      setResolvedTrials(new Set());
 
       const resetTimeout = () => {
         window.clearTimeout(timeoutId);
@@ -116,8 +131,13 @@ function ResultsContent() {
           signal: controller.signal,
           body: JSON.stringify(
             sessionChart
-              ? { chart: sessionChart, geoFilter, profile: sessionProfile ?? undefined }
-              : { patientSlug, geoFilter }
+              ? {
+                  chart: sessionChart,
+                  geoFilter,
+                  profile: sessionProfile ?? undefined,
+                  demoMode,
+                }
+              : { patientSlug, geoFilter, demoMode }
           ),
         });
 
@@ -173,7 +193,7 @@ function ResultsContent() {
       fetchGenRef.current += 1;
       controller.abort();
     };
-  }, [patientSlug, source, geoFilter]);
+  }, [patientSlug, source, geoFilter, demoMode]);
 
   async function copySummary() {
     if (!data) return;
@@ -189,12 +209,14 @@ function ResultsContent() {
     window.setTimeout(() => setCopyStatus(null), 2000);
   }
 
-  const eligibleCount =
-    verdicts.filter((v) => v.verdict === "ELIGIBLE").length;
-  const conditionalCount =
-    verdicts.filter((v) => v.verdict === "CONDITIONALLY_ELIGIBLE").length;
-  const excludedCount =
-    verdicts.filter((v) => v.verdict === "EXCLUDED").length;
+  function handleSimulateResolution(trialId: string) {
+    setSimulatingTrialId(trialId);
+    window.setTimeout(() => {
+      setVerdicts((prev) => applyEchoResolution(prev));
+      setResolvedTrials((prev) => new Set(prev).add(trialId));
+      setSimulatingTrialId(null);
+    }, 600);
+  }
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12 sm:px-8 print:py-6">
@@ -236,6 +258,11 @@ function ResultsContent() {
                 {data.mrn}
                 {" · "}
                 Completed {formatDateTime(data.matched_at)}
+                {data.demo && (
+                  <span className="ml-2 rounded bg-copper/10 px-2 py-0.5 text-[10px] font-bold uppercase text-copper">
+                    Demo mode
+                  </span>
+                )}
               </p>
             )}
             {data?.discovered_trials != null && (
@@ -274,10 +301,6 @@ function ResultsContent() {
               >
                 Print / Save as PDF
               </button>
-              <p className="w-full text-xs text-ink-faint">
-                Opens your browser print dialog — choose &ldquo;Save as PDF&rdquo;
-                to export.
-              </p>
             </div>
           )}
         </div>
@@ -298,45 +321,22 @@ function ResultsContent() {
         )}
 
         {data && !loading && (
-          <div className="animate-fade-up stagger-1 mt-6 flex flex-wrap gap-3">
-            {eligibleCount > 0 && (
-              <div className="flex items-center gap-2 rounded-lg border border-sage/20 bg-sage-light px-4 py-2">
-                <span className="text-2xl font-semibold text-sage-dark">
-                  {eligibleCount}
-                </span>
-                <span className="text-xs font-medium uppercase tracking-wide text-sage">
-                  Hand off to PI
-                </span>
-              </div>
-            )}
-            {conditionalCount > 0 && (
-              <div className="flex items-center gap-2 rounded-lg border border-honey/20 bg-honey-light px-4 py-2">
-                <span className="text-2xl font-semibold text-honey-dark">
-                  {conditionalCount}
-                </span>
-                <span className="text-xs font-medium uppercase tracking-wide text-honey">
-                  Order missing test
-                </span>
-              </div>
-            )}
-            {excludedCount > 0 && (
-              <div className="flex items-center gap-2 rounded-lg border border-crimson/20 bg-crimson-light px-4 py-2">
-                <span className="text-2xl font-semibold text-crimson">
-                  {excludedCount}
-                </span>
-                <span className="text-xs font-medium uppercase tracking-wide text-crimson/80">
-                  Excluded
-                </span>
-              </div>
-            )}
+          <div className="no-print mt-6">
+            <NaiveCompareToggle
+              enabled={naiveCompare}
+              onToggle={() => setNaiveCompare((v) => !v)}
+            />
           </div>
         )}
-
       </header>
 
-      {loading && (
-        <div className="animate-fade-in">
-          <AgentTrail events={trail} />
+      {(loading || trail.length > 0) && (
+        <div className={`animate-fade-in ${!loading ? "mb-8" : ""}`}>
+          <AgentTrail
+            events={trail}
+            complete={!loading}
+            collapsedDefault={!loading}
+          />
         </div>
       )}
 
@@ -346,10 +346,31 @@ function ResultsContent() {
         </div>
       )}
 
+      {data?.partial && data.partial_note && !loading && (
+        <div className="animate-fade-in mb-6 rounded-2xl border border-honey/30 bg-honey-light/40 px-5 py-4 text-sm text-honey-dark">
+          {data.partial_note}
+        </div>
+      )}
+
       {data && !loading && (
         <div className="animate-fade-up stagger-2">
-          <TrialList verdicts={verdicts} />
+          <TrialList
+            verdicts={verdicts}
+            naiveCompare={naiveCompare}
+            naiveResults={naiveBaseline.results}
+            highlightCriterionId={naiveBaseline.highlightCriterionId}
+            onSimulateResolution={handleSimulateResolution}
+            resolvedTrials={resolvedTrials}
+            simulatingTrialId={simulatingTrialId}
+            demoExpanded={demoMode || data.demo}
+          />
           <DecisionSupportBanner />
+          <p className="no-print mt-6 text-center text-xs text-ink-faint">
+            <Link href="/eval" className="font-medium text-copper hover:underline">
+              See how we benchmark vs naive AI
+            </Link>
+            {" "}— 42 labeled pairs, decomposition + verification gates.
+          </p>
         </div>
       )}
     </div>

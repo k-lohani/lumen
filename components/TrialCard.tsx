@@ -42,8 +42,7 @@ export function TrialCard({
   const showResolution =
     trial.verdict === "CONDITIONALLY_ELIGIBLE" &&
     trial.actionable_gap &&
-    onSimulateResolution &&
-    trial.trial_id === "NCT07070232";
+    onSimulateResolution;
 
   return (
     <article

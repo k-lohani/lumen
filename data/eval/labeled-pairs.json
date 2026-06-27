@@ -444,5 +444,32 @@
     "gold_supporting_line_ids": [
       "L0001"
     ]
+  },
+  {
+    "patient_id": "demo-her2-breast",
+    "trial_id": "NCT-DEMO-HER2",
+    "criterion_id": "HER2-I01",
+    "criterion_text": "HER2-positive breast cancer by IHC 3+ or ISH amplified",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "gold_supporting_line_ids": ["L0003"]
+  },
+  {
+    "patient_id": "demo-her2-breast",
+    "trial_id": "NCT-DEMO-HER2",
+    "criterion_id": "HER2-I02",
+    "criterion_text": "De novo metastatic disease without prior systemic therapy for mBC",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "gold_supporting_line_ids": ["L0001", "L0005"]
+  },
+  {
+    "patient_id": "demo-her2-breast",
+    "trial_id": "NCT-DEMO-HER2",
+    "criterion_id": "HER2-E01",
+    "criterion_text": "LVEF below 50 percent on echocardiogram",
+    "type": "EXCLUSION",
+    "gold_state": "NOT_MET",
+    "gold_supporting_line_ids": ["L0013"]
   }
 ]

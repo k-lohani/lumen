@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { GlossaryTerm } from "@/components/GlossaryTerm";
+import { PipelineArchitecture } from "@/components/PipelineArchitecture";
 import { NYC_GEO_DEFAULT } from "@/lib/constants/geo";
 import type {
   HomeDiscoveryPreview,
@@ -106,7 +107,8 @@ export default function HomePageClient({ initial }: HomePageClientProps) {
   }, [initial.patients.length]);
 
   function trialsQuery(slug: string): string {
-    return `/api/trials?patientSlug=${encodeURIComponent(slug)}&geo=${encodeURIComponent(JSON.stringify(geo))}`;
+    const demoPart = slug === "hero" ? "&demo=1" : "";
+    return `/api/trials?patientSlug=${encodeURIComponent(slug)}&geo=${encodeURIComponent(JSON.stringify(geo))}${demoPart}`;
   }
 
   useEffect(() => {
@@ -195,13 +197,19 @@ export default function HomePageClient({ initial }: HomePageClientProps) {
     patientPackage?.slug,
   ]);
 
-  function geoQuery(): string {
-    return `&geo=${encodeURIComponent(JSON.stringify(geo))}`;
+  function geoQuery(demo = false): string {
+    const demoPart = demo ? "&demo=1" : "";
+    return `&geo=${encodeURIComponent(JSON.stringify(geo))}${demoPart}`;
   }
 
-  function runPreScreen() {
+  function runPreScreen(demo = false) {
     setLoading(true);
-    router.push(`/results?patientSlug=${patientSlug}${geoQuery()}`);
+    router.push(`/results?patientSlug=${patientSlug}${geoQuery(demo)}`);
+  }
+
+  function startDemo() {
+    setPatientSlug("hero");
+    runPreScreen(true);
   }
 
   function parsePaste() {
@@ -440,6 +448,11 @@ export default function HomePageClient({ initial }: HomePageClientProps) {
                           style={{ fontFamily: "var(--font-fraunces)" }}
                         >
                           {selected.display_name}
+                          {patientSlug === "hero" && (
+                            <span className="ml-2 align-middle rounded-md border border-copper/30 bg-copper/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-copper">
+                              Recommended demo
+                            </span>
+                          )}
                         </h2>
                         <p className="mt-1 text-sm text-ink-muted">
                           {selected.primary_diagnosis}
@@ -478,14 +491,22 @@ export default function HomePageClient({ initial }: HomePageClientProps) {
                         </ul>
                       </div>
 
-                      <div className="mt-8">
+                      <div className="mt-8 flex flex-wrap gap-3">
                         <button
                           type="button"
-                          onClick={runPreScreen}
+                          onClick={() => runPreScreen(false)}
                           disabled={loading}
                           className="lumen-focus rounded-lg bg-ink px-5 py-2.5 text-sm font-semibold text-paper shadow-sm transition-all hover:bg-sage-dark disabled:opacity-50"
                         >
-                          {loading ? "Running…" : "Run pre-screen"}
+                          {loading ? "Running…" : "Run pre-screen (live)"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={startDemo}
+                          disabled={loading}
+                          className="lumen-focus rounded-lg border-2 border-copper bg-copper/10 px-5 py-2.5 text-sm font-semibold text-copper transition-all hover:bg-copper/20 disabled:opacity-50"
+                        >
+                          Start 3-min demo
                         </button>
                       </div>
                     </>
@@ -618,6 +639,7 @@ export default function HomePageClient({ initial }: HomePageClientProps) {
           </section>
 
           <aside className="animate-fade-up stagger-3 space-y-4">
+            <PipelineArchitecture />
             <div className="rounded-2xl border border-rule bg-paper p-6 shadow-[var(--shadow-soft)]">
               <h3
                 className="text-lg font-semibold text-ink"

@@ -24,3 +24,15 @@ export function useLiveLlm(): boolean {
 export function disableCache(): boolean {
   return process.env.LUMEN_DISABLE_CACHE === "1";
 }
+
+/** Offline demo path — serve committed fixtures (env or request flag). */
+export function isDemoMode(requestFlag?: boolean): boolean {
+  if (requestFlag === true) return true;
+  return process.env.LUMEN_DEMO_MODE === "1";
+}
+
+/** Max trials evaluated in demo mode (clean 3-verdict spine). */
+export function demoTrialLimit(): number {
+  const n = parseInt(process.env.LUMEN_DEMO_TRIAL_LIMIT ?? "3", 10);
+  return Number.isFinite(n) && n > 0 ? n : 3;
+}

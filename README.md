@@ -89,7 +89,9 @@ See [`.env.example`](.env.example).
 | `LUMEN_CTGOV_PHASES` | Phase filter (default: `PHASE2,PHASE3,PHASE4`) |
 | `LUMEN_PREFER_FILE_CHARTS` | `1` = use `data/charts/` for library patient line text |
 | `LUMEN_LIVE_LLM` | `1` = Claude profile + criterion eval (default when API key set); `0` = golden + rule-based |
-| `LUMEN_DISABLE_CACHE` | `1` = bypass Supabase profile, discovery, and verdict caches (recommended for demos) |
+| `LUMEN_DISABLE_CACHE` | `1` = bypass Supabase profile, discovery, and verdict caches (recommended for live demos) |
+| `LUMEN_DEMO_MODE` | `1` = serve committed fixtures for hero patient (sub-second demo path) |
+| `LUMEN_DEMO_TRIAL_LIMIT` | Max trials in demo fixture response (default: **3**) |
 | `LUMEN_ENTAILMENT_CHECK` | Citation entailment verification (recommended) |
 | `SUPABASE_*` | Optional — caches profiles, discovery, verdicts; required for paste persistence |
 
@@ -147,7 +149,23 @@ vercel env add LUMEN_MAX_DISCOVERED_TRIALS
 vercel deploy
 ```
 
-Set `LUMEN_DISABLE_CACHE=0` in production. `vercel.json` sets `maxDuration: 300` on `/api/match` and `120` on `/api/trials`.
+Set `LUMEN_DISABLE_CACHE=1` on Vercel when you want every live run to hit Claude + CT.gov fresh (no Supabase profile/discovery/verdict cache). Use `0` only if you want faster repeat runs. `vercel.json` sets `maxDuration: 300` on `/api/match` and `120` on `/api/trials`.
+
+---
+
+## 3-minute demo script
+
+| Time | Say | Do |
+|------|-----|-----|
+| 0:00 | Coordinators spend hours screening; fewer than 10% of cancer patients enroll | Home — stakes line |
+| 0:30 | Margaret Chen, EGFR+ lung, NYC 50mi | **Start 3-min demo** (offline fixtures) |
+| 1:00 | 1 eligible · 1 one step away · 1 excluded — every claim cited | Results — expanded criteria + geo badges |
+| 1:40 | “This is why you can’t just ask ChatGPT” | Toggle **Compare to naive AI** |
+| 2:20 | “One echo away from eligible” | **Simulate result added** → Eligible now |
+| 2:45 | PI-ready handoff + human-in-the-loop | Copy pre-screen summary |
+| Q&A | Live CT.gov + paste chart | **Run pre-screen (live)** |
+
+Demo mode: `?demo=1` on results or **Start 3-min demo** on home. Live mode uses CT.gov + Claude (~1–3 min).
 
 ---
 

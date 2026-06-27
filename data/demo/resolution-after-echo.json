@@ -1,0 +1,143 @@
+{
+  "trial_id": "NCT07070232",
+  "verdict": {
+    "trial_id": "NCT07070232",
+    "trial_title": "A Clinical Study to Test if an Investigational Treatment Called BNT326 is Safe and Potentially Beneficial When Used Alone or in Combination With Other Investigational Treatments Such as BNT327, for People With Advanced Malignant Tumors",
+    "phase": "Phase 1/Phase 2",
+    "trial_status": "RECRUITING",
+    "matched_cohort": "1C",
+    "cohort_label": "Cohort 1C — EGFR exon 19del/L858R, 1–2 prior lines incl. 3rd-gen TKI, progressed",
+    "registry_synced_at": "2026-05-22",
+    "verdict": "ELIGIBLE",
+    "criteria": [
+      {
+        "criterion": {
+          "criterion_id": "NCT07070232-1C01",
+          "trial_id": "NCT07070232",
+          "cohort_scope": "1C",
+          "type": "INCLUSION",
+          "category": "BIOMARKER",
+          "text": "Documented positive test results for an EGFR-sensitizing mutation (Exon 21-L858R and 19del)"
+        },
+        "state": "MET",
+        "evidence_line_id": "L0002",
+        "evidence_span": "NGS: EGFR exon 19 deletion (p.E746_A750del). ALK/ROS1 negative.",
+        "faithfulness": {
+          "substring_ok": true,
+          "entailment_ok": true
+        },
+        "rationale": "EGFR sensitizing mutation documented on NGS."
+      },
+      {
+        "criterion": {
+          "criterion_id": "NCT07070232-1C02",
+          "trial_id": "NCT07070232",
+          "cohort_scope": "1C",
+          "type": "INCLUSION",
+          "category": "PRIOR_THERAPY",
+          "text": "Prior lines must include a third-generation EGFR TKI with progression"
+        },
+        "state": "MET",
+        "evidence_line_id": "L0003",
+        "evidence_span": "First-line osimertinib 80 mg daily started 2025-09; radiographic progression 2026-05 (RECIST 1.1).",
+        "faithfulness": {
+          "substring_ok": true,
+          "entailment_ok": true
+        },
+        "rationale": "Third-generation EGFR TKI with documented progression."
+      },
+      {
+        "criterion": {
+          "criterion_id": "NCT07070232-1C03",
+          "trial_id": "NCT07070232",
+          "cohort_scope": "general",
+          "type": "INCLUSION",
+          "category": "PERFORMANCE_STATUS",
+          "text": "Have ECOG performance status of 0 or 1"
+        },
+        "state": "MET",
+        "evidence_line_id": "L0004",
+        "evidence_span": "ECOG performance status 1.",
+        "faithfulness": {
+          "substring_ok": true,
+          "entailment_ok": true
+        },
+        "rationale": "ECOG ≤1 documented."
+      },
+      {
+        "criterion": {
+          "criterion_id": "NCT07070232-1C04",
+          "trial_id": "NCT07070232",
+          "cohort_scope": "general",
+          "type": "INCLUSION",
+          "category": "OTHER",
+          "text": "Have measurable disease defined by RECIST v1.1"
+        },
+        "state": "MET",
+        "evidence_line_id": "L0006",
+        "evidence_span": "CT chest: RUL target lesion 2.4 cm, measurable per RECIST 1.1.",
+        "faithfulness": {
+          "substring_ok": true,
+          "entailment_ok": true
+        },
+        "rationale": "Measurable disease per RECIST documented."
+      },
+      {
+        "criterion": {
+          "criterion_id": "NCT07070232-1C05",
+          "trial_id": "NCT07070232",
+          "cohort_scope": "general",
+          "type": "INCLUSION",
+          "category": "LAB_MEASUREMENT",
+          "text": "Have adequate organ and bone marrow function within 7 days before randomization/enrollment"
+        },
+        "state": "MET",
+        "evidence_line_id": "L0007",
+        "evidence_span": "2026-06: ANC 3.1, Hgb 11.8, Plt 220k, bili 0.7, Cr 0.9, AST/ALT normal — adequate organ/marrow function.",
+        "faithfulness": {
+          "substring_ok": true,
+          "entailment_ok": true
+        },
+        "rationale": "Adequate organ and marrow function documented. (Re-selected supporting chart line L0007.)"
+      },
+      {
+        "criterion": {
+          "criterion_id": "NCT07070232-EX01",
+          "trial_id": "NCT07070232",
+          "cohort_scope": "general",
+          "type": "EXCLUSION",
+          "category": "LAB_MEASUREMENT",
+          "text": "Have LVEF <50% by either echocardiography or multi-gated acquisition (scanning) within 28 days before randomization/enrollment"
+        },
+        "state": "NOT_MET",
+        "evidence_line_id": "L0012",
+        "evidence_span": "Echocardiogram 2026-06-20: LVEF 58% by Simpson biplane method.",
+        "faithfulness": {
+          "substring_ok": true,
+          "entailment_ok": true
+        },
+        "rationale": "LVEF 58% on file — exclusion criterion not met."
+      },
+      {
+        "criterion": {
+          "criterion_id": "NCT07070232-EX02",
+          "trial_id": "NCT07070232",
+          "cohort_scope": "general",
+          "type": "EXCLUSION",
+          "category": "OTHER",
+          "text": "Have a history of interstitial lung disease (ILD)/pneumonitis that required steroids"
+        },
+        "state": "NOT_MET",
+        "evidence_line_id": "L0008",
+        "evidence_span": "No history of interstitial lung disease. No prior chemotherapy.",
+        "faithfulness": {
+          "substring_ok": true,
+          "entailment_ok": true
+        },
+        "rationale": "No ILD history — exclusion does not apply."
+      }
+    ],
+    "actionable_gap": null,
+    "reachability_rank": 1
+  }
+}

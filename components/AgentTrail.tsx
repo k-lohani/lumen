@@ -1,12 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import type { PipelineProgressEvent } from "@/lib/types";
 
 interface AgentTrailProps {
   events: PipelineProgressEvent[];
+  collapsedDefault?: boolean;
+  complete?: boolean;
 }
 
 function formatEvent(event: PipelineProgressEvent): string | null {
+  const timing =
+    "duration_ms" in event && event.duration_ms != null
+      ? ` (${(event.duration_ms / 1000).toFixed(1)}s)`
+      : "";
+
   switch (event.type) {
     case "stage_start":
       return event.message;
@@ -17,7 +25,7 @@ function formatEvent(event: PipelineProgressEvent): string | null {
         const parts = [primary, biomarkers?.length ? biomarkers.join(", ") : null]
           .filter(Boolean)
           .join(" · ");
-        return parts ? `${event.message} — ${parts}` : event.message;
+        return `${event.message}${timing}${parts ? ` — ${parts}` : ""}`;
       }
       if (event.stage === "discovery" && event.meta) {
         const condition = event.meta.condition as string | undefined;
@@ -30,7 +38,7 @@ function formatEvent(event: PipelineProgressEvent): string | null {
         ]
           .filter(Boolean)
           .join(" · ");
-        return detail ? `${event.message} — ${detail}` : event.message;
+        return `${event.message}${timing}${detail ? ` — ${detail}` : ""}`;
       }
       if (event.stage === "trial" && event.meta) {
         const { eligible, conditional, excluded } = event.meta as {
@@ -38,9 +46,9 @@ function formatEvent(event: PipelineProgressEvent): string | null {
           conditional?: number;
           excluded?: number;
         };
-        return `${event.message} — ${eligible ?? 0} eligible, ${conditional ?? 0} conditional, ${excluded ?? 0} excluded`;
+        return `${event.message}${timing} — ${eligible ?? 0} eligible, ${conditional ?? 0} conditional, ${excluded ?? 0} excluded`;
       }
-      return event.message;
+      return `${event.message}${timing}`;
     case "trial_start":
       return `Trial ${event.index}/${event.total}: ${event.nct_id} — ${event.title.length > 60 ? `${event.title.slice(0, 60)}…` : event.title}`;
     case "trial_step":
@@ -67,7 +75,7 @@ function formatEvent(event: PipelineProgressEvent): string | null {
       }
       return null;
     case "trial_done":
-      return `${event.nct_id} · ${event.verdict.replace(/_/g, " ")} (${event.index}/${event.total})`;
+      return `${event.nct_id} · ${event.verdict.replace(/_/g, " ")} (${event.index}/${event.total})${timing}`;
     default:
       return null;
   }
@@ -87,7 +95,13 @@ function eventKey(event: PipelineProgressEvent, index: number): string {
   return `${index}-${event.type}`;
 }
 
-export function AgentTrail({ events }: AgentTrailProps) {
+export function AgentTrail({
+  events,
+  collapsedDefault = false,
+  complete = false,
+}: AgentTrailProps) {
+  const [collapsed, setCollapsed] = useState(collapsedDefault);
+
   const lines = events
     .map((event, index) => ({ text: formatEvent(event), key: eventKey(event, index) }))
     .filter((line): line is { text: string; key: string } => Boolean(line.text));
@@ -102,29 +116,48 @@ export function AgentTrail({ events }: AgentTrailProps) {
     );
   }
 
+  const visibleLines = collapsed && complete ? lines.slice(-5) : lines;
+
   return (
     <div className="rounded-2xl border border-rule bg-paper px-6 py-6">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-copper">
-        Agent trail
-      </p>
-      <p className="mt-1 text-xs text-ink-faint">
-        Live progress from profile extraction through trial evaluation
-      </p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-copper">
+            {complete ? "How Lumen decided" : "Agent trail"}
+          </p>
+          <p className="mt-1 text-xs text-ink-faint">
+            {complete
+              ? "Multi-stage pipeline: extract → discover → decompose → evaluate → verify"
+              : "Live progress from profile extraction through trial evaluation"}
+          </p>
+        </div>
+        {complete && lines.length > 5 && (
+          <button
+            type="button"
+            onClick={() => setCollapsed((v) => !v)}
+            className="lumen-focus shrink-0 text-xs font-semibold text-copper"
+          >
+            {collapsed ? "Show all steps" : "Collapse"}
+          </button>
+        )}
+      </div>
       <ol className="mt-4 max-h-[420px] space-y-2 overflow-y-auto pr-1">
-        {lines.map((line, i) => {
-          const isLatest = i === lines.length - 1;
+        {visibleLines.map((line, i) => {
+          const isLatest = !complete && i === visibleLines.length - 1;
           return (
             <li
               key={line.key}
               className={`flex gap-3 text-sm leading-snug ${
-                isLatest ? "text-ink font-medium" : "text-ink-muted"
+                isLatest ? "font-medium text-ink" : "text-ink-muted"
               }`}
             >
               <span
                 className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
-                  isLatest
+                  isLatest && !complete
                     ? "animate-pulse bg-copper"
-                    : "bg-copper/30"
+                    : complete
+                      ? "bg-sage/60"
+                      : "bg-copper/30"
                 }`}
                 aria-hidden
               />

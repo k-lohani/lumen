@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import type { Criterion } from "../types";
+import { disableCache } from "../productConfig";
 import { tryGetSupabaseAdmin } from "../supabase/server";
 
 function loadFileCache(trialId: string, cohort: string): Criterion[] | null {
@@ -20,6 +21,8 @@ export async function getCachedCriteria(
   trialId: string,
   cohort: string
 ): Promise<Criterion[] | null> {
+  if (disableCache()) return null;
+
   const fromFile = loadFileCache(trialId, cohort);
   if (fromFile) return fromFile;
 
@@ -48,6 +51,8 @@ export async function setCachedCriteria(
   criteria: Criterion[],
   eligibilityHash: string
 ): Promise<void> {
+  if (disableCache()) return;
+
   const db = tryGetSupabaseAdmin();
   if (!db) return;
 

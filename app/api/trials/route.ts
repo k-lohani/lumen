@@ -8,7 +8,14 @@ import { discoverTrialsForPatient } from "@/lib/clinicaltrials/discoverTrials";
 import { extractProfile } from "@/lib/pipeline/extractProfile";
 import { configuredTrialNcts } from "@/lib/clinicaltrials/client";
 import { formatLlmError, isAnthropicUnavailableError } from "@/lib/llm";
-import { useLiveDiscovery, useLiveLlm, usePinnedTrials, disableCache } from "@/lib/productConfig";
+import { loadGoldenMatch } from "@/lib/demo/loadFixtures";
+import {
+  disableCache,
+  isDemoMode,
+  useLiveDiscovery,
+  useLiveLlm,
+  usePinnedTrials,
+} from "@/lib/productConfig";
 import type { GeoFilter } from "@/lib/types";
 import { computeChartHash } from "@/lib/chartHash";
 
@@ -91,6 +98,21 @@ export async function GET(request: Request) {
     const geoFilter = parseGeoParam(searchParams.get("geo"));
 
     if (patientSlug) {
+      const demoParam = searchParams.get("demo") === "1";
+      if (isDemoMode(demoParam) && patientSlug === "hero") {
+        const golden = loadGoldenMatch();
+        const ncts = golden.verdicts.map((v) => v.trial_id);
+        const trials = await loadTrialsByNctIds(ncts);
+        return NextResponse.json({
+          trials,
+          discovery: {
+            search_summary: golden.search_summary,
+            discovered_at: golden.matched_at,
+          },
+          source: "demo",
+        });
+      }
+
       if (useLiveDiscovery()) {
         const result = await liveDiscoveryForSlug(patientSlug, geoFilter);
         return NextResponse.json({

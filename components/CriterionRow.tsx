@@ -1,4 +1,5 @@
 import type { CriterionResult } from "@/lib/types";
+import { glossarizeText } from "./GlossaryTerm";
 
 const STATE_STYLES = {
   MET: {
@@ -72,7 +73,7 @@ export function CriterionRow({ result, highlighted }: CriterionRowProps) {
             )}
           </div>
           <p className="mt-2 text-sm font-medium leading-relaxed text-ink">
-            {criterion.text}
+            {glossarizeText(criterion.text)}
           </p>
           <p className="mt-1.5 text-sm leading-relaxed text-ink-muted">
             {rationale}
@@ -99,22 +100,32 @@ export function CriterionRow({ result, highlighted }: CriterionRowProps) {
             </p>
           )}
 
-          {unverified && (
-            <p className="mt-2 text-xs font-medium text-honey-dark">
-              Citation could not be verified against source record.
+          <div className="mt-3 space-y-1 rounded-lg border border-rule/80 bg-parchment-deep/50 px-3 py-2">
+            <p className="text-[10px] font-bold uppercase tracking-wide text-ink-faint">
+              Verification chain
             </p>
-          )}
-
-          <p className="mt-2 text-[10px] text-ink-faint">
-            AI evaluation · faithfulness{" "}
-            {faithfulness.substring_ok ? "verified" : "failed"}
-            {faithfulness.entailment_ok === false && " · entailment failed"}
-            {evidence_line_id
-              ? ` · chart line ${evidence_line_id}`
-              : state === "UNKNOWN"
-                ? " · no supporting chart line"
-                : ""}
-          </p>
+            <p className="text-xs text-ink-muted">
+              Faithfulness:{" "}
+              {faithfulness.substring_ok
+                ? evidence_line_id
+                  ? `quote found in chart line ${evidence_line_id}`
+                  : "no citation required (unknown)"
+                : "quote not found in chart — downgraded"}
+            </p>
+            {faithfulness.entailment_ok !== undefined && (
+              <p className="text-xs text-ink-muted">
+                Entailment:{" "}
+                {faithfulness.entailment_ok
+                  ? "quote supports criterion"
+                  : "quote does not support claim — downgraded"}
+              </p>
+            )}
+            {unverified && (
+              <p className="text-xs font-medium text-honey-dark">
+                Gate outcome: needs human verification before enrollment action.
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </div>

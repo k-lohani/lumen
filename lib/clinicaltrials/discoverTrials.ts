@@ -1,7 +1,7 @@
 import type {
-  DiscoveryMetadata,
   GeoFilter,
   IngestedTrial,
+  DiscoveryMetadata,
   PatientProfile,
   SearchSummary,
 } from "../types";
@@ -19,14 +19,15 @@ import {
   maxDiscoveredTrials,
   pinnedNctsForDiscovery,
   searchAllStudies,
+  type CTGovStudy,
 } from "./client";
 import { rankCandidates } from "./rankCandidates";
 
 function mergeStudiesByNct(
-  primary: Awaited<ReturnType<typeof searchAllStudies>>,
-  pinned: Awaited<ReturnType<typeof fetchStudies>>
-) {
-  const map = new Map<string, (typeof primary)[number]>();
+  primary: CTGovStudy[],
+  pinned: CTGovStudy[]
+): CTGovStudy[] {
+  const map = new Map<string, CTGovStudy>();
   for (const s of [...primary, ...pinned]) {
     map.set(s.nctId, s);
   }
@@ -41,7 +42,11 @@ export async function discoverTrialsForPatient(
     skipCache?: boolean;
     geoFilter?: GeoFilter;
   } = {}
-): Promise<{ trials: IngestedTrial[]; discovery: DiscoveryMetadata }> {
+): Promise<{
+  trials: IngestedTrial[];
+  discovery: DiscoveryMetadata;
+  studyRaws: Map<string, Record<string, unknown>>;
+}> {
   const profileHash = computeProfileHash(profile);
   const evaluateCap = maxDiscoveredTrials();
   const fetchCap = ctgovFetchLimit();
@@ -55,12 +60,15 @@ export async function discoverTrialsForPatient(
     ) {
       const studies = await fetchStudies(cached.nct_ids);
       const trials: IngestedTrial[] = [];
+      const studyRaws = new Map<string, Record<string, unknown>>();
       for (const study of studies) {
         await upsertTrialFromCTGov(study);
         trials.push(studyToIngested(study));
+        studyRaws.set(study.nctId, study.raw);
       }
       return {
         trials,
+        studyRaws,
         discovery: {
           discovered_trials: trials.length,
           search_summary: cached.search_params,
@@ -88,6 +96,9 @@ export async function discoverTrialsForPatient(
 
   const ranked = rankCandidates(studies, profile, evaluateCap, opts.geoFilter);
   const nctIds = ranked.map((s) => s.nctId);
+  const studyRaws = new Map<string, Record<string, unknown>>(
+    ranked.map((s) => [s.nctId, s.raw])
+  );
 
   if (opts.patientUuid) {
     await saveDiscoveryCache(opts.patientUuid, profileHash, nctIds, summary);
@@ -101,6 +112,7 @@ export async function discoverTrialsForPatient(
 
   return {
     trials,
+    studyRaws,
     discovery: {
       discovered_trials: trials.length,
       search_summary: summary,

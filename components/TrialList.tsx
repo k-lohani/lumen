@@ -10,6 +10,7 @@ interface TrialListProps {
   onSimulateResolution?: (trialId: string) => void;
   resolvedTrials?: Set<string>;
   simulatingTrialId?: string | null;
+  demoExpanded?: boolean;
 }
 
 const SECTIONS: {
@@ -54,6 +55,7 @@ export function TrialList({
   onSimulateResolution,
   resolvedTrials,
   simulatingTrialId,
+  demoExpanded,
 }: TrialListProps) {
   const grouped = SECTIONS.map((section) => ({
     ...section,
@@ -110,8 +112,9 @@ export function TrialList({
                   resolutionResolved={resolvedTrials?.has(trial.trial_id)}
                   simulatingResolution={simulatingTrialId === trial.trial_id}
                   defaultExpanded={
-                    trial.trial_id === "NCT07070232" &&
-                    section.verdict === "CONDITIONALLY_ELIGIBLE"
+                    demoExpanded ||
+                    (trial.trial_id === "NCT07070232" &&
+                      section.verdict === "CONDITIONALLY_ELIGIBLE")
                   }
                 />
               </div>
