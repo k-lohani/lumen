@@ -1,0 +1,56 @@
+{
+  "patient_id": "variant-echo-on-file",
+  "display_name": "Margaret Chen (with echo)",
+  "lines": [
+    {
+      "id": "L0001",
+      "section": "Demographics",
+      "text": "58-year-old woman with Stage IV lung adenocarcinoma (AJCC 8th ed)."
+    },
+    {
+      "id": "L0002",
+      "section": "Molecular",
+      "text": "NGS: EGFR exon 19 deletion (p.E746_A750del). ALK/ROS1 negative."
+    },
+    {
+      "id": "L0003",
+      "section": "Treatment",
+      "text": "First-line osimertinib 80 mg daily started 2025-09; radiographic progression 2026-05 (RECIST 1.1)."
+    },
+    {
+      "id": "L0004",
+      "section": "Performance",
+      "text": "ECOG performance status 1."
+    },
+    {
+      "id": "L0005",
+      "section": "Imaging",
+      "text": "Brain MRI 2026-05: no intracranial metastases."
+    },
+    {
+      "id": "L0006",
+      "section": "Imaging",
+      "text": "CT chest: RUL target lesion 2.4 cm, measurable per RECIST 1.1."
+    },
+    {
+      "id": "L0007",
+      "section": "Labs",
+      "text": "2026-06: ANC 3.1, Hgb 11.8, Plt 220k, bili 0.7, Cr 0.9, AST/ALT normal — adequate organ/marrow function."
+    },
+    {
+      "id": "L0008",
+      "section": "Comorbidities",
+      "text": "No history of interstitial lung disease. No prior chemotherapy."
+    },
+    {
+      "id": "L0009",
+      "section": "Cardiac",
+      "text": "Transthoracic echocardiogram 2026-06-08: LVEF 58% (normal systolic function)."
+    },
+    {
+      "id": "L0010",
+      "section": "Consent",
+      "text": "Patient able to understand and willing to sign informed consent."
+    }
+  ]
+}

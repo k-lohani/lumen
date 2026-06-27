@@ -1,0 +1,419 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT07174388",
+      "orgStudyIdInfo": {
+        "id": "NPM-004"
+      },
+      "organization": {
+        "fullName": "N-Power Medicine",
+        "class": "INDUSTRY"
+      },
+      "briefTitle": "An External Control Arm Study in Non-Small Cell Lung Cancer",
+      "officialTitle": "A Prospective Study to Generate Precision External Controls in Advanced or Metastatic Non Small Cell Lung Cancer Patients"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-06",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2026-01-07",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2029-04",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2029-04",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2025-09-12",
+      "studyFirstSubmitQcDate": "2025-09-12",
+      "studyFirstPostDateStruct": {
+        "date": "2025-09-15",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-06-14",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-06-16",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR"
+      },
+      "leadSponsor": {
+        "name": "N-Power Medicine",
+        "class": "INDUSTRY"
+      }
+    },
+    "oversightModule": {
+      "oversightHasDmc": false,
+      "isFdaRegulatedDrug": false,
+      "isFdaRegulatedDevice": false
+    },
+    "descriptionModule": {
+      "briefSummary": "A study to create control arms using current and future information in patients with lung cancer."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Non Small Cell Lung Cancer"
+      ],
+      "keywords": [
+        "NSCLC",
+        "External Control Arm",
+        "Non-Interventional",
+        "N-Power Medicine",
+        "Registry",
+        "Prospective"
+      ]
+    },
+    "designModule": {
+      "studyType": "OBSERVATIONAL",
+      "patientRegistry": true,
+      "targetDuration": "2 Years",
+      "designInfo": {
+        "observationalModel": "COHORT",
+        "timePerspective": "PROSPECTIVE"
+      },
+      "bioSpec": {
+        "retention": "SAMPLES_WITH_DNA",
+        "description": "Optional submission of archived tissue when available. Should originate from a prior diagnostic biopsy or surgical resection. Provision of archived tissue is optional and not required for study eligibility, enrollment, or continued participation."
+      },
+      "enrollmentInfo": {
+        "count": 650,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "Cohort 1",
+          "description": "Patients starting first line therapy with ICI single/doublet or ICI in combination with a platinum doublet"
+        },
+        {
+          "label": "Cohort 2",
+          "description": "Patients with actionable EGFR mutations starting first line therapy"
+        },
+        {
+          "label": "Cohort 3",
+          "description": "Patients with KRAS G12D mutations (excluding KRAS G12C) starting any line of therapy"
+        },
+        {
+          "label": "Cohort 4",
+          "description": "Patients with PD-L1 (TPS) greater than or equal to 50% starting second line therapy, after previously being treated with single/doublet ICI or ICI in combination with a platinum doublet as first line treatment."
+        },
+        {
+          "label": "Cohort 5",
+          "description": "Patients with PD-L1 (TPS) \\< 50% starting second line therapy, after previously being treated with a platinum doublet in combination with ICI as first line treatment"
+        },
+        {
+          "label": "Cohort 6",
+          "description": "Patients without actionable tumor alterations in EGFR, ALK, or ROS 1 where PD-L1 status (TPS) is unknown, starting 2L therapy according to physician's choice"
+        },
+        {
+          "label": "Cohort 7",
+          "description": "Patients with KRAS G12C mutation starting second line therapy"
+        },
+        {
+          "label": "Cohort 8",
+          "description": "Patients with non-G12 KRAS mutations starting 2L therapy"
+        },
+        {
+          "label": "Cohort 9",
+          "description": "Patients with EGFR mutations starting second line or later line of therapy, after previously being treated with osimertinib monotherapy, osimertinib in combination with chemotherapy or lazertinib in combination with amivantamab"
+        },
+        {
+          "label": "Cohort 10",
+          "description": "Patients starting 3 line or later line anti-cancer therapy (and not eligible for any other cohort)"
+        },
+        {
+          "label": "Cohort 11",
+          "description": "Patients with EGFR exon 19del or EGFR exon 21 L858R locally advanced or metastatic NSCLC diagnosed on Jan 1st, 2025, or later, irrespective of line of therapy or current treatment."
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Assess Objective Response Rate (ORR) by cohort in patients with metastatic NSCLC treated in second or third line with NCCN recommended therapies",
+          "timeFrame": "September 2025-April 2029"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Assess Progression Free Survival (PFS), Overall Survival (OS), and Time to Next Treatment (TTNT) by cohort in patients with metastatic NSCLC initiating second or third line treatment with NCCN recommended therapies.",
+          "timeFrame": "September 2025-April2029"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Inclusion Criteria:\n\n1. \\> 18 years of age at the time of informed consent\n2. Pathologically confirmed locally advanced or metastatic NSCLC\n3. ECOG Performance of less than or equal to 1 within 4 weeks prior to starting index therapy.\n4. Life expectancy of more than 3 months\n5. Able to understand and sign informed consent\n6. Evidence of measurable disease (as assessed by the Investigator) on available imaging (e.g CT, MRI, PET)\n\n\\*see protocol for cohort specific inclusion criteria\\*\n\nExclusion Criteria:\n\n1. Actively on a clinical trial of an investigational agent\n2. Currently receiving active systemic therapy for another malignancy\n3. Eligible for treatment with curative intent\n\n\\*see protocol for cohort specific exclusion criteria\\*",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ],
+      "studyPopulation": "Patients with metastatic NSCLC receiving first, second or third line NCCN recommended therapies",
+      "samplingMethod": "NON_PROBABILITY_SAMPLE"
+    },
+    "contactsLocationsModule": {
+      "locations": [
+        {
+          "facility": "Pacific Cancer Care",
+          "status": "RECRUITING",
+          "city": "Monterey",
+          "state": "California",
+          "zip": "93940",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Alexander Baskoro",
+              "role": "CONTACT",
+              "phone": "831-375-4105",
+              "email": "alexanderbaskoro@npowermedicine.com"
+            },
+            {
+              "name": "Anushi Bulumulle, MD",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 36.60024,
+            "lon": -121.89468
+          }
+        },
+        {
+          "facility": "Bayhealth Medical Center, Kent Campus",
+          "status": "RECRUITING",
+          "city": "Dover",
+          "state": "Delaware",
+          "zip": "19901",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Ruby Davis",
+              "role": "CONTACT",
+              "phone": "302-744-7795",
+              "email": "Ruby_Davis@bayhealth.org"
+            },
+            {
+              "name": "Iftekhar Khan, MD",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 39.15817,
+            "lon": -75.52437
+          }
+        },
+        {
+          "facility": "Bayhealth Medical Center- Sussex Campus",
+          "status": "RECRUITING",
+          "city": "Milford",
+          "state": "Delaware",
+          "zip": "19963",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Ruby Davis",
+              "role": "CONTACT",
+              "phone": "Ruby_Davis@bayhealth.org",
+              "email": "ruby_davis@bayhealth.org"
+            },
+            {
+              "name": "Iftekhar Khan, MD",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 38.91261,
+            "lon": -75.42797
+          }
+        },
+        {
+          "facility": "Northwest Oncology and Hematology",
+          "status": "RECRUITING",
+          "city": "Barrington",
+          "state": "Illinois",
+          "zip": "60010",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Nowsheen Azeemuddin",
+              "role": "CONTACT",
+              "phone": "847-577-0620",
+              "email": "nowsheena@northwestoncology.com"
+            },
+            {
+              "name": "Roberto Montoya, MD",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 42.15391,
+            "lon": -88.13619
+          }
+        },
+        {
+          "facility": "Northwest Oncology and Hematology",
+          "status": "RECRUITING",
+          "city": "Elk Grove",
+          "state": "Illinois",
+          "zip": "60008",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Nowsheen Azeemuddin",
+              "role": "CONTACT",
+              "phone": "847-577-0620",
+              "email": "nowsheena@northwestoncology.com"
+            },
+            {
+              "name": "Roberto Montoya, MD",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 42.00725,
+            "lon": -87.94034
+          }
+        },
+        {
+          "facility": "Northwest Oncology and Hematology",
+          "status": "RECRUITING",
+          "city": "Hoffman Estates",
+          "state": "Illinois",
+          "zip": "60169",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Nowsheen Azeemuddin",
+              "role": "CONTACT",
+              "phone": "847-577-0620",
+              "email": "nowsheena@northwestoncology.com"
+            },
+            {
+              "name": "Roberto Montoya, MD",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 42.04281,
+            "lon": -88.0798
+          }
+        },
+        {
+          "facility": "Northwest Oncology and Hematology",
+          "status": "RECRUITING",
+          "city": "Rolling Meadows",
+          "state": "Illinois",
+          "zip": "60008",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Nowsheen Azeemuddin",
+              "role": "CONTACT",
+              "phone": "847-577-0620",
+              "email": "nowsheena@northwestoncology.com"
+            },
+            {
+              "name": "Roberto Montoya, MD",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 42.08419,
+            "lon": -88.01313
+          }
+        },
+        {
+          "facility": "Oncology Consultants",
+          "status": "RECRUITING",
+          "city": "Houston",
+          "state": "Texas",
+          "zip": "77030",
+          "country": "United States",
+          "contacts": [
+            {
+              "name": "Research Office",
+              "role": "CONTACT",
+              "phone": "713-600-0913",
+              "email": "support@npowermedicine.com"
+            },
+            {
+              "name": "Luis Campos, MD",
+              "role": "PRINCIPAL_INVESTIGATOR"
+            }
+          ],
+          "geoPoint": {
+            "lat": 29.76328,
+            "lon": -95.36327
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "UNDECIDED",
+      "description": "undecided"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-06-26"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D002289",
+          "term": "Carcinoma, Non-Small-Cell Lung"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D002283",
+          "term": "Carcinoma, Bronchogenic"
+        },
+        {
+          "id": "D001984",
+          "term": "Bronchial Neoplasms"
+        },
+        {
+          "id": "D008175",
+          "term": "Lung Neoplasms"
+        },
+        {
+          "id": "D012142",
+          "term": "Respiratory Tract Neoplasms"
+        },
+        {
+          "id": "D013899",
+          "term": "Thoracic Neoplasms"
+        },
+        {
+          "id": "D009371",
+          "term": "Neoplasms by Site"
+        },
+        {
+          "id": "D009369",
+          "term": "Neoplasms"
+        },
+        {
+          "id": "D008171",
+          "term": "Lung Diseases"
+        },
+        {
+          "id": "D012140",
+          "term": "Respiratory Tract Diseases"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}

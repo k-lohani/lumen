@@ -1,0 +1,25 @@
+{
+  "lumen": {
+    "accuracy": 0.8333333333333334,
+    "unknown_recall": 0.6363636363636364,
+    "unknown_precision": 0.7,
+    "faithfulness_rate": 1,
+    "exclusion_detection_rate": 1
+  },
+  "baseline_naive": {
+    "accuracy": 0.6428571428571429,
+    "unknown_recall": 0,
+    "unknown_precision": 0,
+    "faithfulness_rate": 1,
+    "exclusion_detection_rate": 1
+  },
+  "baseline_grounded": {
+    "accuracy": 0.8809523809523809,
+    "unknown_recall": 0.9090909090909091,
+    "unknown_precision": 1,
+    "faithfulness_rate": 0,
+    "exclusion_detection_rate": 1
+  },
+  "total_pairs": 42,
+  "generated_at": "2026-06-27T12:27:04.858Z"
+}

@@ -1,0 +1,37 @@
+{
+  "patient_id": "variant-prior-tki",
+  "demographics": { "age": 62, "sex": "M" },
+  "diagnosis": {
+    "primary": "Stage IV lung adenocarcinoma",
+    "histology": "adenocarcinoma",
+    "stage": "IV",
+    "source_line_ids": ["L0001"]
+  },
+  "biomarkers": [
+    {
+      "name": "EGFR L858R",
+      "status": "positive",
+      "source_line_ids": ["L0002"]
+    }
+  ],
+  "prior_therapies": [
+    {
+      "name": "erlotinib",
+      "class": "EGFR TKI",
+      "line": 1,
+      "source_line_ids": ["L0003"]
+    },
+    {
+      "name": "osimertinib",
+      "class": "third-generation EGFR TKI",
+      "line": 2,
+      "source_line_ids": ["L0003"]
+    }
+  ],
+  "performance_status": {
+    "scale": "ECOG",
+    "value": 1,
+    "source_line_ids": ["L0004"]
+  },
+  "labs_measurements": []
+}

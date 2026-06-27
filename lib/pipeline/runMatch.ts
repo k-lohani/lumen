@@ -1,0 +1,1 @@
+export { runMatch } from "./index";

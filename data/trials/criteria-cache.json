@@ -1,0 +1,184 @@
+{
+  "NCT07070232:1C": [
+    {
+      "criterion_id": "NCT07070232-1C01",
+      "trial_id": "NCT07070232",
+      "cohort_scope": "1C",
+      "type": "INCLUSION",
+      "category": "BIOMARKER",
+      "text": "Documented positive test results for an EGFR-sensitizing mutation (Exon 21-L858R and 19del)"
+    },
+    {
+      "criterion_id": "NCT07070232-1C02",
+      "trial_id": "NCT07070232",
+      "cohort_scope": "1C",
+      "type": "INCLUSION",
+      "category": "PRIOR_THERAPY",
+      "text": "Prior lines must include a third-generation EGFR TKI with progression"
+    },
+    {
+      "criterion_id": "NCT07070232-1C03",
+      "trial_id": "NCT07070232",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "PERFORMANCE_STATUS",
+      "text": "Have ECOG performance status of 0 or 1"
+    },
+    {
+      "criterion_id": "NCT07070232-1C04",
+      "trial_id": "NCT07070232",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "OTHER",
+      "text": "Have measurable disease defined by RECIST v1.1"
+    },
+    {
+      "criterion_id": "NCT07070232-1C05",
+      "trial_id": "NCT07070232",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "LAB_MEASUREMENT",
+      "text": "Have adequate organ and bone marrow function within 7 days before randomization/enrollment"
+    },
+    {
+      "criterion_id": "NCT07070232-EX01",
+      "trial_id": "NCT07070232",
+      "cohort_scope": "general",
+      "type": "EXCLUSION",
+      "category": "LAB_MEASUREMENT",
+      "text": "Have LVEF <50% by either echocardiography or multi-gated acquisition (scanning) within 28 days before randomization/enrollment"
+    },
+    {
+      "criterion_id": "NCT07070232-EX02",
+      "trial_id": "NCT07070232",
+      "cohort_scope": "general",
+      "type": "EXCLUSION",
+      "category": "OTHER",
+      "text": "Have a history of interstitial lung disease (ILD)/pneumonitis that required steroids"
+    }
+  ],
+  "NCT06348927:general": [
+    {
+      "criterion_id": "NCT06348927-I01",
+      "trial_id": "NCT06348927",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "BIOMARKER",
+      "text": "EGFR-sensitive mutation confirmed"
+    },
+    {
+      "criterion_id": "NCT06348927-I02",
+      "trial_id": "NCT06348927",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "DIAGNOSIS",
+      "text": "Non-small cell lung cancer without systemic treatment"
+    },
+    {
+      "criterion_id": "NCT06348927-I03",
+      "trial_id": "NCT06348927",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "PERFORMANCE_STATUS",
+      "text": "ECOG 0 - 1"
+    },
+    {
+      "criterion_id": "NCT06348927-I04",
+      "trial_id": "NCT06348927",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "OTHER",
+      "text": "Presence of measurable lesions according to RECIST 1.1"
+    },
+    {
+      "criterion_id": "NCT06348927-E01",
+      "trial_id": "NCT06348927",
+      "cohort_scope": "general",
+      "type": "EXCLUSION",
+      "category": "PRIOR_THERAPY",
+      "text": "Prior systemic therapy for locally advanced or metastatic disease"
+    }
+  ],
+  "NCT07174388:9": [
+    {
+      "criterion_id": "NCT07174388-G01",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "DEMOGRAPHIC",
+      "text": "Greater than 18 years of age at the time of informed consent"
+    },
+    {
+      "criterion_id": "NCT07174388-G02",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "DIAGNOSIS",
+      "text": "Pathologically confirmed locally advanced or metastatic NSCLC"
+    },
+    {
+      "criterion_id": "NCT07174388-G03",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "PERFORMANCE_STATUS",
+      "text": "ECOG Performance of less than or equal to 1 within 4 weeks prior to starting index therapy"
+    },
+    {
+      "criterion_id": "NCT07174388-G04",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "OTHER",
+      "text": "Life expectancy of more than 3 months"
+    },
+    {
+      "criterion_id": "NCT07174388-G05",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "OTHER",
+      "text": "Able to understand and sign informed consent"
+    },
+    {
+      "criterion_id": "NCT07174388-G06",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "general",
+      "type": "INCLUSION",
+      "category": "OTHER",
+      "text": "Evidence of measurable disease on available imaging (CT, MRI, PET)"
+    },
+    {
+      "criterion_id": "NCT07174388-C9-01",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "9",
+      "type": "INCLUSION",
+      "category": "BIOMARKER",
+      "text": "Patients with EGFR mutations starting second line or later line of therapy, after previously being treated with osimertinib monotherapy"
+    },
+    {
+      "criterion_id": "NCT07174388-E01",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "general",
+      "type": "EXCLUSION",
+      "category": "OTHER",
+      "text": "Actively on a clinical trial of an investigational agent"
+    },
+    {
+      "criterion_id": "NCT07174388-E02",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "general",
+      "type": "EXCLUSION",
+      "category": "OTHER",
+      "text": "Currently receiving active systemic therapy for another malignancy"
+    },
+    {
+      "criterion_id": "NCT07174388-E03",
+      "trial_id": "NCT07174388",
+      "cohort_scope": "general",
+      "type": "EXCLUSION",
+      "category": "OTHER",
+      "text": "Eligible for treatment with curative intent"
+    }
+  ]
+}

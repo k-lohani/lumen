@@ -1,0 +1,38 @@
+{
+  "patient_id": "hero",
+  "demographics": { "age": 58, "sex": "F" },
+  "diagnosis": {
+    "primary": "Stage IV lung adenocarcinoma",
+    "histology": "adenocarcinoma",
+    "stage": "IV",
+    "source_line_ids": ["L0001"]
+  },
+  "biomarkers": [
+    {
+      "name": "EGFR exon 19 deletion",
+      "status": "positive",
+      "source_line_ids": ["L0002"]
+    }
+  ],
+  "prior_therapies": [
+    {
+      "name": "osimertinib",
+      "class": "third-generation EGFR TKI",
+      "line": 1,
+      "source_line_ids": ["L0003"]
+    }
+  ],
+  "performance_status": {
+    "scale": "ECOG",
+    "value": 1,
+    "source_line_ids": ["L0004"]
+  },
+  "labs_measurements": [
+    {
+      "name": "organ/marrow function panel",
+      "value": "adequate",
+      "date": "2026-06",
+      "source_line_ids": ["L0007"]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "patient_id": "variant-prior-tki",
+  "display_name": "James Park (prior TKI)",
+  "lines": [
+    {
+      "id": "L0001",
+      "section": "Demographics",
+      "text": "62-year-old man with Stage IV lung adenocarcinoma."
+    },
+    {
+      "id": "L0002",
+      "section": "Molecular",
+      "text": "EGFR L858R mutation positive."
+    },
+    {
+      "id": "L0003",
+      "section": "Treatment",
+      "text": "Prior erlotinib and osimertinib for metastatic disease; progressed on osimertinib."
+    },
+    {
+      "id": "L0004",
+      "section": "Performance",
+      "text": "ECOG performance status 1."
+    }
+  ]
+}

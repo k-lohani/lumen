@@ -1,0 +1,380 @@
+[
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C01",
+    "criterion_text": "Documented positive test results for an EGFR-sensitizing mutation",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0002"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C02",
+    "criterion_text": "Prior lines must include a third-generation EGFR TKI with progression",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0003"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C03",
+    "criterion_text": "Have ECOG performance status of 0 or 1",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0004"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C04",
+    "criterion_text": "Have measurable disease defined by RECIST v1.1",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0006"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C05",
+    "criterion_text": "Have adequate organ and bone marrow function",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0007"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-EX01",
+    "criterion_text": "Have LVEF <50% by echocardiography within 28 days",
+    "type": "EXCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-EX02",
+    "criterion_text": "Have a history of interstitial lung disease",
+    "type": "EXCLUSION",
+    "gold_state": "NOT_MET",
+    "citing_chart_line": "L0008"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-I01",
+    "criterion_text": "EGFR-sensitive mutation confirmed",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0002"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-I02",
+    "criterion_text": "Non-small cell lung cancer without systemic treatment",
+    "type": "INCLUSION",
+    "gold_state": "NOT_MET",
+    "citing_chart_line": "L0003"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-I03",
+    "criterion_text": "ECOG 0 - 1",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0004"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-I04",
+    "criterion_text": "Presence of measurable lesions according to RECIST 1.1",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0006"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-E01",
+    "criterion_text": "Prior systemic therapy for locally advanced or metastatic disease",
+    "type": "EXCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0003"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-G01",
+    "criterion_text": "Greater than 18 years of age",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0001"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-G02",
+    "criterion_text": "Pathologically confirmed locally advanced or metastatic NSCLC",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0001"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-G03",
+    "criterion_text": "ECOG Performance of less than or equal to 1",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0004"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-G04",
+    "criterion_text": "Life expectancy of more than 3 months",
+    "type": "INCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-G05",
+    "criterion_text": "Able to understand and sign informed consent",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0010"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-G06",
+    "criterion_text": "Evidence of measurable disease on available imaging",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0006"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-E01",
+    "criterion_text": "Actively on a clinical trial of an investigational agent",
+    "type": "EXCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-E02",
+    "criterion_text": "Currently receiving active systemic therapy for another malignancy",
+    "type": "EXCLUSION",
+    "gold_state": "NOT_MET",
+    "citing_chart_line": "L0008"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-E03",
+    "criterion_text": "Eligible for treatment with curative intent",
+    "type": "EXCLUSION",
+    "gold_state": "NOT_MET",
+    "citing_chart_line": "L0001"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-C9-01",
+    "criterion_text": "EGFR mutations starting second line after osimertinib monotherapy",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0002"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-C9-02",
+    "criterion_text": "Progressed on osimertinib",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0003"
+  },
+  {
+    "patient_id": "variant-echo-on-file",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-EX01",
+    "criterion_text": "Have LVEF <50% by echocardiography within 28 days",
+    "type": "EXCLUSION",
+    "gold_state": "NOT_MET",
+    "citing_chart_line": "L0009"
+  },
+  {
+    "patient_id": "variant-echo-on-file",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C01",
+    "criterion_text": "EGFR-sensitizing mutation",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0002"
+  },
+  {
+    "patient_id": "variant-echo-on-file",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C03",
+    "criterion_text": "ECOG 0 or 1",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0004"
+  },
+  {
+    "patient_id": "variant-echo-on-file",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C04",
+    "criterion_text": "Measurable disease RECIST",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0006"
+  },
+  {
+    "patient_id": "variant-echo-on-file",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C05",
+    "criterion_text": "Adequate organ function",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0007"
+  },
+  {
+    "patient_id": "variant-echo-on-file",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-EX02",
+    "criterion_text": "History of ILD",
+    "type": "EXCLUSION",
+    "gold_state": "NOT_MET",
+    "citing_chart_line": "L0008"
+  },
+  {
+    "patient_id": "variant-prior-tki",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-I02",
+    "criterion_text": "NSCLC without systemic treatment",
+    "type": "INCLUSION",
+    "gold_state": "NOT_MET",
+    "citing_chart_line": "L0003"
+  },
+  {
+    "patient_id": "variant-prior-tki",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-E01",
+    "criterion_text": "Prior systemic therapy",
+    "type": "EXCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0003"
+  },
+  {
+    "patient_id": "variant-prior-tki",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-I01",
+    "criterion_text": "EGFR mutation",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0002"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-UNK-01",
+    "criterion_text": "Pregnancy test within 28 days",
+    "type": "EXCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-UNK-02",
+    "criterion_text": "Hepatitis B surface antigen status",
+    "type": "EXCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-UNK-01",
+    "criterion_text": "LVEF >= 50% on echocardiogram",
+    "type": "INCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-UNK-02",
+    "criterion_text": "QTc interval within normal limits",
+    "type": "EXCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-UNK-03",
+    "criterion_text": "HIV status documented",
+    "type": "EXCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-UNK-04",
+    "criterion_text": "Pregnancy status documented",
+    "type": "EXCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "variant-echo-on-file",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-G04",
+    "criterion_text": "Life expectancy > 3 months",
+    "type": "INCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "variant-echo-on-file",
+    "trial_id": "NCT07174388",
+    "criterion_id": "NCT07174388-E01",
+    "criterion_text": "On investigational trial",
+    "type": "EXCLUSION",
+    "gold_state": "UNKNOWN",
+    "citing_chart_line": null
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT07070232",
+    "criterion_id": "NCT07070232-1C06",
+    "criterion_text": "Brain MRI without intracranial metastases",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0005"
+  },
+  {
+    "patient_id": "hero",
+    "trial_id": "NCT06348927",
+    "criterion_id": "NCT06348927-I05",
+    "criterion_text": "Stage IV metastatic disease",
+    "type": "INCLUSION",
+    "gold_state": "MET",
+    "citing_chart_line": "L0001"
+  }
+]

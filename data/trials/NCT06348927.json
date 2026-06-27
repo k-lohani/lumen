@@ -1,0 +1,275 @@
+{
+  "nct_id": "NCT06348927",
+  "relevant_cohort": "general",
+  "cohort_label": "General eligibility — first-line treatment-naïve",
+  "pinned_at": "2024-09-19",
+  "api_response": {
+    "protocolSection": {
+      "identificationModule": {
+        "nctId": "NCT06348927",
+        "orgStudyIdInfo": {
+          "id": "DZ2023EI004"
+        },
+        "organization": {
+          "fullName": "Hunan Province Tumor Hospital",
+          "class": "OTHER"
+        },
+        "briefTitle": "Sunvozertinib Plus Anlotinib as 1L Treatment in EGFR-Sensitive Mutations Combined With Co-Mutations Advanced NSCLC",
+        "officialTitle": "A Phase II, Single-Arm Study Evaluating the 1st Line Efficacy and Safety of Sunvozertinib Plus Anlotinib in EGFR-Sensitive Mutations Combined With Co-Mutations Locally Advanced or Metastatic Non-Small Cell Lung Cancer (NSCLC) (WUKONG-32)",
+        "acronym": "WUKONG-32"
+      },
+      "statusModule": {
+        "statusVerifiedDate": "2024-09",
+        "overallStatus": "RECRUITING",
+        "expandedAccessInfo": {
+          "hasExpandedAccess": false
+        },
+        "startDateStruct": {
+          "date": "2024-07-01",
+          "type": "ACTUAL"
+        },
+        "primaryCompletionDateStruct": {
+          "date": "2025-10-31",
+          "type": "ESTIMATED"
+        },
+        "completionDateStruct": {
+          "date": "2027-04-30",
+          "type": "ESTIMATED"
+        },
+        "studyFirstSubmitDate": "2024-03-30",
+        "studyFirstSubmitQcDate": "2024-04-04",
+        "studyFirstPostDateStruct": {
+          "date": "2024-04-05",
+          "type": "ACTUAL"
+        },
+        "lastUpdateSubmitDate": "2024-09-17",
+        "lastUpdatePostDateStruct": {
+          "date": "2024-09-19",
+          "type": "ACTUAL"
+        }
+      },
+      "sponsorCollaboratorsModule": {
+        "responsibleParty": {
+          "type": "PRINCIPAL_INVESTIGATOR",
+          "investigatorFullName": "Yongchang Zhang",
+          "investigatorTitle": "Professor",
+          "investigatorAffiliation": "Hunan Province Tumor Hospital"
+        },
+        "leadSponsor": {
+          "name": "Hunan Province Tumor Hospital",
+          "class": "OTHER"
+        }
+      },
+      "oversightModule": {
+        "isFdaRegulatedDrug": false,
+        "isFdaRegulatedDevice": false
+      },
+      "descriptionModule": {
+        "briefSummary": "This is a phase II, open-label, single-arm, single-center clinical study to evaluate the preliminary efficacy of sunvozertinib in combination with anlotinib in patients with EGFR-sensitive mutations and co-mutations in locally advanced or metastatic treatment-naive non-small cell lung cancer.\n\nCondition or disease Intervention/treatment Phase Non-Small Cell Lung Cancer Drug: sunvozertinib Drug: anlotinib Phase 2",
+        "detailedDescription": "This is a Phase II, open-label, single-arm, single-center clinical study to evaluate the preliminary efficacy of sunvozertinib in combination with anlotinib in patients with locally advanced or metastatic primary non-small cell lung cancer with EGFR-sensitive mutations combined with co-mutations. Approximately 52 NSCLC patients with EGFR-sensitive mutations (19del, L858R and T790M) and co-mutations were enrolled and treated with sunvozertinib (300 mg once daily) in combination with anlotinib (8 mg once daily for 2 weeks, followed by a 1-week interruption) until the patients experienced disease progression, intolerable toxicity, or met the criteria for discontinuation of the trial drug. The primary endpoint was investigator-assessed PFS, and secondary endpoints included ORR, DCR, OS, and safety. The study is expected to commence recruitment in mainland China in about April 2024. It is expected that the trial will end in April 2027."
+      },
+      "conditionsModule": {
+        "conditions": [
+          "Non-Small Cell Lung Cancer"
+        ],
+        "keywords": [
+          "sunvozertinib",
+          "anlotinib",
+          "EGFR mutations"
+        ]
+      },
+      "designModule": {
+        "studyType": "INTERVENTIONAL",
+        "phases": [
+          "PHASE2"
+        ],
+        "designInfo": {
+          "allocation": "NA",
+          "interventionModel": "SINGLE_GROUP",
+          "primaryPurpose": "TREATMENT",
+          "maskingInfo": {
+            "masking": "NONE"
+          }
+        },
+        "enrollmentInfo": {
+          "count": 52,
+          "type": "ESTIMATED"
+        }
+      },
+      "armsInterventionsModule": {
+        "armGroups": [
+          {
+            "label": "Experimental group",
+            "type": "EXPERIMENTAL",
+            "description": "Drug: Sunvozertinib combination with Anlotinib\n\nSunvozertinib 300 mg once daily (QD) with Anlotinib 8mg once daily （QD in Day 1-14），21 days in one cycle.",
+            "interventionNames": [
+              "Drug: sunvozertinib in combination with Anlotinib"
+            ]
+          }
+        ],
+        "interventions": [
+          {
+            "type": "DRUG",
+            "name": "sunvozertinib in combination with Anlotinib",
+            "description": "Drug: Sunvozertinib combination with Anlotinib\n\nSunvozertinib 300 mg once daily (QD) with Anlotinib 8mg once daily （QD in Day 1-14），21 days in one cycle.",
+            "armGroupLabels": [
+              "Experimental group"
+            ]
+          }
+        ]
+      },
+      "outcomesModule": {
+        "primaryOutcomes": [
+          {
+            "measure": "Progression-free survival (PFS)",
+            "description": "To assess progression-free survival of patients treated by sunvozertinib according to Response Evaluation Criteria in Solid Tumors (RECIST) version 1.1 by investigator, define as first dose to first documented disease progression assessed by investigator or death due to any cause.",
+            "timeFrame": "Time from first subject dose to study completion, or up to 36 month"
+          }
+        ],
+        "secondaryOutcomes": [
+          {
+            "measure": "Objective Response Rate (ORR)",
+            "description": "To assess sunvozertinib overall response rate according to Response Evaluation Criteria in Solid Tumors (RECIST) version 1.1 by investigator, define as the proportion of subjects who have a complete response (CR) or a partial response (PR)",
+            "timeFrame": "Time from first dose to last dose, or up to 24 month"
+          },
+          {
+            "measure": "Overall survival (OS)",
+            "description": "To assess overall survival, define as first dose to the death of the subject due to any cause",
+            "timeFrame": "Time from first subject dose to study completion, or up to 36 month"
+          },
+          {
+            "measure": "Duration of Response (DoR)",
+            "description": "To assess duration of response for subjects with CR or PR according to Response Evaluation Criteria in Solid Tumors (RECIST) version 1.1 by investigator , defined as the time from the first documented CR or PR to disease progression or death",
+            "timeFrame": "Time from first subject dose to study completion, or up to 36 month"
+          },
+          {
+            "measure": "Adverse events (AEs) according to CTCAE 5.0",
+            "description": "Number of participants with adverse events (AEs) according to CTCAE 5.0",
+            "timeFrame": "From first dose until 28 days after the last dose, up to 24 month"
+          }
+        ]
+      },
+      "eligibilityModule": {
+        "eligibilityCriteria": "Inclusion Criteria:\n\n1. Understand the requirements and contents of the clinical trial, and provide a signed and dated informed consent form.\n2. Age ≥ 18 years.\n3. Histopathology or cytology confirmed and recorded local progression or metastatic non-small cell lung cancer without systemic treatment.\n4. EGFR-sensitive mutations confirmed by an accredited local laboratory, including exon 19 deletions, exon 21 L858R point mutations, and T790M mutations, combined with co-mutations, including but not limited to TP53, PIK3CA, catenin beta-1 (CTNB1), and retinoblastoma (RB1).\n5. ECOG 0 - 1.\n6. Predicted survival ≥ 12 weeks.\n7. Adequate bone marrow hematopoiesis and organ function\n8. Presence of measurable lesions according to RECIST 1.1.\n9. Subjects with stable brain metastases may be included in the study.\n\nExclusion Criteria:\n\n1. Prior systemic therapy for locally advanced or metastatic disease.\n2. Subjects who have received any of the following treatments must be excluded:\n\n   * Treatment with molecules such as EGFR, VEGFR antibodies within 4 weeks prior to the first dose of study drug.\n   * Have received radiation within 14 days prior to the first dose or have not recovered from radiation-related toxicity. Chest and extra-brain palliative radiotherapy, stereotactic radiosurgery, and stereotactic body radiotherapy may be performed 7 days prior to the first dose.\n   * Ongoing (or inability to discontinue) possibly potent CYP1A2, CYP3A inhibitor (1 week), or inducer (2 weeks) drug therapy or herbal supplements within 1-2 weeks prior to the first dose.\n3. Presence of spinal cord compression or meningeal metastasis.\n4. History of other malignant tumors within 2 years.\n5. Adverse events (except alopecia of any degree) of CTCAE \\> grade 1 due to prior treatment (e.g., adjuvant chemotherapy, radiotherapy, etc.) prior to the first dose.\n6. History of stroke or intracranial hemorrhage within 6 months prior to the first dose.\n7. The presence of any severe or poorly controlled systemic disease, including poorly controlled hypertension and active bleeding in the judgment of the investigator.\n8. Subjects with persistent or active infection, including but not limited to hepatitis B (HBV), hepatitis C (HCV), human immunodeficiency virus (HIV) and COVID-19 infection.\n9. Heart-related diseases or abnormalities\n10. Past history of interstitial lung disease, drug-induced interstitial lung disease, radiation pneumonitis requiring steroid therapy or interstitial lung disease with active clinical symptoms, immune pneumonia caused by immunotherapy.\n11. Refractory nausea and vomiting, chronic gastrointestinal disease, difficulty swallowing drugs, or inability to adequately absorb sunvozertinib or anlotinib due to previous bowel resection.\n12. Live vaccine was given 2 weeks before the first medication.\n13. Women who are breastfeeding or pregnant.\n14. Hypersensitivity to the test drug and the ingredients.\n15. Other conditions assessed by the investigator to be unsuitable for participation in the study.",
+        "healthyVolunteers": false,
+        "sex": "ALL",
+        "minimumAge": "18 Years",
+        "stdAges": [
+          "ADULT",
+          "OLDER_ADULT"
+        ]
+      },
+      "contactsLocationsModule": {
+        "centralContacts": [
+          {
+            "name": "Yongchang Zhang",
+            "role": "CONTACT",
+            "phone": "+8613873123436",
+            "email": "zhangyongchang@csu.edu.cn"
+          },
+          {
+            "name": "Liang Zeng",
+            "role": "CONTACT",
+            "phone": "+8673189762327",
+            "email": "530490930@qq.com"
+          }
+        ],
+        "overallOfficials": [
+          {
+            "name": "Yongchang Zhang",
+            "affiliation": "Hunan Cancer Hospital",
+            "role": "PRINCIPAL_INVESTIGATOR"
+          }
+        ],
+        "locations": [
+          {
+            "facility": "Hunan Cancer Hospital",
+            "status": "RECRUITING",
+            "city": "Changsha",
+            "state": "Hunan",
+            "zip": "410013",
+            "country": "China",
+            "contacts": [
+              {
+                "name": "Yongchang Zhang, MD",
+                "role": "CONTACT",
+                "phone": "+86 731 89762323",
+                "email": "zhangyongchang@csu.edu.cn"
+              },
+              {
+                "name": "Nong Yang, MD",
+                "role": "CONTACT",
+                "phone": "+86 731 89762321",
+                "email": "yangnong0217@163.com"
+              }
+            ],
+            "geoPoint": {
+              "lat": 28.19874,
+              "lon": 112.97087
+            }
+          }
+        ]
+      }
+    },
+    "derivedSection": {
+      "miscInfoModule": {
+        "versionHolder": "2026-06-26"
+      },
+      "conditionBrowseModule": {
+        "meshes": [
+          {
+            "id": "D002289",
+            "term": "Carcinoma, Non-Small-Cell Lung"
+          }
+        ],
+        "ancestors": [
+          {
+            "id": "D002283",
+            "term": "Carcinoma, Bronchogenic"
+          },
+          {
+            "id": "D001984",
+            "term": "Bronchial Neoplasms"
+          },
+          {
+            "id": "D008175",
+            "term": "Lung Neoplasms"
+          },
+          {
+            "id": "D012142",
+            "term": "Respiratory Tract Neoplasms"
+          },
+          {
+            "id": "D013899",
+            "term": "Thoracic Neoplasms"
+          },
+          {
+            "id": "D009371",
+            "term": "Neoplasms by Site"
+          },
+          {
+            "id": "D009369",
+            "term": "Neoplasms"
+          },
+          {
+            "id": "D008171",
+            "term": "Lung Diseases"
+          },
+          {
+            "id": "D012140",
+            "term": "Respiratory Tract Diseases"
+          }
+        ]
+      },
+      "interventionBrowseModule": {
+        "meshes": [
+          {
+            "id": "C000625192",
+            "term": "anlotinib"
+          }
+        ]
+      }
+    },
+    "hasResults": false
+  }
+}

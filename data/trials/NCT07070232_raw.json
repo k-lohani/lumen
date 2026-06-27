@@ -1,0 +1,1365 @@
+{
+  "protocolSection": {
+    "identificationModule": {
+      "nctId": "NCT07070232",
+      "orgStudyIdInfo": {
+        "id": "BNT326-01"
+      },
+      "secondaryIdInfos": [
+        {
+          "id": "2024-517261-16-00",
+          "type": "CTIS"
+        },
+        {
+          "id": "1011236",
+          "type": "OTHER",
+          "domain": "Integrated Research Application System (IRAS)"
+        }
+      ],
+      "organization": {
+        "fullName": "BioNTech SE",
+        "class": "INDUSTRY"
+      },
+      "briefTitle": "A Clinical Study to Test if an Investigational Treatment Called BNT326 is Safe and Potentially Beneficial When Used Alone or in Combination With Other Investigational Treatments Such as BNT327, for People With Advanced Malignant Tumors",
+      "officialTitle": "A Phase I/II, Open-label, Adaptive Two-part Trial to Evaluate the Safety, Efficacy, Optimal Dose and Pharmacokinetics of BNT326 as Monotherapy and in Combination With Cancer Immunotherapies in Participants With Advanced Solid Tumors"
+    },
+    "statusModule": {
+      "statusVerifiedDate": "2026-05",
+      "overallStatus": "RECRUITING",
+      "expandedAccessInfo": {
+        "hasExpandedAccess": false
+      },
+      "startDateStruct": {
+        "date": "2025-08-12",
+        "type": "ACTUAL"
+      },
+      "primaryCompletionDateStruct": {
+        "date": "2028-02",
+        "type": "ESTIMATED"
+      },
+      "completionDateStruct": {
+        "date": "2029-10",
+        "type": "ESTIMATED"
+      },
+      "studyFirstSubmitDate": "2025-07-03",
+      "studyFirstSubmitQcDate": "2025-07-15",
+      "studyFirstPostDateStruct": {
+        "date": "2025-07-17",
+        "type": "ACTUAL"
+      },
+      "lastUpdateSubmitDate": "2026-05-21",
+      "lastUpdatePostDateStruct": {
+        "date": "2026-05-22",
+        "type": "ACTUAL"
+      }
+    },
+    "sponsorCollaboratorsModule": {
+      "responsibleParty": {
+        "type": "SPONSOR"
+      },
+      "leadSponsor": {
+        "name": "BioNTech SE",
+        "class": "INDUSTRY"
+      },
+      "collaborators": [
+        {
+          "name": "BioNTech (Shanghai) Pharmaceuticals Co., Ltd.",
+          "class": "INDUSTRY"
+        }
+      ]
+    },
+    "oversightModule": {
+      "oversightHasDmc": false,
+      "isFdaRegulatedDrug": true,
+      "isFdaRegulatedDevice": false
+    },
+    "descriptionModule": {
+      "briefSummary": "This study will evaluate the safety, efficacy, optimal dose, and pharmacokinetics (PK) of BNT326 as monotherapy (Part 1) and as combination treatment with immunotherapeutic agents (Part 2) in participants with histologically or cytologically confirmed solid tumors that are advanced (i.e., either metastatic or recurrent tumors with no further definitive treatment possible) and/or have relapsed/progressed after prior therapy.",
+      "detailedDescription": "Both parts (Part 1 and Part 2) will start enrolling study participants independent of each other.\n\nIn Part 1, participants with histologically or cytologically confirmed advanced solid tumors will receive BNT326 monotherapy in the following cohorts:\n\n* Cohort 1A: Cutaneous melanoma (second-line or higher treatment \\[2L+\\]).\n* Cohort 1B: Actionable oncogenic alterations (AGA)-negative non-small cell lung cancer (NSCLC) 2L+.\n* Cohort 1C: Epithelial growth factor receptor mutated (EGFRm) NSCLC 2L+.\n* Cohort 1D: Rare melanoma (acral/uveal/mucosal melanoma) 2L+.\n* Cohort 1E: Other advanced solid tumors 2L+.\n* Cohort 1F (drug-drug interaction \\[DDI\\] Cohort): Advanced solid tumors.\n* Cohort 1G: Cervical cancer 2L+.\n\nIn Part 2, BNT326 will be studied as monotherapy or in combination with other immunotherapeutic agents. The first combination treatment will be BNT326 with BNT327 (also known as pumitamig, BMS-986545, or PM8002). The following cohorts are planned:\n\n* Cohort 2A: BNT326 + pumitamig for cutaneous melanoma 2L+.\n* Cohort 2B: BNT326 + pumitamig for human epidermal growth factor receptor 2 (HER2)-negative breast cancer 2L+/first line treatment (1L).\n* Cohort 2C (Optional): BNT326 + pumitamig for cutaneous melanoma first-line or higher treatment (1L+). This cohort may be added if BNT326 + pumitamig for cutaneous melanoma 2L+ is tolerated, and shows signs of efficacy.\n* Cohort 2D: BNT326 + pumitamig for gastric cancer (GC)/gastroesophageal junction cancer (GEJC) 2L+.\n* Cohort 2E: BNT326 + pumitamig for colorectal cancer 2L+.\n* Cohort 2F: BNT326 + pumitamig for cervical cancer 2L+.\n\nParticipants in Cohorts 1A, 1B, and 1C (dose optimization cohorts) will be randomized to one of two dose levels (DLs) of BNT326 in a 1:1 ratio.\n\nIn the dose expansion of Cohorts 2A and 2B, participants will be randomized 1:1 to one of two DLs of BNT326 and pumitamig combination treatment.\n\nDuring the randomized dose optimization and contribution of components of Cohorts 2D and 2E, participants will be randomized in a 1:1:1 ratio to one of three treatment arms (BNT326 DL2 or one of two DLs of BNT326 and pumitamig combination treatment).\n\nNo randomization is planned for Cohorts 1D, 1E, 1F, 1G, 2C and 2F.\n\nThe study will consist of a screening period, a treatment period, a safety follow-up period, an efficacy follow-up period, and a long-term survival follow-up period. Study treatment will be continued for up to 24 months or until disease progression, withdrawal of consent, termination of the study by the sponsor, or unacceptable toxicity. For each participant, the treatment and follow-up periods are projected to be completed within \\~38 months (Part 1) and \\~48 months (Part 2), unless participants are continuing to benefit from treatment per investigator's recommendation and upon sponsor approval."
+    },
+    "conditionsModule": {
+      "conditions": [
+        "Advanced Solid Tumor"
+      ],
+      "keywords": [
+        "Combination with other investigational agents",
+        "Programmed death-ligand 1 (PD-L1)",
+        "Antibody-drug conjugate (ADC)",
+        "Human epidermal growth factor receptor 3 (HER3)",
+        "Programmed Death-1 (PD-1)",
+        "Programmed Death-1 monoclonal antibodies",
+        "Combination chemotherapy",
+        "Anti vascular endothelial growth factor-A (anti-VEGF-A)",
+        "Bispecific antibody",
+        "Immunotherapy",
+        "Dose optimization",
+        "Time to progression",
+        "Vascular endothelial growth factor (VEGF)",
+        "Cutaneous Melanoma",
+        "Rare melanoma",
+        "Actionable oncogenic alterations (AGA)-negative non-small cell lung cancer (NSCLC)",
+        "Epithelial growth factor receptor mutated (EGFRm) NSCLC",
+        "Gastric cancer (GC)",
+        "Gastroesophageal junction cancer (GEJC)"
+      ]
+    },
+    "designModule": {
+      "studyType": "INTERVENTIONAL",
+      "phases": [
+        "PHASE1",
+        "PHASE2"
+      ],
+      "designInfo": {
+        "allocation": "RANDOMIZED",
+        "interventionModel": "SEQUENTIAL",
+        "primaryPurpose": "TREATMENT",
+        "maskingInfo": {
+          "masking": "NONE"
+        }
+      },
+      "enrollmentInfo": {
+        "count": 980,
+        "type": "ESTIMATED"
+      }
+    },
+    "armsInterventionsModule": {
+      "armGroups": [
+        {
+          "label": "Part 1 (Cohort 1A) - BNT326 monotherapy",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL1 or DL2) in participants with cutaneous melanoma 2L+",
+          "interventionNames": [
+            "Drug: BNT326"
+          ]
+        },
+        {
+          "label": "Part 1 (Cohort 1B) - BNT326 monotherapy",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL1 or DL2) in participants with NSCLC 2L+ AGA-negative",
+          "interventionNames": [
+            "Drug: BNT326"
+          ]
+        },
+        {
+          "label": "Part 1 (Cohort 1C) - BNT326 monotherapy",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL1 or DL2) in participants with NSCLC 2L+ EGFRm",
+          "interventionNames": [
+            "Drug: BNT326"
+          ]
+        },
+        {
+          "label": "Part 1 (Cohort 1D) - BNT326 monotherapy",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL2) in participants with rare melanoma 2L+",
+          "interventionNames": [
+            "Drug: BNT326"
+          ]
+        },
+        {
+          "label": "Part 1 (Cohort 1E) - BNT326 monotherapy",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL2) in participants with advanced solid tumors 2L+",
+          "interventionNames": [
+            "Drug: BNT326"
+          ]
+        },
+        {
+          "label": "Part 1 (Cohort 1F, DDI) - BNT326 + itraconazole",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL1 or DL2) + itraconazole in participants with advanced solid tumors",
+          "interventionNames": [
+            "Drug: BNT326",
+            "Drug: Itraconazole"
+          ]
+        },
+        {
+          "label": "Part 1 (Cohort 1F, DDI) - BNT326 + paroxetine",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL1 or DL2) + paroxetine in participants with advanced solid tumors",
+          "interventionNames": [
+            "Drug: BNT326",
+            "Drug: Paroxetine"
+          ]
+        },
+        {
+          "label": "Part 1 (Cohort 1G) - BNT326 monotherapy",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL2) in participants with cervical cancer 2L+",
+          "interventionNames": [
+            "Drug: BNT326"
+          ]
+        },
+        {
+          "label": "Part 2 (Cohort 2A) - BNT326 + pumitamig",
+          "type": "EXPERIMENTAL",
+          "description": "Combination therapy of BNT326 (DL1 or DL2) + pumitamig (DL1 or DL2) in participants with cutaneous melanoma 2L+. Optionally, combinations with lower doses of BNT326 and/or pumitamig may be explored.",
+          "interventionNames": [
+            "Drug: BNT326",
+            "Drug: Pumitamig"
+          ]
+        },
+        {
+          "label": "Part 2 (Cohort 2B) - BNT326 + pumitamig",
+          "type": "EXPERIMENTAL",
+          "description": "Combination therapy of BNT326 (DL1 or DL2) + pumitamig (DL1 or DL2) in participants with HER2-negative breast cancer (triple-negative breast cancer and hormone receptor positive \\[HR+\\]/HER2- breast cancer) 2L+/1L.",
+          "interventionNames": [
+            "Drug: BNT326",
+            "Drug: Pumitamig"
+          ]
+        },
+        {
+          "label": "Part 2 (Cohort 2C) - Optional - BNT326 + pumitamig",
+          "type": "EXPERIMENTAL",
+          "description": "Combination therapy of BNT326 (DL1 or DL2) + pumitamig (DL1) in participants with cutaneous melanoma 1L+",
+          "interventionNames": [
+            "Drug: BNT326",
+            "Drug: Pumitamig"
+          ]
+        },
+        {
+          "label": "Part 2 (Cohort 2D1) - BNT326 monotherapy",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL2) in participants with GC/GEJC 2L+",
+          "interventionNames": [
+            "Drug: BNT326"
+          ]
+        },
+        {
+          "label": "Part 2 (Cohort 2D2) - BNT326 + pumitamig",
+          "type": "EXPERIMENTAL",
+          "description": "Combination therapy of BNT326 (DL2) + pumitamig (DL1 or DL2) in participants with GC/GEJC 2L+",
+          "interventionNames": [
+            "Drug: BNT326",
+            "Drug: Pumitamig"
+          ]
+        },
+        {
+          "label": "Part 2 (Cohort 2E1) - BNT326 monotherapy",
+          "type": "EXPERIMENTAL",
+          "description": "BNT326 (DL2) in participants with colorectal cancer 2L+",
+          "interventionNames": [
+            "Drug: BNT326"
+          ]
+        },
+        {
+          "label": "Part 2 (Cohort 2E2) - BNT326 + pumitamig",
+          "type": "EXPERIMENTAL",
+          "description": "Combination therapy of BNT326 (DL2) + pumitamig (DL1 or DL2) in participants with colorectal cancer 2L+",
+          "interventionNames": [
+            "Drug: BNT326",
+            "Drug: Pumitamig"
+          ]
+        },
+        {
+          "label": "Part 2 (Cohort 2F) - BNT326 + pumitamig",
+          "type": "EXPERIMENTAL",
+          "description": "Combination therapy of BNT326 (DL2) + pumitamig (DL2) in participants with cervical cancer 2L+",
+          "interventionNames": [
+            "Drug: BNT326",
+            "Drug: Pumitamig"
+          ]
+        }
+      ],
+      "interventions": [
+        {
+          "type": "DRUG",
+          "name": "BNT326",
+          "description": "Intravenous (IV) infusion",
+          "armGroupLabels": [
+            "Part 1 (Cohort 1A) - BNT326 monotherapy",
+            "Part 1 (Cohort 1B) - BNT326 monotherapy",
+            "Part 1 (Cohort 1C) - BNT326 monotherapy",
+            "Part 1 (Cohort 1D) - BNT326 monotherapy",
+            "Part 1 (Cohort 1E) - BNT326 monotherapy",
+            "Part 1 (Cohort 1F, DDI) - BNT326 + itraconazole",
+            "Part 1 (Cohort 1F, DDI) - BNT326 + paroxetine",
+            "Part 1 (Cohort 1G) - BNT326 monotherapy",
+            "Part 2 (Cohort 2A) - BNT326 + pumitamig",
+            "Part 2 (Cohort 2B) - BNT326 + pumitamig",
+            "Part 2 (Cohort 2C) - Optional - BNT326 + pumitamig",
+            "Part 2 (Cohort 2D1) - BNT326 monotherapy",
+            "Part 2 (Cohort 2D2) - BNT326 + pumitamig",
+            "Part 2 (Cohort 2E1) - BNT326 monotherapy",
+            "Part 2 (Cohort 2E2) - BNT326 + pumitamig",
+            "Part 2 (Cohort 2F) - BNT326 + pumitamig"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Pumitamig",
+          "description": "IV infusion",
+          "armGroupLabels": [
+            "Part 2 (Cohort 2A) - BNT326 + pumitamig",
+            "Part 2 (Cohort 2B) - BNT326 + pumitamig",
+            "Part 2 (Cohort 2C) - Optional - BNT326 + pumitamig",
+            "Part 2 (Cohort 2D2) - BNT326 + pumitamig",
+            "Part 2 (Cohort 2E2) - BNT326 + pumitamig",
+            "Part 2 (Cohort 2F) - BNT326 + pumitamig"
+          ],
+          "otherNames": [
+            "BNT327",
+            "PM8002",
+            "BMS-986545"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Itraconazole",
+          "description": "Oral administration",
+          "armGroupLabels": [
+            "Part 1 (Cohort 1F, DDI) - BNT326 + itraconazole"
+          ]
+        },
+        {
+          "type": "DRUG",
+          "name": "Paroxetine",
+          "description": "Oral administration",
+          "armGroupLabels": [
+            "Part 1 (Cohort 1F, DDI) - BNT326 + paroxetine"
+          ]
+        }
+      ]
+    },
+    "outcomesModule": {
+      "primaryOutcomes": [
+        {
+          "measure": "Parts 1 and 2 - All cohorts except Cohort 1F - Occurrence of treatment emergent adverse events (TEAEs), treatment related adverse events (TRAEs), treatment emergent serious adverse events (TESAEs), and treatment related serious adverse events (TRSAEs)",
+          "description": "By cohort and by dose in (Part 1), and by cohort and combination treatment regimen (in Part 2).",
+          "timeFrame": "from first dose of investigational medicinal product (IMP) up to 42 days (Part 1) and 90 days (Part 2) after the last dose of IMP or until a new systemic anti-cancer therapy is started, whichever occurs first (up to 26 months Part 1 or 27 months Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts except Cohort 1F - Occurrence of dose interruption, reduction, and treatment discontinuations due to TEAEs",
+          "description": "By cohort and by dose in (Part 1), and by cohort and combination treatment regimen (in Part 2)",
+          "timeFrame": "from first dose of IMP up to 42 days (Part 1) and 90 days (Part 2) after the last dose of IMP or until a new systemic anti-cancer therapy is started, whichever occurs first (up to 26 months Part 1 or 27 months Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts except Cohort 1F - Confirmed overall response rate (ORR)",
+          "description": "Defined as the proportion of participants in whom a confirmed complete response (CR) or partial response (PR) based on the investigator's assessment (per Response Evaluation Criteria in Solid Tumors version 1.1 \\[RECIST v1.1\\]) is observed as best overall response. By cohort and by dose in (Part 1), and by cohort and combination treatment regimen (in Part 2).",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to approximately 38 months (Part 1) and approximately 48 months (Part 2)"
+        },
+        {
+          "measure": "Part 2 - Occurrence of dose limiting toxicities (DLTs)",
+          "description": "During the DLT observation period.",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to 21 days"
+        },
+        {
+          "measure": "Part 1 - Cohort 1F (DDI) only - PK assessment: Maximum concentration (Cmax) derived from serum concentrations of BNT326 ADC and unconjugated payload",
+          "description": "Evaluation of Cmax without and in combination with the CYP inhibitors (± itraconazole or ± paroxetine). Treatment comparison using geometric mean ratio of Cycle 3 as compared with Cycle 2 as a reference.",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to safety follow-up visit, approximately 42 days post last IMP dose"
+        },
+        {
+          "measure": "Part 1 - Cohort 1F (DDI) only - PK assessment: Area under the curve (AUC) over the last 17-day dosing interval derived from serum concentrations of BNT326 ADC and unconjugated payload",
+          "description": "Evaluation of AUC over the last 17-day dosing interval without and in combination with the CYP inhibitors (± itraconazole or ± paroxetine). Treatment comparison using geometric mean ratio of Cycle 3 as compared with Cycle 2 as a reference.",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to safety follow-up visit, approximately 42 days post last IMP dose"
+        }
+      ],
+      "secondaryOutcomes": [
+        {
+          "measure": "Part 1 - Cohort 1F (DDI) only - Occurrence of TEAEs, TRAEs, TESAEs, and TRSAEs",
+          "description": "By treatment, with and without itraconazole or paroxetine",
+          "timeFrame": "from the time of initiation of the first dose of IMP to 42 days after the last dose of IMP"
+        },
+        {
+          "measure": "Part 1 - Cohort 1F (DDI) only - Occurrence of dose interruption, reduction, and treatment discontinuations due to TEAEs",
+          "description": "By cohort and dose, with and without itraconazole or paroxetine",
+          "timeFrame": "from the time of initiation of the first dose of IMP to 42 days after the last dose of IMP"
+        },
+        {
+          "measure": "Part 1 - Cohort 1F (DDI) only - Occurrence of clinically relevant changes from baseline for vital signs",
+          "timeFrame": "from the time of initiation of the first dose of IMP to 42 days after the last dose of IMP"
+        },
+        {
+          "measure": "Part 1 - Cohort 1F (DDI) only - Occurrence of clinically relevant changes from baseline for clinical laboratory tests",
+          "timeFrame": "from the time of initiation of the first dose of IMP to 42 days after the last dose of IMP"
+        },
+        {
+          "measure": "Part 1 - Cohort 1F (DDI) only - Occurrence of clinically relevant changes from baseline for cardiac function",
+          "description": "Assessments comprise 12-lead electrocardiogram (ECG), echocardiography (ECHO) Multi-gated acquisition (MUGA) (scanning) and left ventricular ejection fraction (LVEF).",
+          "timeFrame": "from the time of initiation of the first dose of IMP to 42 days after the last dose of IMP"
+        },
+        {
+          "measure": "Part 1 - Cohort 1F (DDI) only - Occurrence of clinically relevant changes from baseline for Eastern Cooperative Oncology Group performance status (ECOG PS)",
+          "description": "The ECOG PS grades are: 0 = Fully active, able to carry on all pre-disease performance without restriction, 1 = Restricted in physically strenuous activity but ambulatory and able to carry out work of a light or sedentary nature, e.g., light housework, office work, 2 = Ambulatory and capable of all selfcare but unable to carry out any work activities; up and about more than 50% of waking hours, 3 = Capable of only limited selfcare; confined to bed or chair more than 50% of waking hours, 4 = Completely disabled; cannot carry on any selfcare; totally confined to bed or chair, 5 = Dead.",
+          "timeFrame": "from the time of initiation of the first dose of IMP to 42 days after the last dose of IMP"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts - Progression-free survival based on investigator's assessment",
+          "description": "Defined as the time from first dose of IMP to the first objective tumor progression (progressive disease \\[PD\\] per RECIST v1.1) or death from any cause, whichever occurs first. By cohort and combination treatment regimen (all cohorts except Cohort 1F, DDI) or by treatment regimen only (for Cohort 1F, DDI).",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to approximately 38 months (Part 1) and approximately 48 months (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts - Depth of response",
+          "description": "Defined as the maximum percent reduction from baseline in tumor size measured by sum of target lesion diameter. By cohort and combination treatment regimen (all cohorts except Cohort 1F, DDI) or by treatment regimen only (for Cohort 1F, DDI).",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to approximately 38 months (Part 1) and approximately 48 months (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts - Disease control rate",
+          "description": "Defined as the proportion of participants with a confirmed CR, PR, or stable disease (per RECIST v1.1 based on the investigator's assessment) is observed as best overall response. By cohort and combination treatment regimen (all cohorts except Cohort 1F, DDI) or by treatment regimen only (for Cohort 1F, DDI).",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to approximately 38 months (Part 1) and approximately 48 months (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts - Duration of response",
+          "description": "Defined as the time from first objective response (CR or PR per RECIST v1.1 based on the investigator's assessment) to first occurrence of objective tumor progression (PD per RECIST v1.1 based on the investigator's assessment) or death from any cause, whichever occurs first. By cohort and combination treatment regimen (all cohorts except Cohort 1F, DDI) or by treatment regimen only (for Cohort 1F, DDI).",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to approximately 38 months (Part 1) and approximately 48 months (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts - Time to response",
+          "description": "Defined as the time from first dose of IMP to first objective response (CR or PR per RECIST v1.1 based on the investigator's assessment). By cohort and combination treatment regimen (all cohorts except Cohort 1F, DDI) or by treatment regimen only (for Cohort 1F, DDI).",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to approximately 38 months (Part 1) and approximately 48 months (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts - Overall survival",
+          "description": "Defined as the time from first dose of IMP to death from any cause. By cohort and combination treatment regimen (all cohorts except Cohort 1F, DDI) or by treatment regimen only (for Cohort 1F, DDI).",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to approximately 38 months (Part 1) and approximately 48 months (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts except Cohort 1F - PK assessment: Cmax derived from serum concentrations of BNT326 ADC, total anti-HER3 antibody component, and unconjugated payload",
+          "description": "For applicable participants, if data permits. By cohort and combination treatment regimen.",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to safety follow-up visit, approximately 42 days post last IMP dose (Part 1) and 90 days post last IMP dose (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts except Cohort 1F - PK assessment: AUC derived from serum concentrations of BNT326 ADC, total anti-HER3 antibody component, and unconjugated payload",
+          "description": "For applicable participants, if data permits. By cohort and combination treatment regimen.",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to safety follow-up visit, approximately 42 days post last IMP dose (Part 1) and 90 days post last IMP dose (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts except Cohort 1F - PK assessment: Time to reach maximum (peak) serum concentration (Tmax) derived from serum concentrations of BNT326 ADC, total anti-HER3 antibody component, and unconjugated payload",
+          "description": "For applicable participants, if data permits. By cohort and combination treatment regimen.",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to safety follow-up visit, approximately 42 days post last IMP dose (Part 1) and 90 days post last IMP dose (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts except Cohort 1F - PK assessment: Elimination half-life (t1/2) derived from serum concentrations of BNT326 ADC, total anti-HER3 antibody component, and unconjugated payload",
+          "description": "For applicable participants, if data permits. By cohort and combination treatment regimen.",
+          "timeFrame": "from the time of initiation of the first dose of IMP up to safety follow-up visit, approximately 42 days post last IMP dose (Part 1) and 90 days post last IMP dose (Part 2)"
+        },
+        {
+          "measure": "Parts 1 and 2 - All cohorts - Anti-drug antibody (ADA) prevalence and ADA incidence",
+          "description": "For applicable participants. By cohort and combination treatment regimen (against BNT326 and/or BNT327, as applicable).",
+          "timeFrame": "up to 1 year from the last dose of IMP"
+        }
+      ]
+    },
+    "eligibilityModule": {
+      "eligibilityCriteria": "Key Inclusion Criteria (applicable to all participants and all parts unless otherwise specified):\n\n* Aged ≥18 years at the time of giving informed consent. Local laws will be followed if the age of consent is older.\n* Have histologic or cytologic documented advanced disease, either at relapse or upon diagnosis of metastatic disease. This requirement may be considered met when advanced disease derives from unequivocal progression of a previously biopsied site of disease (e.g., progression of residual tumor after concomitant chemo-radiation for Stage III NSCLC).\n* Have measurable disease defined by RECIST v1.1.\n* All participants must provide a tumor tissue sample (Formalin-fixed paraffin-embedded \\[FFPE\\] slides) from archival tissue. The archival tissue can be an FFPE block or freshly cut slides derived from the advanced setting or a new/fresh tumor biopsy.\n* Have ECOG performance status of 0 or 1.\n* Have adequate organ and bone marrow function (as specified in the protocol) within 7 days before randomization/enrollment.\n* Cohort 1A:\n\n  * Have histologically or cytologically confirmed diagnosis of unresectable or metastatic cutaneous melanoma not amenable to local therapy.\n  * Participants must have previously received a PD-1 or PD-L1 inhibitor, and, for participants with human gene that encodes a protein called B-Raf (BRAF) gene mutant melanoma, a prior treatment regimen that included vemurafenib, dabrafenib, or another BRAF gene inhibitor with or without mitogen-activated protein kinase protein inhibitor, if available and clinically indicated per local standard of care (SoC) and have experienced progression during or after the previous treatment or discontinued from prior therapy due to intolerance.\n* Cohort 1B and 1C: Have advanced (i.e., metastatic or locally recurrent where local therapy with curative intent is not possible) non-squamous or squamous NSCLC.\n* Cohort 1B:\n\n  * Have no actionable genomic alterations, such as EGFR mutations, anaplastic lymphoma kinase rearrangements, or other genomic alterations for which targeted molecular therapies are available. For enrolled participants with predominantly squamous histology tumors, molecular testing will not be required in cases where it is not part of the SoC.\n  * Have experienced relapse or progression during or after treatment with standard systemic therapy including platinum-based chemotherapy and/or immune checkpoint inhibitor in the advanced/metastatic setting or discontinued from prior therapy due to intolerance.\n  * Participants must have received 1 to 3 lines of systemic treatment, which can include anti-PD-1/PD-L1 therapy (if PD-L1 positive), chemotherapy, and anti-angiogenic agents. These treatments may be administered concurrently or sequentially. Prior chemotherapy must be limited to 2 lines or less.\n* Cohort 1C:\n\n  * Have documented positive test results for an EGFR-sensitizing mutation (EGFR-sensitizing mutation Exon 21-L858R and 19del).\n  * Participants must have received one or two prior lines of systemic therapy for advanced and/or metastatic disease, which must include treatment with an approved EGFR Tyrosine Kinase Inhibitors (TKI), with at least one being a third-generation EGFR TKI. If there is no third-generation EGFR TKI approved as part of SoC by local health authorities in a certain country, failure/progression on any EGFR TKI is acceptable for eligibility.\n  * Participants receiving an EGFR TKI at the time of signing informed consent may continue to take the EGFR TKI until 5 days prior to Cycle 1 Day 1.\n  * Prior chemotherapy and amivantamab are permitted only if administered in combination with an EGFR TKI as part of a single line of therapy and as the initial (first line) treatment for advanced/metastatic disease. Participants must not have received any other systemic therapies (such as chemotherapy, immunotherapy, or targeted agents) for advanced/metastatic disease, unless those treatments were given in combination with an EGFR TKI.\n  * Have experienced progression during or after treatment or discontinued from prior therapy due to intolerance.\n* Cohort 1D:\n\n  * Have histologically or cytologically confirmed diagnosis of unresectable or metastatic acral/uveal/mucosal melanoma not amenable to local therapy.\n  * Participants must have:\n\n    * Previously been treated with a PD-1 or PD-L1 inhibitor, if clinically indicated and available per local SoC, and/or\n    * For participants with Human Leukocyte Antigen Alleles (HLA-A)\\*02:01 serotype-positive disease (only applicable for uveal melanoma), previously been treated with tebentafusp-tebn if clinically indicated and available per local SoC, and\n    * Experienced progression during or after the previous treatment or discontinued from prior therapy due to intolerance.\n* Cohorts 1E and 1F (DDI):\n\n  * Have histologically or cytologically confirmed diagnosis of unresectable or metastatic advanced solid tumor not amenable to ablative or curative approach including, but not limited to:\n\n    * Cholangiocarcinoma, including tumors of the intra- and extrahepatic biliary tract and gallbladder\n    * Hepatocellular carcinoma (HCC).\n    * Renal cell carcinoma\n    * Endometrial carcinoma, excluding those classified as true sarcomas\n    * Pancreatic ductal adenocarcinoma (PDAC) (see below other related inclusion criterion)\n    * Neuroendocrine tumor of pancreatic, gastrointestinal, lung, and thymus that is well differentiated, Grade 1 to 3.\n    * NSCLC (Cohort 1F only)\n  * Have experienced disease progression on at least one and no more than three lines of prior therapy or, for Cohort 1E only, discontinued from prior therapy due to intolerance.\n  * (For participants with PDAC only) Have received one or two lines of systemic therapy for metastatic tumors, and have experienced progression or intolerance to the treatment during or following therapy.\n* Cohort 2A: Have histologically or cytologically confirmed diagnosis of unresectable or metastatic cutaneous melanoma not amenable to local therapy.\n* Cohort 2B: Have histologically or cytologically confirmed diagnosis of recurrent unresectable or metastatic breast cancer that is documented as HER2-negative and either HR-negative or HR-positive per American Society of Clinical Oncology/College of American Pathologists guidelines.\n* Cohort 2D:\n\n  * Histologically and/or cytologically documented metastatic adenocarcinoma and squamous carcinoma of GC/GEJC. (Note: ESCC is excluded).\n  * (2L subgroup): Had disease progression during or after one prior line of anti-cancer therapy for recurrent/metastatic disease.\n  * (3L subgroup): Has received two or more lines of prior anti-cancer therapy for recurrent/metastatic disease.\n  * (HER2-expression positive subgroup): Has received at least one prior line of systemic therapy for recurrent or metastatic disease, including a HER2-targeted agent in accordance with local SoC.\n* Cohort 2E:\n\n  * Histologically and/or cytologically documented recurrent unresectable metastatic colorectal adenocarcinoma.\n  * Must have received at least one line to a maximum of three lines of prior SoC treatment for recurrent/metastatic disease.\n* Cohort 1G and 2F:\n\n  * Histologically and/or cytologically documented recurrent unresectable metastatic cervical cancer with squamous cell, adenocarcinoma, or adenosquamous histology.\n  * Must have received platinum-based chemotherapy, with or without an anti-PD-(L)1 agent and bevacizumab for metastatic/recurrent disease, unless the patient is not a candidate in the opinion of the treating physician.\n\nKey Exclusion Criteria (applicable to all participants and all parts unless otherwise specified):\n\n* Have a history of intolerance to treatment with a topoisomerase I inhibitor or intolerance to an ADC that consists of a topoisomerase I inhibitor, including but not limited to topotecan, irinotecan, and deruxtecan (e.g., severe diarrhea).\n* Have an uncontrolled concomitant or intercurrent illness that contra-indicates study participation, limits compliance with study procedures or substantially increases the risk of incurring adverse events, including:\n\n  * Bleeding diathesis or active hemorrhage,\n  * Active infection,\n  * Child-Pugh class B or C cirrhosis,\n  * Pulmonary disease with significant impact in lung function\n  * Oncologic emergencies or complications (e.g., malignant hypercalcemia, superior vena cava syndrome, carcinoid syndrome that is unstable and with available alternative therapies),\n  * Psychiatric or abuse condition\n  * Infectious colitis Grade ≥2 not resolved to Grade 1 within 72 hours within the past 3 months.\n* Have LVEF \\<50% by either echocardiography or multi-gated acquisition (scanning) within 28 days before randomization/enrollment.\n* Have clinically uncontrolled pleural effusion, ascites or pericardial effusion requiring drainage, peritoneal shunt, or cell-free concentrated ascites reinfusion therapy within 2 weeks prior to randomization/enrollment.\n* Have a history of (non-infectious) interstitial lung disease (ILD) /pneumonitis that required steroids, have current ILD/pneumonitis, or where suspected ILD/pneumonitis cannot be ruled out by imaging at screening. Asymptomatic interstitial changes caused by previous radiation therapy, chemotherapy, or other factors such as smoking are acceptable.\n* Are a participant of child-bearing potential who are pregnant or breastfeeding or are planning pregnancy within 225 days (\\~7.5 months) after receiving last dose of BNT326 and within 6 months after last dose of BNT327, whichever is longer.\n* Are potentially fertile males, who are planning to father children during the study or within 135 days (\\~4.5 months) after the last dose of BNT326 and within 6 months after last dose of BNT327, whichever is longer.\n* Are subject to exclusion periods from another investigational study.\n* Specific to BNT327: Participants with significant risks of hemorrhage or evidence of major coagulation disorders as specified in the protocol.\n* Specific to BNT327: Have a history of intolerance to treatment with an anti-VEFG, anti-PD-1/PDL-1, or similar substance, including, but not limited to, bevacizumab, ramucirumab, atezolizumab, pembrolizumab, nivolumab, or other related therapies.\n* Cohort 1E: Have histological diagnosis of fibrolamellar HCC, sarcomatoid HCC, or mixed cholangiocarcinoma and HCC.\n\nNOTE: Other protocol defined Inclusion/Exclusion criteria apply.",
+      "healthyVolunteers": false,
+      "sex": "ALL",
+      "minimumAge": "18 Years",
+      "stdAges": [
+        "ADULT",
+        "OLDER_ADULT"
+      ]
+    },
+    "contactsLocationsModule": {
+      "centralContacts": [
+        {
+          "name": "BioNTech clinical trials patient information",
+          "role": "CONTACT",
+          "phone": "+49 6131 9084",
+          "phoneExt": "0",
+          "email": "patients@biontech.de"
+        }
+      ],
+      "overallOfficials": [
+        {
+          "name": "BioNTech Responsible Person",
+          "affiliation": "BioNTech SE",
+          "role": "STUDY_DIRECTOR"
+        }
+      ],
+      "locations": [
+        {
+          "facility": "Mayo Clinic Arizona",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Phoenix",
+          "state": "Arizona",
+          "zip": "85054",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 33.44838,
+            "lon": -112.07404
+          }
+        },
+        {
+          "facility": "University of California San Francisco",
+          "status": "NOT_YET_RECRUITING",
+          "city": "San Francisco",
+          "state": "California",
+          "zip": "94158",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 37.77493,
+            "lon": -122.41942
+          }
+        },
+        {
+          "facility": "Hartford Healthcare",
+          "status": "RECRUITING",
+          "city": "Hartford",
+          "state": "Connecticut",
+          "zip": "06102",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 41.76371,
+            "lon": -72.68509
+          }
+        },
+        {
+          "facility": "Yale University",
+          "status": "RECRUITING",
+          "city": "New Haven",
+          "state": "Connecticut",
+          "zip": "06511",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 41.30815,
+            "lon": -72.92816
+          }
+        },
+        {
+          "facility": "Florida Cancer Specialists",
+          "status": "RECRUITING",
+          "city": "Sarasota",
+          "state": "Florida",
+          "zip": "34232",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 27.33643,
+            "lon": -82.53065
+          }
+        },
+        {
+          "facility": "Moffitt Cancer Center",
+          "status": "RECRUITING",
+          "city": "Tampa",
+          "state": "Florida",
+          "zip": "33612-9497",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 27.94752,
+            "lon": -82.45843
+          }
+        },
+        {
+          "facility": "Dana Farber Cancer Institute",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Boston",
+          "state": "Massachusetts",
+          "zip": "02215",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 42.35843,
+            "lon": -71.05977
+          }
+        },
+        {
+          "facility": "Massachusetts General Hospital",
+          "status": "RECRUITING",
+          "city": "Boston",
+          "state": "Massachusetts",
+          "zip": "02215",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 42.35843,
+            "lon": -71.05977
+          }
+        },
+        {
+          "facility": "Brigitte Harris Cancer Pavilion BHCP",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Detroit",
+          "state": "Michigan",
+          "zip": "48202",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 42.33143,
+            "lon": -83.04575
+          }
+        },
+        {
+          "facility": "START Midwest, LLC",
+          "status": "RECRUITING",
+          "city": "Grand Rapids",
+          "state": "Michigan",
+          "zip": "49546",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 42.96336,
+            "lon": -85.66809
+          }
+        },
+        {
+          "facility": "Memorial Sloan Kettering Hospital",
+          "status": "RECRUITING",
+          "city": "New York",
+          "state": "New York",
+          "zip": "10065",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 40.71427,
+            "lon": -74.00597
+          }
+        },
+        {
+          "facility": "Duke Cancer Institute",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Durham",
+          "state": "North Carolina",
+          "zip": "27710",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 35.99403,
+            "lon": -78.89862
+          }
+        },
+        {
+          "facility": "Cleveland Clinic Taussig Cancer Center",
+          "status": "RECRUITING",
+          "city": "Cleveland",
+          "state": "Ohio",
+          "zip": "44195",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 41.4995,
+            "lon": -81.69541
+          }
+        },
+        {
+          "facility": "University of Pittsburgh Medical Center",
+          "status": "RECRUITING",
+          "city": "Pittsburgh",
+          "state": "Pennsylvania",
+          "zip": "15232",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 40.44062,
+            "lon": -79.99589
+          }
+        },
+        {
+          "facility": "The University of Texas MD Anderson Cancer Center",
+          "status": "RECRUITING",
+          "city": "Houston",
+          "state": "Texas",
+          "zip": "77030",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 29.76328,
+            "lon": -95.36327
+          }
+        },
+        {
+          "facility": "South Texas Accelerated Research Therapeutics (START), LLC",
+          "status": "RECRUITING",
+          "city": "San Antonio",
+          "state": "Texas",
+          "zip": "78229",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 29.42412,
+            "lon": -98.49363
+          }
+        },
+        {
+          "facility": "START Mountain Region",
+          "status": "RECRUITING",
+          "city": "West Valley City",
+          "state": "Utah",
+          "zip": "84119",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 40.69161,
+            "lon": -112.00105
+          }
+        },
+        {
+          "facility": "The Board of Regents of the University of Wisconsin",
+          "status": "RECRUITING",
+          "city": "Madison",
+          "state": "Wisconsin",
+          "zip": "53792-6188",
+          "country": "United States",
+          "geoPoint": {
+            "lat": 43.07305,
+            "lon": -89.40123
+          }
+        },
+        {
+          "facility": "Blacktown Hospital",
+          "status": "RECRUITING",
+          "city": "Blacktown",
+          "state": "New South Wales",
+          "zip": "2148",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -33.76667,
+            "lon": 150.91667
+          }
+        },
+        {
+          "facility": "St Vincent's Hospital Sydney",
+          "status": "RECRUITING",
+          "city": "Darlinghurst",
+          "state": "New South Wales",
+          "zip": "2010",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -33.87939,
+            "lon": 151.21925
+          }
+        },
+        {
+          "facility": "Melanoma Institute Australia",
+          "status": "RECRUITING",
+          "city": "Wollstonecraft",
+          "state": "New South Wales",
+          "zip": "2065",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -33.8328,
+            "lon": 151.18981
+          }
+        },
+        {
+          "facility": "Tasman Oncology Research Ltd",
+          "status": "RECRUITING",
+          "city": "Southport",
+          "state": "Queensland",
+          "zip": "4215",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -27.96724,
+            "lon": 153.39796
+          }
+        },
+        {
+          "facility": "Cancer Research SA",
+          "status": "RECRUITING",
+          "city": "Adelaide",
+          "state": "South Australia",
+          "zip": "5000",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -34.92866,
+            "lon": 138.59863
+          }
+        },
+        {
+          "facility": "Austin Health",
+          "status": "RECRUITING",
+          "city": "Heidelberg",
+          "state": "Victoria",
+          "zip": "3084",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -37.75,
+            "lon": 145.06667
+          }
+        },
+        {
+          "facility": "The Alfred Hospital",
+          "status": "RECRUITING",
+          "city": "Melbourne",
+          "state": "Victoria",
+          "zip": "3004",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -37.814,
+            "lon": 144.96332
+          }
+        },
+        {
+          "facility": "One Clinical Research Pty Ltd",
+          "status": "RECRUITING",
+          "city": "Nedlands",
+          "state": "Western Australia",
+          "zip": "6009",
+          "country": "Australia",
+          "geoPoint": {
+            "lat": -31.98184,
+            "lon": 115.8073
+          }
+        },
+        {
+          "facility": "Universitair Ziekenhuis Gent",
+          "status": "RECRUITING",
+          "city": "Ghent",
+          "zip": "9000",
+          "country": "Belgium",
+          "geoPoint": {
+            "lat": 51.05,
+            "lon": 3.71667
+          }
+        },
+        {
+          "facility": "Centre hospitalier universitaire de Liège",
+          "status": "RECRUITING",
+          "city": "Liège",
+          "zip": "4000",
+          "country": "Belgium",
+          "geoPoint": {
+            "lat": 50.63373,
+            "lon": 5.56749
+          }
+        },
+        {
+          "facility": "Ziekenhuis Aan de Stroom ZAS vzw",
+          "status": "RECRUITING",
+          "city": "Wilrijk",
+          "zip": "2610",
+          "country": "Belgium",
+          "geoPoint": {
+            "lat": 51.16734,
+            "lon": 4.39513
+          }
+        },
+        {
+          "facility": "Charité - Campus Charité Mitte",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Berlin",
+          "zip": "10117",
+          "country": "Germany",
+          "geoPoint": {
+            "lat": 52.52437,
+            "lon": 13.41053
+          }
+        },
+        {
+          "facility": "Universitaetsklinikum Essen",
+          "status": "RECRUITING",
+          "city": "Essen",
+          "zip": "45147",
+          "country": "Germany",
+          "geoPoint": {
+            "lat": 51.45657,
+            "lon": 7.01228
+          }
+        },
+        {
+          "facility": "Universitätsmedizin der Johannes Gutenberg-Universität Mainz",
+          "status": "RECRUITING",
+          "city": "Mainz",
+          "zip": "55131",
+          "country": "Germany",
+          "geoPoint": {
+            "lat": 49.98185,
+            "lon": 8.28008
+          }
+        },
+        {
+          "facility": "Klinikum der Universität München Campus Grosshadern",
+          "status": "NOT_YET_RECRUITING",
+          "city": "München",
+          "zip": "81377",
+          "country": "Germany",
+          "geoPoint": {
+            "lat": 51.60698,
+            "lon": 13.31243
+          }
+        },
+        {
+          "facility": "Universitätsklinikum Tübingen",
+          "status": "RECRUITING",
+          "city": "Tübingen",
+          "zip": "72076",
+          "country": "Germany",
+          "geoPoint": {
+            "lat": 48.52266,
+            "lon": 9.05222
+          }
+        },
+        {
+          "facility": "Istituto Romagnolo per lo Studio dei Tumori Dino Amadori",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Meldola",
+          "zip": "47014",
+          "country": "Italy",
+          "geoPoint": {
+            "lat": 44.12775,
+            "lon": 12.0626
+          }
+        },
+        {
+          "facility": "Fondazione IRCCS Istituto Nazionale dei Tumori",
+          "status": "RECRUITING",
+          "city": "Milan",
+          "zip": "20133",
+          "country": "Italy",
+          "geoPoint": {
+            "lat": 42.78235,
+            "lon": 12.59836
+          }
+        },
+        {
+          "facility": "IEO Istituto Europeo di Oncologia",
+          "status": "RECRUITING",
+          "city": "Milan",
+          "zip": "20141",
+          "country": "Italy",
+          "geoPoint": {
+            "lat": 42.78235,
+            "lon": 12.59836
+          }
+        },
+        {
+          "facility": "Istituto Nazionale Tumori Fondazione G. Pascale",
+          "status": "RECRUITING",
+          "city": "Naples",
+          "zip": "80131",
+          "country": "Italy",
+          "geoPoint": {
+            "lat": 40.85216,
+            "lon": 14.26811
+          }
+        },
+        {
+          "facility": "Fondazione Policlinico Universitario Agostino Gemelli IRCCS",
+          "status": "RECRUITING",
+          "city": "Roma",
+          "zip": "00168",
+          "country": "Italy",
+          "geoPoint": {
+            "lat": 44.99364,
+            "lon": 11.10642
+          }
+        },
+        {
+          "facility": "Istituto Clinico Humanitas",
+          "status": "RECRUITING",
+          "city": "Rozzano",
+          "zip": "20089",
+          "country": "Italy",
+          "geoPoint": {
+            "lat": 45.38193,
+            "lon": 9.1559
+          }
+        },
+        {
+          "facility": "Hospital Universitari Vall d'Hebron - VHIO",
+          "status": "RECRUITING",
+          "city": "Barcelona",
+          "zip": "08035",
+          "country": "Spain",
+          "geoPoint": {
+            "lat": 41.38879,
+            "lon": 2.15899
+          }
+        },
+        {
+          "facility": "Hospital Clinic de Barcelona",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Barcelona",
+          "zip": "08036",
+          "country": "Spain",
+          "geoPoint": {
+            "lat": 41.38879,
+            "lon": 2.15899
+          }
+        },
+        {
+          "facility": "START Barcelona -HM Nou Delfos",
+          "status": "RECRUITING",
+          "city": "Barcelona",
+          "zip": "8023",
+          "country": "Spain",
+          "geoPoint": {
+            "lat": 41.38879,
+            "lon": 2.15899
+          }
+        },
+        {
+          "facility": "Hospital de San Pedro",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Logroño",
+          "zip": "26006",
+          "country": "Spain",
+          "geoPoint": {
+            "lat": 42.46615,
+            "lon": -2.45115
+          }
+        },
+        {
+          "facility": "Hospital Beata Maria Ana",
+          "status": "RECRUITING",
+          "city": "Madrid",
+          "zip": "28007",
+          "country": "Spain",
+          "geoPoint": {
+            "lat": 40.4165,
+            "lon": -3.70256
+          }
+        },
+        {
+          "facility": "Hospital Universitario Fundacion Jimenez Diaz",
+          "status": "RECRUITING",
+          "city": "Madrid",
+          "zip": "28040",
+          "country": "Spain",
+          "geoPoint": {
+            "lat": 40.4165,
+            "lon": -3.70256
+          }
+        },
+        {
+          "facility": "Centro Integral Oncologico Clara Campal",
+          "status": "RECRUITING",
+          "city": "Madrid",
+          "zip": "28050",
+          "country": "Spain",
+          "geoPoint": {
+            "lat": 40.4165,
+            "lon": -3.70256
+          }
+        },
+        {
+          "facility": "Hospital Universitario Quironsalud Madrid",
+          "status": "RECRUITING",
+          "city": "Pozuelo de Alarcón",
+          "zip": "28223",
+          "country": "Spain",
+          "geoPoint": {
+            "lat": 40.43293,
+            "lon": -3.81338
+          }
+        },
+        {
+          "facility": "Hospital Universitari i Politecnic La Fe",
+          "status": "RECRUITING",
+          "city": "Valencia",
+          "zip": "46026",
+          "country": "Spain",
+          "geoPoint": {
+            "lat": 39.47391,
+            "lon": -0.37966
+          }
+        },
+        {
+          "facility": "Dr. Abdurrahman Yurtaslan Ankara Oncology Traning & Research",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Ankara",
+          "zip": "6200",
+          "country": "Turkey (Türkiye)",
+          "geoPoint": {
+            "lat": 39.91987,
+            "lon": 32.85427
+          }
+        },
+        {
+          "facility": "Hacettepe Oncology Hospital",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Ankara",
+          "zip": "6230",
+          "country": "Turkey (Türkiye)",
+          "geoPoint": {
+            "lat": 39.91987,
+            "lon": 32.85427
+          }
+        },
+        {
+          "facility": "Yeditepe University Kosuyolu Hospital",
+          "status": "NOT_YET_RECRUITING",
+          "city": "Istanbul",
+          "zip": "34718",
+          "country": "Turkey (Türkiye)",
+          "geoPoint": {
+            "lat": 41.01384,
+            "lon": 28.94966
+          }
+        },
+        {
+          "facility": "Queen Elizabeth Hospital",
+          "status": "RECRUITING",
+          "city": "Birmingham",
+          "zip": "B15 2TH",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 52.48142,
+            "lon": -1.89983
+          }
+        },
+        {
+          "facility": "Velindre Cancer Centre",
+          "status": "RECRUITING",
+          "city": "Cardiff",
+          "zip": "CF14 2TL",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 51.48,
+            "lon": -3.18
+          }
+        },
+        {
+          "facility": "Beatson West of Scotland Cancer Centre",
+          "status": "RECRUITING",
+          "city": "Glasgow",
+          "zip": "G12 0YN",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 55.86515,
+            "lon": -4.25763
+          }
+        },
+        {
+          "facility": "The Clatterbridge Cancer Centre",
+          "status": "RECRUITING",
+          "city": "Liverpool",
+          "zip": "L7 8YA",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 53.41058,
+            "lon": -2.97794
+          }
+        },
+        {
+          "facility": "Royal Free Hospital",
+          "status": "RECRUITING",
+          "city": "London",
+          "zip": "NW3 2QG",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 51.50853,
+            "lon": -0.12574
+          }
+        },
+        {
+          "facility": "Royal Marsden Hospital-London",
+          "status": "RECRUITING",
+          "city": "London",
+          "zip": "SW3 6JJ",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 51.50853,
+            "lon": -0.12574
+          }
+        },
+        {
+          "facility": "Imperial College London",
+          "status": "RECRUITING",
+          "city": "London",
+          "zip": "W12 0HS",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 51.50853,
+            "lon": -0.12574
+          }
+        },
+        {
+          "facility": "University College London Hospitals",
+          "status": "RECRUITING",
+          "city": "London",
+          "zip": "W1T 7HA",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 51.50853,
+            "lon": -0.12574
+          }
+        },
+        {
+          "facility": "The Christie Hospital",
+          "status": "RECRUITING",
+          "city": "Manchester",
+          "zip": "M20 4BX",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 53.48095,
+            "lon": -2.23743
+          }
+        },
+        {
+          "facility": "Northern Centre for Cancer Care",
+          "status": "RECRUITING",
+          "city": "Newcastle upon Tyne",
+          "zip": "NE7 7DN",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 54.97328,
+            "lon": -1.61396
+          }
+        },
+        {
+          "facility": "Southampton General Hospital",
+          "status": "RECRUITING",
+          "city": "Southampton",
+          "zip": "SO16 6YD",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 50.90395,
+            "lon": -1.40428
+          }
+        },
+        {
+          "facility": "Royal Marsden Hospital",
+          "status": "RECRUITING",
+          "city": "Sutton",
+          "zip": "SM2 5PT",
+          "country": "United Kingdom",
+          "geoPoint": {
+            "lat": 51.35,
+            "lon": -0.2
+          }
+        }
+      ]
+    },
+    "ipdSharingStatementModule": {
+      "ipdSharing": "NO"
+    }
+  },
+  "derivedSection": {
+    "miscInfoModule": {
+      "versionHolder": "2026-06-26"
+    },
+    "conditionBrowseModule": {
+      "meshes": [
+        {
+          "id": "C564369",
+          "term": "Lethal Congenital Contracture Syndrome 2"
+        },
+        {
+          "id": "D008545",
+          "term": "Melanoma"
+        },
+        {
+          "id": "D002289",
+          "term": "Carcinoma, Non-Small-Cell Lung"
+        },
+        {
+          "id": "D013274",
+          "term": "Stomach Neoplasms"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D018358",
+          "term": "Neuroendocrine Tumors"
+        },
+        {
+          "id": "D017599",
+          "term": "Neuroectodermal Tumors"
+        },
+        {
+          "id": "D009373",
+          "term": "Neoplasms, Germ Cell and Embryonal"
+        },
+        {
+          "id": "D009370",
+          "term": "Neoplasms by Histologic Type"
+        },
+        {
+          "id": "D009369",
+          "term": "Neoplasms"
+        },
+        {
+          "id": "D009380",
+          "term": "Neoplasms, Nerve Tissue"
+        },
+        {
+          "id": "D018326",
+          "term": "Nevi and Melanomas"
+        },
+        {
+          "id": "D012878",
+          "term": "Skin Neoplasms"
+        },
+        {
+          "id": "D009371",
+          "term": "Neoplasms by Site"
+        },
+        {
+          "id": "D012871",
+          "term": "Skin Diseases"
+        },
+        {
+          "id": "D017437",
+          "term": "Skin and Connective Tissue Diseases"
+        },
+        {
+          "id": "D002283",
+          "term": "Carcinoma, Bronchogenic"
+        },
+        {
+          "id": "D001984",
+          "term": "Bronchial Neoplasms"
+        },
+        {
+          "id": "D008175",
+          "term": "Lung Neoplasms"
+        },
+        {
+          "id": "D012142",
+          "term": "Respiratory Tract Neoplasms"
+        },
+        {
+          "id": "D013899",
+          "term": "Thoracic Neoplasms"
+        },
+        {
+          "id": "D008171",
+          "term": "Lung Diseases"
+        },
+        {
+          "id": "D012140",
+          "term": "Respiratory Tract Diseases"
+        },
+        {
+          "id": "D005770",
+          "term": "Gastrointestinal Neoplasms"
+        },
+        {
+          "id": "D004067",
+          "term": "Digestive System Neoplasms"
+        },
+        {
+          "id": "D004066",
+          "term": "Digestive System Diseases"
+        },
+        {
+          "id": "D005767",
+          "term": "Gastrointestinal Diseases"
+        },
+        {
+          "id": "D013272",
+          "term": "Stomach Diseases"
+        }
+      ]
+    },
+    "interventionBrowseModule": {
+      "meshes": [
+        {
+          "id": "D017964",
+          "term": "Itraconazole"
+        },
+        {
+          "id": "D017374",
+          "term": "Paroxetine"
+        }
+      ],
+      "ancestors": [
+        {
+          "id": "D014230",
+          "term": "Triazoles"
+        },
+        {
+          "id": "D001393",
+          "term": "Azoles"
+        },
+        {
+          "id": "D006573",
+          "term": "Heterocyclic Compounds, 1-Ring"
+        },
+        {
+          "id": "D006571",
+          "term": "Heterocyclic Compounds"
+        },
+        {
+          "id": "D010879",
+          "term": "Piperazines"
+        },
+        {
+          "id": "D010880",
+          "term": "Piperidines"
+        }
+      ]
+    }
+  },
+  "hasResults": false
+}
