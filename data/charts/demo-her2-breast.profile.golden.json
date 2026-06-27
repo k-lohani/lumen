@@ -1,0 +1,59 @@
+{
+  "patient_id": "demo-her2-breast",
+  "demographics": { "age": 54, "sex": "F" },
+  "diagnosis": {
+    "primary": "Metastatic HER2-positive invasive ductal carcinoma of the breast",
+    "histology": "invasive ductal carcinoma",
+    "stage": "IV",
+    "source_line_ids": ["L0001", "L0013"]
+  },
+  "biomarkers": [
+    {
+      "name": "HER2",
+      "status": "IHC 3+ positive, ISH amplified",
+      "source_line_ids": ["L0002"]
+    },
+    {
+      "name": "ER",
+      "status": "positive 85%",
+      "source_line_ids": ["L0002"]
+    },
+    {
+      "name": "PR",
+      "status": "positive 70%",
+      "source_line_ids": ["L0002"]
+    },
+    {
+      "name": "PIK3CA E545K",
+      "status": "detected",
+      "source_line_ids": ["L0003"]
+    }
+  ],
+  "prior_therapies": [
+    {
+      "name": "anastrozole",
+      "class": "aromatase inhibitor",
+      "line": 1,
+      "source_line_ids": ["L0004"]
+    }
+  ],
+  "performance_status": {
+    "scale": "ECOG",
+    "value": 1,
+    "source_line_ids": ["L0005"]
+  },
+  "labs_measurements": [
+    {
+      "name": "organ/marrow function panel",
+      "value": "adequate",
+      "date": "2026-06",
+      "source_line_ids": ["L0008"]
+    },
+    {
+      "name": "LVEF",
+      "value": "62%",
+      "date": "2026-06",
+      "source_line_ids": ["L0010"]
+    }
+  ]
+}

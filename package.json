@@ -13,7 +13,7 @@
     "test-pipeline": "tsx scripts/test-pipeline.ts",
     "assert-verdicts": "tsx scripts/assert-verdicts.ts",
     "eval": "tsx eval/runEval.ts",
-    "generate-demo-fixtures": "tsx scripts/generate-demo-fixtures.ts"
+    "e2e-smoke": "tsx scripts/e2e-smoke.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.106.0",

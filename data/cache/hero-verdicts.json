@@ -1,12 +1,15 @@
 {
   "hero": {
-    "generated_at": "2026-06-27T12:26:26.563Z",
+    "chart_hash": "f6e99ebce09e70b5c295dc91c9e68736d221e501a9b722648067f8e0969a23d4",
+    "generated_at": "2026-06-27T17:24:13.609Z",
     "verdicts": [
       {
         "trial_id": "NCT07174388",
         "trial_title": "An External Control Arm Study in Non-Small Cell Lung Cancer",
+        "trial_status": "RECRUITING",
         "matched_cohort": "9",
-        "cohort_label": "Cohort 9 \u2014 EGFR mutations, second line or later after osimertinib monotherapy",
+        "cohort_label": "Cohort 9 — EGFR mutations, second line or later after osimertinib monotherapy",
+        "registry_synced_at": "2026-06-16",
         "verdict": "ELIGIBLE",
         "criteria": [
           {
@@ -22,7 +25,8 @@
             "evidence_line_id": "L0001",
             "evidence_span": "58-year-old woman with Stage IV lung adenocarcinoma (AJCC 8th ed).",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "Patient is 58 years old."
           },
@@ -39,7 +43,8 @@
             "evidence_line_id": "L0001",
             "evidence_span": "58-year-old woman with Stage IV lung adenocarcinoma (AJCC 8th ed).",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "Metastatic NSCLC confirmed in chart."
           },
@@ -56,9 +61,10 @@
             "evidence_line_id": "L0004",
             "evidence_span": "ECOG performance status 1.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "ECOG \u22641 documented."
+            "rationale": "ECOG ≤1 documented."
           },
           {
             "criterion": {
@@ -70,12 +76,13 @@
               "text": "Life expectancy of more than 3 months"
             },
             "state": "MET",
-            "evidence_line_id": "L0004",
-            "evidence_span": "ECOG performance status 1.",
+            "evidence_line_id": "L0011",
+            "evidence_span": "Prognosis: treating oncologist estimates life expectancy greater than 6 months.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "Active advanced NSCLC with ECOG 1 supports life expectancy >3 months."
+            "rationale": "Life expectancy explicitly documented by treating oncologist."
           },
           {
             "criterion": {
@@ -90,7 +97,8 @@
             "evidence_line_id": "L0010",
             "evidence_span": "Patient able to understand and willing to sign informed consent.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "Patient able and willing to provide informed consent."
           },
@@ -107,7 +115,8 @@
             "evidence_line_id": "L0006",
             "evidence_span": "CT chest: RUL target lesion 2.4 cm, measurable per RECIST 1.1.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "Measurable disease per RECIST documented."
           },
@@ -124,7 +133,8 @@
             "evidence_line_id": "L0002",
             "evidence_span": "NGS: EGFR exon 19 deletion (p.E746_A750del). ALK/ROS1 negative.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "EGFR sensitizing mutation documented on NGS."
           },
@@ -141,9 +151,10 @@
             "evidence_line_id": "L0003",
             "evidence_span": "First-line osimertinib 80 mg daily started 2025-09; radiographic progression 2026-05 (RECIST 1.1).",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "On standard osimertinib therapy \u2014 not documented as on an investigational agent."
+            "rationale": "On FDA-approved osimertinib — not documented as on an investigational agent."
           },
           {
             "criterion": {
@@ -158,7 +169,8 @@
             "evidence_line_id": "L0008",
             "evidence_span": "No history of interstitial lung disease. No prior chemotherapy.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "No active systemic therapy for another malignancy documented."
           },
@@ -175,22 +187,23 @@
             "evidence_line_id": "L0001",
             "evidence_span": "58-year-old woman with Stage IV lung adenocarcinoma (AJCC 8th ed).",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "Stage IV disease \u2014 not eligible for curative-intent therapy."
+            "rationale": "Stage IV disease — not eligible for curative-intent therapy."
           }
         ],
         "actionable_gap": null,
-        "reachability_rank": 1,
-        "registry_synced_at": "2026-06-27",
-        "trial_status": "RECRUITING"
+        "reachability_rank": 1
       },
       {
         "trial_id": "NCT07070232",
         "trial_title": "A Clinical Study to Test if an Investigational Treatment Called BNT326 is Safe and Potentially Beneficial When Used Alone or in Combination With Other Investigational Treatments Such as BNT327, for People With Advanced Malignant Tumors",
         "phase": "Phase 1/Phase 2",
+        "trial_status": "RECRUITING",
         "matched_cohort": "1C",
-        "cohort_label": "Cohort 1C \u2014 EGFR exon 19del/L858R, 1\u20132 prior lines incl. 3rd-gen TKI, progressed",
+        "cohort_label": "Cohort 1C — EGFR exon 19del/L858R, 1–2 prior lines incl. 3rd-gen TKI, progressed",
+        "registry_synced_at": "2026-05-22",
         "verdict": "CONDITIONALLY_ELIGIBLE",
         "criteria": [
           {
@@ -206,7 +219,8 @@
             "evidence_line_id": "L0002",
             "evidence_span": "NGS: EGFR exon 19 deletion (p.E746_A750del). ALK/ROS1 negative.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "EGFR sensitizing mutation documented on NGS."
           },
@@ -223,7 +237,8 @@
             "evidence_line_id": "L0003",
             "evidence_span": "First-line osimertinib 80 mg daily started 2025-09; radiographic progression 2026-05 (RECIST 1.1).",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "Third-generation EGFR TKI with documented progression."
           },
@@ -240,9 +255,10 @@
             "evidence_line_id": "L0004",
             "evidence_span": "ECOG performance status 1.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "ECOG \u22641 documented."
+            "rationale": "ECOG ≤1 documented."
           },
           {
             "criterion": {
@@ -257,7 +273,8 @@
             "evidence_line_id": "L0006",
             "evidence_span": "CT chest: RUL target lesion 2.4 cm, measurable per RECIST 1.1.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "Measurable disease per RECIST documented."
           },
@@ -271,12 +288,13 @@
               "text": "Have adequate organ and bone marrow function within 7 days before randomization/enrollment"
             },
             "state": "MET",
-            "evidence_line_id": "L0004",
-            "evidence_span": "ECOG performance status 1.",
+            "evidence_line_id": "L0007",
+            "evidence_span": "2026-06: ANC 3.1, Hgb 11.8, Plt 220k, bili 0.7, Cr 0.9, AST/ALT normal — adequate organ/marrow function.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "Adequate organ and marrow function documented."
+            "rationale": "Adequate organ and marrow function documented. (Re-selected supporting chart line L0007.)"
           },
           {
             "criterion": {
@@ -314,9 +332,10 @@
             "evidence_line_id": "L0008",
             "evidence_span": "No history of interstitial lung disease. No prior chemotherapy.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "No ILD history \u2014 exclusion does not apply."
+            "rationale": "No ILD history — exclusion does not apply."
           }
         ],
         "actionable_gap": {
@@ -325,16 +344,16 @@
           "threshold": "LVEF >= 50%",
           "cost_tier": "CHEAP"
         },
-        "reachability_rank": 0.95,
-        "registry_synced_at": "2026-06-27",
-        "trial_status": "RECRUITING"
+        "reachability_rank": 0.95
       },
       {
         "trial_id": "NCT06348927",
         "trial_title": "Sunvozertinib Plus Anlotinib as 1L Treatment in EGFR-Sensitive Mutations Combined With Co-Mutations Advanced NSCLC",
         "phase": "Phase 2",
+        "trial_status": "RECRUITING",
         "matched_cohort": "general",
-        "cohort_label": "General eligibility \u2014 first-line treatment-na\u00efve",
+        "cohort_label": "General eligibility — first-line treatment-naïve",
+        "registry_synced_at": "2024-09-19",
         "verdict": "EXCLUDED",
         "criteria": [
           {
@@ -350,7 +369,8 @@
             "evidence_line_id": "L0002",
             "evidence_span": "NGS: EGFR exon 19 deletion (p.E746_A750del). ALK/ROS1 negative.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "EGFR sensitizing mutation documented on NGS."
           },
@@ -367,9 +387,10 @@
             "evidence_line_id": "L0003",
             "evidence_span": "First-line osimertinib 80 mg daily started 2025-09; radiographic progression 2026-05 (RECIST 1.1).",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "Patient received prior systemic therapy \u2014 not treatment-na\u00efve."
+            "rationale": "Patient received prior systemic therapy — not treatment-naïve."
           },
           {
             "criterion": {
@@ -384,9 +405,10 @@
             "evidence_line_id": "L0004",
             "evidence_span": "ECOG performance status 1.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "ECOG \u22641 documented."
+            "rationale": "ECOG ≤1 documented."
           },
           {
             "criterion": {
@@ -401,7 +423,8 @@
             "evidence_line_id": "L0006",
             "evidence_span": "CT chest: RUL target lesion 2.4 cm, measurable per RECIST 1.1.",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
             "rationale": "Measurable disease per RECIST documented."
           },
@@ -418,17 +441,15 @@
             "evidence_line_id": "L0003",
             "evidence_span": "First-line osimertinib 80 mg daily started 2025-09; radiographic progression 2026-05 (RECIST 1.1).",
             "faithfulness": {
-              "substring_ok": true
+              "substring_ok": true,
+              "entailment_ok": true
             },
-            "rationale": "Prior osimertinib constitutes prior systemic therapy \u2014 exclusion fires."
+            "rationale": "Prior osimertinib constitutes prior systemic therapy — exclusion fires."
           }
         ],
         "actionable_gap": null,
-        "reachability_rank": 0,
-        "registry_synced_at": "2026-06-27",
-        "trial_status": "RECRUITING"
+        "reachability_rank": 0
       }
-    ],
-    "chart_hash": "a49c9df1d45cdea11579a17eab3902182a725af4dc565718162d84da5de7fcec"
+    ]
   }
 }

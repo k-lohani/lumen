@@ -1,15 +1,16 @@
 import { z } from "zod";
 import { resolveAction } from "../actions/actionMap";
 import { deriveRawChart } from "../chart";
-import { evalModel, hasApiKey, structured } from "../llm";
+import { evalModel, hasApiKey, isAnthropicUnavailableError, structured } from "../llm";
 import type {
   ChartLine,
   Criterion,
   CriterionResult,
   PatientProfile,
+  PipelineProgressEvent,
   RawChart,
 } from "../types";
-import { applyFaithfulnessGate } from "./verifyCitation";
+import { applyFaithfulnessGate, applyEntailmentGate, ruleBasedEntailmentCheck, type EntailmentCheck } from "./verifyCitation";
 
 const BATCH_SIZE = 10;
 
@@ -31,6 +32,26 @@ const EvalItemSchema = z.object({
 const BatchEvalSchema = z.object({
   evaluations: z.array(EvalItemSchema),
 });
+
+const EntailmentItemSchema = z.object({
+  criterion_id: z.string(),
+  supports: z.boolean(),
+  better_line_id: z.string().nullable(),
+  better_quote: z.string().nullable(),
+});
+
+const BatchEntailmentSchema = z.object({
+  checks: z.array(EntailmentItemSchema),
+});
+
+const ENTAILMENT_SYSTEM = `You verify whether a cited chart line DIRECTLY supports the criterion verdict (MET or NOT_MET).
+
+Rules:
+- supports=true only when the quoted line directly establishes the criterion — not loosely associated context.
+- ECOG performance status does NOT support organ/marrow function, life expectancy, or lab adequacy unless the criterion is about ECOG.
+- If supports=false but another chart line directly supports the verdict, set better_line_id and a VERBATIM better_quote from that line.
+- If no line directly supports the verdict, set better_line_id and better_quote to null.
+- better_line_id must be one of the provided line ids or null.`;
 
 const EVAL_SYSTEM = `You are a clinical trial eligibility adjudicator. Evaluate each criterion using ONLY the supplied chart lines.
 ${P0_RULES}
@@ -273,13 +294,14 @@ function evaluateRuleBased(
   }
 
   if (/life expectancy|survival.*weeks|survival.*months/i.test(text)) {
-    if (nsclcMatch || ecogMatch) {
-      const line = ecogMatch?.line ?? nsclcMatch!.line;
-      const span = ecogMatch?.span ?? nsclcMatch!.span;
+    const prognosisMatch = findLine(lines, [
+      /life expectancy|prognosis|survival.*months/i,
+    ]);
+    if (prognosisMatch) {
       return met(
-        line,
-        span,
-        "Active advanced NSCLC with ECOG 1 supports life expectancy >3 months."
+        prognosisMatch.line,
+        prognosisMatch.span,
+        "Life expectancy explicitly documented by treating oncologist."
       );
     }
     return unknown("Life expectancy not explicitly documented.");
@@ -297,12 +319,11 @@ function evaluateRuleBased(
   }
 
   if (/investigational agent|clinical trial/i.test(text) && isExclusion) {
-    const therapy = osimertinibMatch ?? consentMatch;
-    if (therapy) {
+    if (osimertinibMatch) {
       return notMet(
-        therapy.line,
-        therapy.span,
-        "On standard osimertinib therapy — not documented as on an investigational agent."
+        osimertinibMatch.line,
+        osimertinibMatch.span,
+        "On FDA-approved osimertinib — not documented as on an investigational agent."
       );
     }
     return unknown("Investigational trial participation not documented.");
@@ -397,11 +418,68 @@ ${criteriaBlock}`,
   }));
 }
 
+function entailmentEnabled(): boolean {
+  if (process.env.LUMEN_ENTAILMENT_CHECK === "false") return false;
+  return hasApiKey();
+}
+
+async function verifyEntailmentBatchLlm(
+  results: CriterionResult[],
+  lines: ChartLine[]
+): Promise<Map<string, EntailmentCheck>> {
+  const toCheck = results.filter((r) => r.state !== "UNKNOWN");
+  if (toCheck.length === 0) return new Map();
+
+  const linesBlock = lines
+    .map((l) => `[${l.id} | ${l.section}] ${l.text}`)
+    .join("\n");
+
+  const checksBlock = toCheck
+    .map(
+      (r) =>
+        `- id=${r.criterion.criterion_id} type=${r.criterion.type} verdict=${r.state}: "${r.criterion.text}"
+  cited_line=${r.evidence_line_id ?? "null"} quote="${r.evidence_span ?? ""}"`
+    )
+    .join("\n");
+
+  const result = await structured({
+    model: evalModel(),
+    system: ENTAILMENT_SYSTEM,
+    user: `Verify each citation below.
+
+CHART LINES:
+${linesBlock}
+
+CITATIONS TO VERIFY:
+${checksBlock}`,
+    toolName: "entailment_verify",
+    schema: BatchEntailmentSchema,
+    stage: "entailmentVerify",
+  });
+
+  return new Map(result.checks.map((c) => [c.criterion_id, c]));
+}
+
+function verifyEntailmentRuleBased(
+  results: CriterionResult[]
+): Map<string, EntailmentCheck> {
+  const map = new Map<string, EntailmentCheck>();
+  for (const r of results) {
+    if (r.state === "UNKNOWN") continue;
+    map.set(
+      r.criterion.criterion_id,
+      ruleBasedEntailmentCheck(r.criterion, r.evidence_line_id)
+    );
+  }
+  return map;
+}
+
 function toCriterionResult(
   criterion: Criterion,
   raw: RawEval,
   rawChart: string,
-  lines: ChartLine[]
+  lines: ChartLine[],
+  entailmentCheck?: EntailmentCheck
 ): CriterionResult {
   const gated = applyFaithfulnessGate(rawChart, lines, {
     state: raw.state,
@@ -411,13 +489,21 @@ function toCriterionResult(
     rationale: raw.rationale,
   });
 
+  const entailed = applyEntailmentGate(
+    rawChart,
+    lines,
+    criterion,
+    gated,
+    entailmentCheck
+  );
+
   const result: CriterionResult = {
     criterion,
-    state: gated.state,
-    evidence_line_id: gated.evidence_line_id,
-    evidence_span: gated.evidence_span,
-    faithfulness: gated.faithfulness,
-    rationale: gated.rationale,
+    state: entailed.state,
+    evidence_line_id: entailed.evidence_line_id,
+    evidence_span: entailed.evidence_span,
+    faithfulness: entailed.faithfulness,
+    rationale: entailed.rationale,
   };
 
   if (result.state === "UNKNOWN") {
@@ -434,16 +520,48 @@ export async function evaluateCriteria(
   criteria: Criterion[],
   chart: RawChart,
   profile: PatientProfile,
-  opts?: { useRuleBased?: boolean }
+  opts?: {
+    useRuleBased?: boolean;
+    onProgress?: (event: PipelineProgressEvent) => void;
+    nct_id?: string;
+  }
 ): Promise<CriterionResult[]> {
   const rawChart = deriveRawChart(chart.lines);
   const batches = chunk(criteria, BATCH_SIZE);
   const rawById = new Map<string, RawEval>();
+  const useRuleBased = opts?.useRuleBased || !hasApiKey();
 
-  for (const batch of batches) {
-    if (hasApiKey() && !opts?.useRuleBased) {
-      const llmResults = await evaluateBatchLlm(batch, chart.lines, profile);
-      for (const r of llmResults) rawById.set(r.criterion_id, r);
+  for (let i = 0; i < batches.length; i++) {
+    const batch = batches[i];
+    if (opts?.nct_id && opts?.onProgress) {
+      opts.onProgress({
+        type: "trial_step",
+        nct_id: opts.nct_id,
+        step: "evaluate",
+        meta: {
+          batch: i + 1,
+          batch_total: batches.length,
+          batch_size: batch.length,
+        },
+      });
+    }
+
+    if (!useRuleBased) {
+      try {
+        const llmResults = await evaluateBatchLlm(batch, chart.lines, profile);
+        for (const r of llmResults) rawById.set(r.criterion_id, r);
+      } catch (error) {
+        if (isAnthropicUnavailableError(error)) {
+          for (const c of batch) {
+            rawById.set(
+              c.criterion_id,
+              evaluateRuleBased(c, chart.lines, profile)
+            );
+          }
+        } else {
+          throw error;
+        }
+      }
     } else {
       for (const c of batch) {
         rawById.set(c.criterion_id, evaluateRuleBased(c, chart.lines, profile));
@@ -451,7 +569,7 @@ export async function evaluateCriteria(
     }
   }
 
-  return criteria.map((c) => {
+  const substringResults = criteria.map((c) => {
     const raw = rawById.get(c.criterion_id) ?? {
       criterion_id: c.criterion_id,
       state: "UNKNOWN" as const,
@@ -460,5 +578,42 @@ export async function evaluateCriteria(
       rationale: "No evaluation produced for this criterion.",
     };
     return toCriterionResult(c, raw, rawChart, chart.lines);
+  });
+
+  const runEntailment = useRuleBased || entailmentEnabled();
+  if (!runEntailment) {
+    return substringResults;
+  }
+
+  if (opts?.nct_id && opts?.onProgress && !useRuleBased) {
+    opts.onProgress({
+      type: "trial_step",
+      nct_id: opts.nct_id,
+      step: "entailment",
+      meta: { criteria_count: criteria.length },
+    });
+  }
+
+  let usedRuleBased = useRuleBased;
+  let entailmentMap: Map<string, EntailmentCheck>;
+  if (usedRuleBased) {
+    entailmentMap = verifyEntailmentRuleBased(substringResults);
+  } else {
+    try {
+      entailmentMap = await verifyEntailmentBatchLlm(substringResults, chart.lines);
+    } catch (error) {
+      if (isAnthropicUnavailableError(error)) {
+        usedRuleBased = true;
+        entailmentMap = verifyEntailmentRuleBased(substringResults);
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  return criteria.map((c) => {
+    const raw = rawById.get(c.criterion_id)!;
+    const check = entailmentMap.get(c.criterion_id);
+    return toCriterionResult(c, raw, rawChart, chart.lines, check);
   });
 }

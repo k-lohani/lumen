@@ -83,19 +83,24 @@ export async function fetchStudy(nctId: string): Promise<CTGovStudy> {
 
 export async function fetchStudies(nctIds: string[]): Promise<CTGovStudy[]> {
   if (nctIds.length === 0) return [];
-  const params = new URLSearchParams({
-    "filter.ids": nctIds.join(","),
-    pageSize: String(Math.min(nctIds.length, 100)),
-  });
-  const res = await fetch(`${CTGOV_BASE}/studies?${params}`, {
-    headers: { Accept: "application/json" },
-    next: { revalidate: 3600 },
-  });
-  if (!res.ok) {
-    throw new Error(`ClinicalTrials.gov batch fetch failed: ${res.status}`);
+  const studies: CTGovStudy[] = [];
+  for (let i = 0; i < nctIds.length; i += 100) {
+    const chunk = nctIds.slice(i, i + 100);
+    const params = new URLSearchParams({
+      "filter.ids": chunk.join(","),
+      pageSize: String(chunk.length),
+    });
+    const res = await fetch(`${CTGOV_BASE}/studies?${params}`, {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      throw new Error(`ClinicalTrials.gov batch fetch failed: ${res.status}`);
+    }
+    const data = (await res.json()) as { studies?: Record<string, unknown>[] };
+    studies.push(...(data.studies ?? []).map(parseStudy));
   }
-  const data = (await res.json()) as { studies?: Record<string, unknown>[] };
-  return (data.studies ?? []).map(parseStudy);
+  return studies;
 }
 
 export async function searchStudies(
@@ -135,7 +140,7 @@ export async function searchStudies(
 
   const res = await fetch(`${CTGOV_BASE}/studies?${searchParams}`, {
     headers: { Accept: "application/json" },
-    next: { revalidate: 3600 },
+    cache: "no-store",
   });
   if (!res.ok) {
     throw new Error(`ClinicalTrials.gov search failed: ${res.status}`);
@@ -156,20 +161,26 @@ export async function searchStudies(
 
 export async function searchAllStudies(
   params: CTGovSearchParams,
-  maxResults = 25
+  maxResults = 0
 ): Promise<CTGovStudy[]> {
   const collected: CTGovStudy[] = [];
   let pageToken: string | undefined;
+  const unlimited = maxResults <= 0;
 
-  while (collected.length < maxResults) {
-    const pageSize = Math.min(100, maxResults - collected.length);
+  while (true) {
+    const pageSize = unlimited
+      ? 100
+      : Math.min(100, maxResults - collected.length);
+    if (!unlimited && pageSize <= 0) break;
+
     const result = await searchStudies({ ...params, pageSize, pageToken });
     collected.push(...result.studies);
     if (!result.nextPageToken || result.studies.length === 0) break;
+    if (!unlimited && collected.length >= maxResults) break;
     pageToken = result.nextPageToken;
   }
 
-  return collected.slice(0, maxResults);
+  return unlimited ? collected : collected.slice(0, maxResults);
 }
 
 export function configuredDiscoveryStatuses(): string[] {
@@ -187,6 +198,12 @@ export function configuredDiscoveryPhases(): string[] {
 export function maxDiscoveredTrials(): number {
   const n = parseInt(process.env.LUMEN_MAX_DISCOVERED_TRIALS ?? "10", 10);
   return Number.isFinite(n) && n > 0 ? n : 10;
+}
+
+/** Max studies to pull from CT.gov search before ranking (default: 20). */
+export function ctgovFetchLimit(): number {
+  const n = parseInt(process.env.LUMEN_CTGOV_FETCH_LIMIT ?? "20", 10);
+  return Number.isFinite(n) && n > 0 ? n : 20;
 }
 
 export function pinnedNctsForDiscovery(): string[] {

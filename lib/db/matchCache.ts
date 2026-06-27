@@ -1,4 +1,5 @@
 import type { TrialVerdict } from "../types";
+import { disableCache } from "../productConfig";
 import { tryGetSupabaseAdmin } from "../supabase/server";
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -7,6 +8,7 @@ export async function getCachedVerdicts(
   patientUuid: string,
   chartHash: string
 ): Promise<{ verdicts: TrialVerdict[]; matched_at: string } | null> {
+  if (disableCache()) return null;
   const db = tryGetSupabaseAdmin();
   if (!db) return null;
 
@@ -35,6 +37,7 @@ export async function saveVerdicts(
   chartHash: string,
   verdicts: TrialVerdict[]
 ): Promise<string> {
+  if (disableCache()) return new Date().toISOString();
   const db = tryGetSupabaseAdmin();
   if (!db) return new Date().toISOString();
 

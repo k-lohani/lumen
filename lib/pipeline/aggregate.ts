@@ -5,6 +5,7 @@ import type {
   CriterionState,
   Verdict,
 } from "../types";
+import { citationVerified } from "./verifyCitation";
 
 function cheapestUnknown(
   results: CriterionResult[]
@@ -37,7 +38,7 @@ export function aggregateVerdict(results: CriterionResult[]): {
     (r) =>
       r.criterion.type === "EXCLUSION" &&
       r.state === "MET" &&
-      r.faithfulness.substring_ok
+      citationVerified(r)
   );
 
   if (firingExclusion) {
@@ -46,7 +47,7 @@ export function aggregateVerdict(results: CriterionResult[]): {
 
   const inclusions = results.filter((r) => r.criterion.type === "INCLUSION");
   const failedInclusion = inclusions.some(
-    (r) => r.state === "NOT_MET" && r.faithfulness.substring_ok
+    (r) => r.state === "NOT_MET" && citationVerified(r)
   );
 
   if (failedInclusion) {
@@ -56,8 +57,14 @@ export function aggregateVerdict(results: CriterionResult[]): {
   const allInclusionsMet = inclusions.every((r) => r.state === "MET");
   const hasUnknown = results.some((r) => r.state === "UNKNOWN");
 
+  // ELIGIBLE bar: all inclusions MET with verified citations, zero UNKNOWN
   if (allInclusionsMet && !hasUnknown) {
-    return { verdict: "ELIGIBLE", actionable_gap: null };
+    const allVerified = inclusions.every(
+      (r) => r.state === "MET" && citationVerified(r)
+    );
+    if (allVerified) {
+      return { verdict: "ELIGIBLE", actionable_gap: null };
+    }
   }
 
   if (allInclusionsMet && hasUnknown) {
@@ -93,3 +100,5 @@ export function countByState(
 ): number {
   return results.filter((r) => r.state === state).length;
 }
+
+export { citationVerified };

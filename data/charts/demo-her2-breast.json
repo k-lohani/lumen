@@ -1,0 +1,71 @@
+{
+  "patient_id": "demo-her2-breast",
+  "display_name": "Diane Alvarez",
+  "lines": [
+    {
+      "id": "L0001",
+      "section": "Demographics",
+      "text": "54-year-old woman with newly diagnosed de novo metastatic invasive ductal carcinoma of the breast (AJCC 8th ed, cT2N1M1)."
+    },
+    {
+      "id": "L0002",
+      "section": "Molecular",
+      "text": "Core biopsy (liver): HER2 IHC 3+ positive, ISH amplified (HER2/CEP17 ratio 4.2). ER 85%, PR 70% by local lab (ASCO-CAP)."
+    },
+    {
+      "id": "L0003",
+      "section": "Molecular",
+      "text": "NGS: PIK3CA E545K detected; no germline BRCA1/2 pathogenic variant on panel."
+    },
+    {
+      "id": "L0004",
+      "section": "Treatment",
+      "text": "No prior chemotherapy or HER2-targeted therapy for metastatic disease. Adjuvant anastrozole 2020–2022 for early-stage disease (>6 months before metastatic diagnosis)."
+    },
+    {
+      "id": "L0005",
+      "section": "Performance",
+      "text": "ECOG performance status 1; ambulatory and capable of self-care."
+    },
+    {
+      "id": "L0006",
+      "section": "Imaging",
+      "text": "PET-CT 2026-05-20: 2.8 cm liver segment VI lesion SUVmax 8.4 (measurable per RECIST 1.1); no brain metastases on MRI."
+    },
+    {
+      "id": "L0007",
+      "section": "Imaging",
+      "text": "Brain MRI 2026-05-22: no intracranial metastases; neurologically asymptomatic."
+    },
+    {
+      "id": "L0008",
+      "section": "Labs",
+      "text": "2026-06-09: ANC 2.8, Hgb 12.1, Plt 198k, total bili 0.6, Cr 0.8, AST 22, ALT 19 — adequate bone marrow and organ function."
+    },
+    {
+      "id": "L0009",
+      "section": "Comorbidities",
+      "text": "No history of interstitial lung disease or pneumonitis. No prior trastuzumab deruxtecan (T-DXd) exposure."
+    },
+    {
+      "id": "L0010",
+      "section": "Cardiac",
+      "text": "Echocardiogram 2026-06-07: LVEF 62%; suitable for HER2-directed therapy per cardiology."
+    },
+    {
+      "id": "L0011",
+      "section": "Vitals",
+      "text": "Clinic 2026-06-10: BP 128/76, HR 72, weight 68 kg."
+    },
+    {
+      "id": "L0012",
+      "section": "Consent",
+      "text": "Patient able to understand and willing to sign informed consent for clinical trial screening."
+    },
+    {
+      "id": "L0013",
+      "section": "Assessment",
+      "text": "Oncology assessment: first-line metastatic HER2-positive breast cancer candidate; life expectancy estimated >6 months."
+    }
+  ]
+}

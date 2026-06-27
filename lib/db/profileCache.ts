@@ -1,10 +1,12 @@
 import type { PatientProfile } from "../types";
+import { disableCache } from "../productConfig";
 import { tryGetSupabaseAdmin } from "../supabase/server";
 
 export async function getCachedProfile(
   patientUuid: string,
   chartHash: string
 ): Promise<PatientProfile | null> {
+  if (disableCache()) return null;
   const db = tryGetSupabaseAdmin();
   if (!db) return null;
 
@@ -26,6 +28,7 @@ export async function saveCachedProfile(
   chartHash: string,
   profile: PatientProfile
 ): Promise<void> {
+  if (disableCache()) return;
   const db = tryGetSupabaseAdmin();
   if (!db) return;
 

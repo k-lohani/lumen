@@ -72,5 +72,6 @@ export function rankCandidates(
   });
 
   scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, topK).map((s) => s.study);
+  const ranked = topK > 0 ? scored.slice(0, topK) : scored;
+  return ranked.map((s) => s.study);
 }

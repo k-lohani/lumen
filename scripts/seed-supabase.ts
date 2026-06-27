@@ -39,6 +39,13 @@ const PATIENT_META: Record<
     date_of_birth: "1962-11-08",
     sex: "M",
   },
+  "demo-her2-breast": {
+    mrn: "MRN-2025-041203",
+    display_name: "Diane Alvarez",
+    primary_diagnosis: "Metastatic HER2-positive breast cancer",
+    date_of_birth: "1971-09-22",
+    sex: "F",
+  },
 };
 
 const SECTION_DOC: Record<string, string> = {

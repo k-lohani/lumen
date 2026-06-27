@@ -106,8 +106,9 @@ export function CriterionRow({ result, highlighted }: CriterionRowProps) {
           )}
 
           <p className="mt-2 text-[10px] text-ink-faint">
-            Sonnet evaluation · faithfulness{" "}
+            AI evaluation · faithfulness{" "}
             {faithfulness.substring_ok ? "verified" : "failed"}
+            {faithfulness.entailment_ok === false && " · entailment failed"}
             {evidence_line_id
               ? ` · chart line ${evidence_line_id}`
               : state === "UNKNOWN"

@@ -59,7 +59,7 @@ export function parsePastedChart(
   };
 }
 
-export const DEMO_PASTE_SAMPLE = `Demographics: 58-year-old woman with Stage IV lung adenocarcinoma.
+export const PASTE_SAMPLE = `Demographics: 58-year-old woman with Stage IV lung adenocarcinoma.
 
 Molecular: NGS — EGFR exon 19 deletion. ALK/ROS1 negative.
 

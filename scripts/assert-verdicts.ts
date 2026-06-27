@@ -16,6 +16,7 @@ async function assertPinned(chart: RawChart) {
   const { verdicts } = await runPipeline(chart, {
     pinnedMode: true,
     useGoldenProfile: true,
+    useRuleBased: true,
   });
   let failed = 0;
 
@@ -49,6 +50,42 @@ async function assertPinned(chart: RawChart) {
       failed++;
     } else {
       console.log(`OK: Trial A has single LVEF UNKNOWN`);
+    }
+
+    const organ = trialA.criteria.find(
+      (c) => c.criterion.criterion_id === "NCT07070232-1C05"
+    );
+    if (!organ) {
+      console.error("FAIL: Trial A missing organ/marrow criterion");
+      failed++;
+    } else if (organ.evidence_line_id !== "L0007") {
+      console.error(
+        `FAIL: organ/marrow should cite L0007 after entailment re-select, got ${organ.evidence_line_id}`
+      );
+      failed++;
+    } else if (organ.faithfulness.entailment_ok !== true) {
+      console.error("FAIL: organ/marrow entailment_ok should be true");
+      failed++;
+    } else {
+      console.log("OK: organ/marrow entailment re-selected L0007");
+    }
+  }
+
+  const trialC = verdicts.find((t) => t.trial_id === "NCT07174388");
+  if (trialC) {
+    const lifeExp = trialC.criteria.find(
+      (c) => c.criterion.criterion_id === "NCT07174388-G04"
+    );
+    if (!lifeExp) {
+      console.error("FAIL: Trial C missing life expectancy criterion");
+      failed++;
+    } else if (lifeExp.evidence_line_id !== "L0011") {
+      console.error(
+        `FAIL: life expectancy should cite L0011, got ${lifeExp.evidence_line_id}`
+      );
+      failed++;
+    } else {
+      console.log("OK: life expectancy cites L0011");
     }
   }
 

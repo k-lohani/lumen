@@ -2,19 +2,22 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import {
+  Suspense,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { AgentTrail } from "@/components/AgentTrail";
 import { DecisionSupportBanner } from "@/components/DecisionSupportBanner";
-import { NaiveCompareToggle, type NaiveResult } from "@/components/NaiveComparePanel";
 import { PatientStoryHeader } from "@/components/PatientStoryHeader";
 import { TrialList } from "@/components/TrialList";
 import { VerdictSummaryBar } from "@/components/VerdictSummaryBar";
-import {
-  applyResolutionFlip,
-  type ResolutionAfterEchoFixture,
-} from "@/lib/demo/applyResolution";
-import { buildCoordinatorSummary } from "@/lib/export/coordinatorSummary";
-import { useDemoParam, withDemoParam } from "@/lib/hooks/useDemoParam";
-import type { GeoFilter, TrialVerdict } from "@/lib/types";
+import { buildCoordinatorSummary, COMPLIANCE_LINE } from "@/lib/export/coordinatorSummary";
+import { loadSessionChart, loadSessionProfile } from "@/lib/intake/sessionChart";
+import { consumeSse } from "@/lib/sse";
+import type { GeoFilter, PipelineProgressEvent, TrialVerdict } from "@/lib/types";
 
 interface MatchResponse {
   patientSlug: string;
@@ -31,13 +34,7 @@ interface MatchResponse {
     geo?: GeoFilter;
   };
   verdicts: TrialVerdict[];
-  demo?: boolean;
   error?: string;
-}
-
-interface NaiveBaselineResponse {
-  highlight_criterion_id: string;
-  results: NaiveResult[];
 }
 
 function formatDateTime(iso: string): string {
@@ -50,125 +47,133 @@ function formatDateTime(iso: string): string {
   });
 }
 
+const MATCH_FETCH_TIMEOUT_MS = 600_000;
+
+function parseGeoParam(geoParam: string | null): GeoFilter | undefined {
+  if (!geoParam) return undefined;
+  try {
+    return JSON.parse(geoParam) as GeoFilter;
+  } catch {
+    try {
+      return JSON.parse(decodeURIComponent(geoParam)) as GeoFilter;
+    } catch {
+      return undefined;
+    }
+  }
+}
+
 function ResultsContent() {
   const searchParams = useSearchParams();
-  const demo = useDemoParam();
   const patientSlug =
     searchParams.get("patientSlug") ??
     searchParams.get("chartId") ??
     "hero";
   const source = searchParams.get("source");
+  const geoParam = searchParams.get("geo");
+  const geoFilter = useMemo(() => parseGeoParam(geoParam), [geoParam]);
+  const fetchGenRef = useRef(0);
 
   const [data, setData] = useState<MatchResponse | null>(null);
   const [verdicts, setVerdicts] = useState<TrialVerdict[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [naiveCompare, setNaiveCompare] = useState(false);
-  const [naiveBaseline, setNaiveBaseline] =
-    useState<NaiveBaselineResponse | null>(null);
-  const [resolutionFixture, setResolutionFixture] =
-    useState<ResolutionAfterEchoFixture | null>(null);
-  const [resolvedTrials, setResolvedTrials] = useState<Set<string>>(
-    new Set()
-  );
-  const [simulatingTrialId, setSimulatingTrialId] = useState<string | null>(
-    null
-  );
+  const [trail, setTrail] = useState<PipelineProgressEvent[]>([]);
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
+  useLayoutEffect(() => {
+    const fetchId = ++fetchGenRef.current;
+    const controller = new AbortController();
+    let timeoutId = window.setTimeout(
+      () => controller.abort(),
+      MATCH_FETCH_TIMEOUT_MS
+    );
 
     async function fetchMatch() {
       setLoading(true);
       setError(null);
-      setResolvedTrials(new Set());
+      setTrail([]);
+
+      const resetTimeout = () => {
+        window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(
+          () => controller.abort(),
+          MATCH_FETCH_TIMEOUT_MS
+        );
+      };
 
       try {
+        const sessionChart =
+          source === "session" ? loadSessionChart() : null;
+        const sessionProfile =
+          source === "session" ? loadSessionProfile() : null;
+
         const res = await fetch("/api/match", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            patientSlug: source === "session" ? "paste-demo" : patientSlug,
-            demo,
-          }),
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "text/event-stream",
+          },
+          signal: controller.signal,
+          body: JSON.stringify(
+            sessionChart
+              ? { chart: sessionChart, geoFilter, profile: sessionProfile ?? undefined }
+              : { patientSlug, geoFilter }
+          ),
         });
 
-        const json = (await res.json()) as MatchResponse;
+        const contentType = res.headers.get("content-type") ?? "";
 
-        if (!res.ok) {
-          throw new Error(json.error ?? "Analysis could not be completed.");
-        }
-
-        if (!cancelled) {
+        if (contentType.includes("text/event-stream")) {
+          await consumeSse(res, (event, payload) => {
+            resetTimeout();
+            if (event === "progress") {
+              setTrail((prev) => [
+                ...prev,
+                payload as PipelineProgressEvent,
+              ]);
+            } else if (event === "done") {
+              const json = payload as MatchResponse;
+              if (fetchId !== fetchGenRef.current) return;
+              setData(json);
+              setVerdicts(json.verdicts);
+            } else if (event === "error") {
+              const err = payload as { message?: string };
+              throw new Error(err.message ?? "Analysis could not be completed.");
+            }
+          });
+        } else {
+          const json = (await res.json()) as MatchResponse;
+          if (!res.ok) {
+            throw new Error(json.error ?? "Analysis could not be completed.");
+          }
+          if (fetchId !== fetchGenRef.current) return;
           setData(json);
           setVerdicts(json.verdicts);
         }
       } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : "Unknown error");
+        if (fetchId !== fetchGenRef.current) return;
+        if (err instanceof DOMException && err.name === "AbortError") {
+          setError(
+            "Analysis timed out. Pre-screening can take up to three minutes — please try again."
+          );
+          return;
         }
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
-        if (!cancelled) setLoading(false);
+        window.clearTimeout(timeoutId);
+        if (fetchId === fetchGenRef.current) {
+          setLoading(false);
+        }
       }
     }
 
-    fetchMatch();
+    void fetchMatch();
     return () => {
-      cancelled = true;
+      window.clearTimeout(timeoutId);
+      fetchGenRef.current += 1;
+      controller.abort();
     };
-  }, [patientSlug, demo, source]);
-
-  useEffect(() => {
-    if (!demo) return;
-    let cancelled = false;
-
-    async function loadDemoExtras() {
-      const [naiveRes, resolutionRes] = await Promise.all([
-        fetch("/api/demo/naive-baseline"),
-        fetch("/api/demo/resolution-after-echo"),
-      ]);
-      if (cancelled) return;
-      if (naiveRes.ok) {
-        setNaiveBaseline((await naiveRes.json()) as NaiveBaselineResponse);
-      }
-      if (resolutionRes.ok) {
-        setResolutionFixture(
-          (await resolutionRes.json()) as ResolutionAfterEchoFixture
-        );
-      }
-    }
-
-    loadDemoExtras();
-    return () => {
-      cancelled = true;
-    };
-  }, [demo]);
-
-  const handleSimulateResolution = useCallback(
-    (trialId: string) => {
-      if (!resolutionFixture || trialId !== resolutionFixture.trial_id) return;
-      setSimulatingTrialId(trialId);
-      window.setTimeout(() => {
-        setVerdicts((prev) => {
-          const updated = prev.map((v) => {
-            if (v.trial_id !== trialId) return v;
-            return applyResolutionFlip(v, resolutionFixture);
-          });
-          return updated.sort((a, b) => {
-            if (a.verdict === "ELIGIBLE" && b.verdict !== "ELIGIBLE")
-              return -1;
-            if (b.verdict === "ELIGIBLE" && a.verdict !== "ELIGIBLE")
-              return 1;
-            return b.reachability_rank - a.reachability_rank;
-          });
-        });
-        setResolvedTrials((s) => new Set(s).add(trialId));
-        setSimulatingTrialId(null);
-      }, 400);
-    },
-    [resolutionFixture]
-  );
+  }, [patientSlug, source, geoFilter]);
 
   async function copySummary() {
     if (!data) return;
@@ -193,9 +198,20 @@ function ResultsContent() {
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12 sm:px-8 print:py-6">
+      {data && (
+        <div className="print-header hidden print:block text-sm text-ink">
+          <p className="font-semibold">
+            {data.display_name} · {data.mrn}
+          </p>
+          <p className="text-ink-muted">
+            Pre-screen · {formatDateTime(data.matched_at)}
+          </p>
+          <p className="mt-1 text-xs text-ink-faint">{COMPLIANCE_LINE}</p>
+        </div>
+      )}
       <header className="animate-fade-up mb-10 print:mb-6">
         <Link
-          href={withDemoParam("/", demo)}
+          href="/"
           className="inline-flex items-center gap-1 text-sm font-medium text-copper transition-colors hover:text-copper-light lumen-focus rounded-sm no-print"
         >
           ← Back to pre-screen
@@ -241,11 +257,6 @@ function ResultsContent() {
                 )}
               </p>
             )}
-            {demo && (
-              <span className="mt-2 inline-block rounded-md border border-copper/30 bg-copper/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-copper no-print">
-                Demo mode — offline fixtures
-              </span>
-            )}
           </div>
           {data && !loading && (
             <div className="flex flex-wrap gap-2 no-print">
@@ -261,8 +272,12 @@ function ResultsContent() {
                 onClick={() => window.print()}
                 className="lumen-focus rounded-lg border border-rule bg-paper px-4 py-2 text-sm font-medium text-ink-muted transition-colors hover:text-ink"
               >
-                Print
+                Print / Save as PDF
               </button>
+              <p className="w-full text-xs text-ink-faint">
+                Opens your browser print dialog — choose &ldquo;Save as PDF&rdquo;
+                to export.
+              </p>
             </div>
           )}
         </div>
@@ -317,21 +332,11 @@ function ResultsContent() {
           </div>
         )}
 
-        {data && !loading && demo && (
-          <div className="mt-6 no-print">
-            <NaiveCompareToggle
-              enabled={naiveCompare}
-              onToggle={() => setNaiveCompare((v) => !v)}
-            />
-          </div>
-        )}
       </header>
 
       {loading && (
-        <div className="loading-shimmer animate-fade-in rounded-2xl border border-rule px-6 py-16 text-center">
-          <p className="text-sm font-medium text-ink-muted">
-            Loading pre-screen results…
-          </p>
+        <div className="animate-fade-in">
+          <AgentTrail events={trail} />
         </div>
       )}
 
@@ -343,17 +348,7 @@ function ResultsContent() {
 
       {data && !loading && (
         <div className="animate-fade-up stagger-2">
-          <TrialList
-            verdicts={verdicts}
-            naiveCompare={naiveCompare}
-            naiveResults={naiveBaseline?.results}
-            highlightCriterionId={naiveBaseline?.highlight_criterion_id}
-            onSimulateResolution={
-              demo && resolutionFixture ? handleSimulateResolution : undefined
-            }
-            resolvedTrials={resolvedTrials}
-            simulatingTrialId={simulatingTrialId}
-          />
+          <TrialList verdicts={verdicts} />
           <DecisionSupportBanner />
         </div>
       )}

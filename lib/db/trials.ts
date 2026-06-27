@@ -118,16 +118,19 @@ export async function loadTrialsByNctIds(
   nctIds: string[]
 ): Promise<TrialSummary[]> {
   if (!nctIds.length) return [];
+
   const db = tryGetSupabaseAdmin();
+  const found = new Map<string, TrialSummary>();
+
   if (db) {
     const { data } = await db
       .from("lumen_trials")
       .select("*")
       .in("nct_id", nctIds);
     if (data?.length) {
-      return data.map((row) => {
+      for (const row of data) {
         const t = rowToIngested(row);
-        return {
+        found.set(t.nct_id, {
           nct_id: t.nct_id,
           title: t.title,
           phase: t.phase,
@@ -135,22 +138,16 @@ export async function loadTrialsByNctIds(
           cohort_label: t.cohort_label,
           registry_updated_at: t.registry_synced_at,
           synced_at: t.registry_synced_at,
-        };
-      });
+        });
+      }
     }
   }
-  return nctIds
-    .filter((id) => {
-      try {
-        loadTrialFromFile(id);
-        return true;
-      } catch {
-        return false;
-      }
-    })
-    .map((id) => {
+
+  for (const id of nctIds) {
+    if (found.has(id)) continue;
+    try {
       const t = loadTrialFromFile(id);
-      return {
+      found.set(id, {
         nct_id: t.nct_id,
         title: t.title,
         phase: t.phase,
@@ -158,8 +155,33 @@ export async function loadTrialsByNctIds(
         cohort_label: t.cohort_label,
         registry_updated_at: t.registry_synced_at,
         synced_at: t.registry_synced_at,
-      };
-    });
+      });
+    } catch {
+      // fall through to CT.gov fetch
+    }
+  }
+
+  const missing = nctIds.filter((id) => !found.has(id));
+  if (missing.length) {
+    const studies = await fetchStudies(missing);
+    for (const study of studies) {
+      await upsertTrialFromCTGov(study);
+      const t = studyToIngested(study);
+      found.set(t.nct_id, {
+        nct_id: t.nct_id,
+        title: t.title,
+        phase: t.phase,
+        status: t.status,
+        cohort_label: t.cohort_label,
+        registry_updated_at: t.registry_synced_at,
+        synced_at: t.registry_synced_at,
+      });
+    }
+  }
+
+  return nctIds
+    .map((id) => found.get(id))
+    .filter((t): t is TrialSummary => t != null);
 }
 
 export async function listTrialSummaries(): Promise<TrialSummary[]> {

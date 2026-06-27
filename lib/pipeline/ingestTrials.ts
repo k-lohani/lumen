@@ -9,7 +9,10 @@ export function loadPinnedTrial(nctId: string): IngestedTrial {
   const pinned: PinnedTrial = JSON.parse(readFileSync(path, "utf-8"));
   const ps = pinned.api_response.protocolSection as {
     identificationModule?: { briefTitle?: string };
-    statusModule?: { overallStatus?: string };
+    statusModule?: {
+      overallStatus?: string;
+      lastUpdatePostDateStruct?: { date?: string };
+    };
     designModule?: { phases?: string[] };
     eligibilityModule?: { eligibilityCriteria?: string };
   };
@@ -27,5 +30,7 @@ export function loadPinnedTrial(nctId: string): IngestedTrial {
     relevant_cohort: pinned.relevant_cohort,
     cohort_label: pinned.cohort_label,
     registry_synced_at: pinned.pinned_at,
+    protocol_last_updated:
+      ps.statusModule?.lastUpdatePostDateStruct?.date ?? pinned.pinned_at,
   };
 }

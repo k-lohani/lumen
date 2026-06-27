@@ -143,5 +143,20 @@ select.lumen-select {
   }
   body {
     background: white;
+    color: #1a1a1a;
+  }
+  .print-header {
+    display: block !important;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #ccc;
+  }
+  article {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 1.5rem;
+  }
+  blockquote {
+    border-left-color: #666 !important;
   }
 }

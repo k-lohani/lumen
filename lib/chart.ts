@@ -14,7 +14,7 @@ export function applyCorruption(
     ...chart,
     lines: chart.lines.map((line) =>
       line.id === corruptLineId
-        ? { ...line, text: `${line.text} [CORRUPTED FOR DEMO]` }
+        ? { ...line, text: `${line.text} [CORRUPTED]` }
         : line
     ),
   };

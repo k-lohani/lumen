@@ -1,6 +1,8 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 import type { RawChart } from "../types";
+import { preferFileCharts } from "../productConfig";
+import { lookupPatientUuid } from "./ensurePatient";
 import { tryGetSupabaseAdmin, isSupabaseConfigured } from "../supabase/server";
 
 export interface PatientSummary {
@@ -71,7 +73,7 @@ function chartToLineRows(chart: RawChart): ChartLineRow[] {
 }
 
 function fallbackPatientSummaries(): PatientSummary[] {
-  const slugs = ["hero", "variant-echo-on-file", "variant-prior-tki"];
+  const slugs = ["hero", "variant-echo-on-file", "variant-prior-tki", "demo-her2-breast"];
   const meta: Record<string, Partial<PatientSummary>> = {
     hero: {
       mrn: "MRN-2024-018392",
@@ -91,6 +93,12 @@ function fallbackPatientSummaries(): PatientSummary[] {
       chart_synced_at: new Date().toISOString(),
       source_system: "Epic Clarity",
     },
+    "demo-her2-breast": {
+      mrn: "MRN-2025-041203",
+      primary_diagnosis: "Metastatic HER2-positive breast cancer",
+      chart_synced_at: new Date().toISOString(),
+      source_system: "Epic Clarity",
+    },
   };
   return slugs.flatMap((slug) => {
     const chart = loadChartFromFile(slug);
@@ -103,8 +111,18 @@ function fallbackPatientSummaries(): PatientSummary[] {
         primary_diagnosis: meta[slug]?.primary_diagnosis ?? "",
         chart_synced_at: meta[slug]?.chart_synced_at ?? new Date().toISOString(),
         line_count: chart.lines.length,
-        sex: slug === "variant-prior-tki" ? "M" : "F",
-        date_of_birth: slug === "variant-prior-tki" ? "1962-11-08" : "1966-03-15",
+        sex:
+          slug === "variant-prior-tki"
+            ? "M"
+            : slug === "demo-her2-breast"
+              ? "F"
+              : "F",
+        date_of_birth:
+          slug === "variant-prior-tki"
+            ? "1962-11-08"
+            : slug === "demo-her2-breast"
+              ? "1971-09-22"
+              : "1966-03-15",
         source_system: meta[slug]?.source_system ?? "Epic Clarity",
       },
     ];
@@ -112,16 +130,20 @@ function fallbackPatientSummaries(): PatientSummary[] {
 }
 
 export async function listPatients(): Promise<PatientSummary[]> {
+  const fromFiles = fallbackPatientSummaries();
+
   try {
     const db = tryGetSupabaseAdmin();
-    if (!db) return fallbackPatientSummaries();
+    if (!db) return fromFiles;
 
     const { data: patients, error } = await db
       .from("lumen_patients")
       .select("id, slug, mrn, display_name, primary_diagnosis, chart_synced_at, sex, date_of_birth, source_system")
       .order("display_name");
 
-    if (error || !patients?.length) return fallbackPatientSummaries();
+    if (error || !patients?.length) {
+      return fromFiles.length ? fromFiles : fallbackPatientSummaries();
+    }
 
     const summaries: PatientSummary[] = [];
     for (const p of patients as PatientRow[]) {
@@ -129,21 +151,43 @@ export async function listPatients(): Promise<PatientSummary[]> {
         .from("lumen_chart_lines")
         .select("*", { count: "exact", head: true })
         .eq("patient_id", p.id);
+      const fileChart = loadChartFromFile(p.slug);
+      const lineCount = fileChart?.lines.length ?? count ?? 0;
       summaries.push({
         slug: p.slug,
         mrn: p.mrn,
         display_name: p.display_name,
         primary_diagnosis: p.primary_diagnosis,
         chart_synced_at: p.chart_synced_at,
-        line_count: count ?? 0,
+        line_count: lineCount,
         sex: p.sex,
         date_of_birth: p.date_of_birth,
         source_system: p.source_system,
       });
     }
-    return summaries;
+
+    if (
+      preferFileCharts() &&
+      fromFiles.length > 0 &&
+      (summaries.length === 0 ||
+        summaries.every((s) => s.line_count === 0))
+    ) {
+      return fromFiles;
+    }
+
+    if (preferFileCharts() && fromFiles.length > 0) {
+      const slugs = new Set(summaries.map((s) => s.slug));
+      for (const filePatient of fromFiles) {
+        if (!slugs.has(filePatient.slug)) {
+          summaries.push(filePatient);
+        }
+      }
+      summaries.sort((a, b) => a.display_name.localeCompare(b.display_name));
+    }
+
+    return summaries.length ? summaries : fromFiles;
   } catch {
-    return fallbackPatientSummaries();
+    return fromFiles.length ? fromFiles : fallbackPatientSummaries();
   }
 }
 
@@ -161,6 +205,60 @@ export async function getPatientWithChart(slug: string): Promise<{
   lines: ChartLineRow[];
   patientUuid: string | null;
 }> {
+  if (slug.startsWith("intake-")) {
+    const db = tryGetSupabaseAdmin();
+    if (!db) throw new Error(`Patient not found: ${slug}`);
+
+    const { data: row, error } = await db
+      .from("lumen_patients")
+      .select("id, slug, mrn, display_name, primary_diagnosis, chart_synced_at, sex, date_of_birth, source_system")
+      .eq("slug", slug)
+      .single();
+
+    if (error || !row) throw new Error(`Patient not found: ${slug}`);
+
+    const { data: lineRows, error: linesError } = await db
+      .from("lumen_chart_lines")
+      .select("line_id, section, text, document_type, recorded_at")
+      .eq("patient_id", row.id)
+      .order("line_id");
+
+    if (linesError || !lineRows?.length) {
+      throw new Error(`Chart not found for patient: ${slug}`);
+    }
+
+    const lines = lineRows as ChartLineRow[];
+    const chart: RawChart = {
+      patient_id: row.slug,
+      display_name: row.display_name,
+      lines: lines.map((l) => ({
+        id: l.line_id,
+        section: l.section,
+        text: l.text,
+      })),
+    };
+
+    return {
+      patient: rowToSummary(row as PatientRow, lines.length),
+      chart,
+      lines,
+      patientUuid: row.id,
+    };
+  }
+
+  const fileChart = loadChartFromFile(slug);
+  const filePatient = fallbackPatientSummaries().find((p) => p.slug === slug);
+
+  if (preferFileCharts() && fileChart && filePatient) {
+    const patientUuid = await lookupPatientUuid(slug);
+    return {
+      patient: filePatient,
+      chart: fileChart,
+      lines: chartToLineRows(fileChart),
+      patientUuid,
+    };
+  }
+
   try {
     const db = tryGetSupabaseAdmin();
     if (!db) {

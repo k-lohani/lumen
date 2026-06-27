@@ -1,23 +1,69 @@
 import { NextResponse } from "next/server";
-import {
-  listTrialSummaries,
-  loadTrialsByNctIds,
-  syncAllTrialsFromRegistry,
-} from "@/lib/db/trials";
-import { getLastDiscoveryForPatient } from "@/lib/db/discoveryCache";
+import { listTrialSummaries, loadTrialsByNctIds } from "@/lib/db/trials";
+import { ensurePatientRecord } from "@/lib/db/ensurePatient";
 import { getPatientWithChart } from "@/lib/db/patients";
+import { getCachedProfile } from "@/lib/db/profileCache";
 import { isSupabaseConfigured } from "@/lib/supabase/server";
 import { discoverTrialsForPatient } from "@/lib/clinicaltrials/discoverTrials";
 import { extractProfile } from "@/lib/pipeline/extractProfile";
-import { isDemoModeRequest } from "@/lib/demo/mode";
-import { loadDiscoveryPreview } from "@/lib/demo/loadFixtures";
+import { configuredTrialNcts } from "@/lib/clinicaltrials/client";
+import { formatLlmError, isAnthropicUnavailableError } from "@/lib/llm";
+import { useLiveDiscovery, useLiveLlm, usePinnedTrials, disableCache } from "@/lib/productConfig";
+import type { GeoFilter } from "@/lib/types";
+import { computeChartHash } from "@/lib/chartHash";
+
+function parseGeoParam(geoParam: string | null): GeoFilter | undefined {
+  if (!geoParam) return undefined;
+  try {
+    return JSON.parse(geoParam) as GeoFilter;
+  } catch {
+    try {
+      return JSON.parse(decodeURIComponent(geoParam)) as GeoFilter;
+    } catch {
+      return undefined;
+    }
+  }
+}
+
+async function liveDiscoveryForSlug(
+  patientSlug: string,
+  geoFilter?: GeoFilter,
+  skipCache = false
+) {
+  let { chart, patient, patientUuid } = await getPatientWithChart(patientSlug);
+
+  if (!patientUuid) {
+    const ensured = await ensurePatientRecord(chart);
+    patientUuid = ensured.patientUuid;
+  }
+
+  const chartHash = computeChartHash(chart);
+  const effectiveSkipCache = skipCache || disableCache();
+  let profile =
+    patientUuid && !effectiveSkipCache
+      ? await getCachedProfile(patientUuid, chartHash)
+      : null;
+
+  if (!profile) {
+    profile = await extractProfile(chart, {
+      useGoldenProfile: !useLiveLlm(),
+    });
+  }
+
+  const { discovery } = await discoverTrialsForPatient(profile, {
+    patientUuid,
+    fallbackDiagnosis: patient.primary_diagnosis,
+    skipCache: effectiveSkipCache,
+    geoFilter,
+  });
+
+  const trials = await loadTrialsByNctIds(discovery.nct_ids);
+  return { trials, discovery, source: "ctgov" as const };
+}
 
 export async function POST(request: Request) {
   try {
-    const body = (await request.json()) as {
-      patientSlug?: string;
-      demo?: boolean;
-    };
+    const body = (await request.json()) as { patientSlug?: string; geoFilter?: GeoFilter };
     const slug = body.patientSlug;
     if (!slug) {
       return NextResponse.json(
@@ -26,26 +72,9 @@ export async function POST(request: Request) {
       );
     }
 
-    if (isDemoModeRequest(request, body)) {
-      const preview = loadDiscoveryPreview(slug);
-      return NextResponse.json({
-        ...preview,
-        source: "demo-fixture",
-      });
-    }
-
-    const { chart, patient, patientUuid } = await getPatientWithChart(slug);
-    const profile = await extractProfile(chart, { useGoldenProfile: true });
-    const { discovery } = await discoverTrialsForPatient(profile, {
-      patientUuid,
-      fallbackDiagnosis: patient.primary_diagnosis,
-      skipCache: true,
-    });
-
-    const trials = await loadTrialsByNctIds(discovery.nct_ids);
+    const result = await liveDiscoveryForSlug(slug, body.geoFilter, true);
     return NextResponse.json({
-      trials,
-      discovery,
+      ...result,
       synced_at: new Date().toISOString(),
     });
   } catch (error) {
@@ -59,29 +88,38 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const patientSlug = searchParams.get("patientSlug");
-    const demoQuery = searchParams.get("demo") === "1";
-
-    if (patientSlug && (demoQuery || isDemoModeRequest(request))) {
-      const preview = loadDiscoveryPreview(patientSlug);
-      return NextResponse.json({
-        ...preview,
-        source: "demo-fixture",
-      });
-    }
+    const geoFilter = parseGeoParam(searchParams.get("geo"));
 
     if (patientSlug) {
-      const { patientUuid } = await getPatientWithChart(patientSlug);
-      if (patientUuid) {
-        const discovery = await getLastDiscoveryForPatient(patientUuid);
-        if (discovery) {
-          const trials = await loadTrialsByNctIds(discovery.nct_ids);
-          return NextResponse.json({
-            trials,
-            discovery,
-            source: isSupabaseConfigured() ? "database" : "local",
-          });
-        }
+      if (useLiveDiscovery()) {
+        const result = await liveDiscoveryForSlug(patientSlug, geoFilter);
+        return NextResponse.json({
+          ...result,
+          discovery: {
+            search_summary: result.discovery.search_summary,
+            discovered_at: new Date().toISOString(),
+          },
+        });
       }
+
+      if (usePinnedTrials()) {
+        const ncts = configuredTrialNcts();
+        const trials = await loadTrialsByNctIds(ncts);
+        return NextResponse.json({
+          trials,
+          discovery: {
+            search_summary: {
+              condition: "pinned portfolio",
+              terms: [],
+              status: ["RECRUITING"],
+              phases: [],
+            },
+            discovered_at: new Date().toISOString(),
+          },
+          source: "portfolio",
+        });
+      }
+
       return NextResponse.json({
         trials: [],
         discovery: null,
@@ -94,10 +132,11 @@ export async function GET(request: Request) {
       trials,
       source: isSupabaseConfigured() ? "database" : "local",
     });
-  } catch {
-    return NextResponse.json(
-      { error: "Unable to load trial data." },
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error("GET /api/trials:", error);
+    const message = isAnthropicUnavailableError(error)
+      ? formatLlmError(error)
+      : "Unable to load trial data.";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

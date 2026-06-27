@@ -11,6 +11,8 @@ import {
 } from "./NaiveComparePanel";
 import { ReachabilityBadge } from "./ReachabilityBadge";
 import { ResolutionLoopCard } from "./ResolutionLoopCard";
+import { TrialConfidenceSummary } from "./TrialConfidenceSummary";
+import { StalenessBanner } from "./StalenessBanner";
 import { VerdictBadge } from "./VerdictBadge";
 
 interface TrialCardProps {
@@ -110,6 +112,8 @@ export function TrialCard({
             <p className="mt-2 text-[11px] text-ink-faint">
               Registry updated {trial.registry_synced_at} · ClinicalTrials.gov
             </p>
+            <TrialConfidenceSummary trial={trial} />
+            <StalenessBanner trial={trial} />
           </div>
         </div>
 

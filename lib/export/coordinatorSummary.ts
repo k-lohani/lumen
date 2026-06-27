@@ -1,5 +1,8 @@
 import type { GeoFilter, TrialVerdict } from "../types";
 
+export const COMPLIANCE_LINE =
+  "Pre-screen only. A clinician confirms eligibility before any contact or consent.";
+
 export interface CoordinatorSummaryInput {
   displayName: string;
   mrn: string;
@@ -18,6 +21,8 @@ export function buildCoordinatorSummary(input: CoordinatorSummaryInput): string 
 
   lines.push(`# Pre-screen summary — ${displayName} (${mrn})`);
   lines.push(`Generated: ${new Date(matchedAt).toLocaleString()}`);
+  lines.push("");
+  lines.push(COMPLIANCE_LINE);
   lines.push("");
 
   if (searchSummary) {
@@ -46,6 +51,22 @@ export function buildCoordinatorSummary(input: CoordinatorSummaryInput): string 
   lines.push(`- Excluded: ${excluded.length}`);
   lines.push("");
 
+  lines.push("## Referral / consent-to-screen handoff");
+  for (const v of [...eligible, ...conditional]) {
+    lines.push(`### ${v.trial_id}`);
+    lines.push(`- Verdict: ${v.verdict.replace(/_/g, " ")}`);
+    lines.push(`- Title: ${v.trial_title}`);
+    if (v.actionable_gap) {
+      lines.push(
+        `- Top gap: ${v.actionable_gap.missing_item} — ${v.actionable_gap.action}`
+      );
+      lines.push(`- Next action: ${v.actionable_gap.action}`);
+    } else {
+      lines.push("- Next action: PI review for consent-to-screen");
+    }
+    lines.push("");
+  }
+
   for (const v of [...eligible, ...conditional, ...excluded]) {
     lines.push(`## ${v.trial_id} — ${v.verdict.replace(/_/g, " ")}`);
     lines.push(v.trial_title);
@@ -72,6 +93,7 @@ export function buildCoordinatorSummary(input: CoordinatorSummaryInput): string 
   lines.push(
     "Decision support only — coordinator review and PI confirmation required."
   );
+  lines.push(COMPLIANCE_LINE);
 
   return lines.join("\n");
 }

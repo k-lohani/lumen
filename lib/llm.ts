@@ -16,7 +16,21 @@ function getClient(): Anthropic {
 }
 
 export function hasApiKey(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY);
+  return Boolean(process.env.ANTHROPIC_API_KEY?.trim());
+}
+
+export function isAnthropicUnavailableError(error: unknown): boolean {
+  const msg = error instanceof Error ? error.message : String(error);
+  return /credit balance|invalid_request_error|authentication|401|403|429|overloaded/i.test(
+    msg
+  );
+}
+
+export function formatLlmError(error: unknown): string {
+  if (isAnthropicUnavailableError(error)) {
+    return "Anthropic API is unavailable (check billing/credits or API key). Library patients can use golden profiles when LLM calls fail.";
+  }
+  return error instanceof Error ? error.message : "LLM request failed";
 }
 
 function logCall(stage: string, payload: unknown) {
@@ -62,7 +76,8 @@ export async function structured<T>(opts: {
 
   try {
     return await run();
-  } catch {
+  } catch (error) {
+    if (isAnthropicUnavailableError(error)) throw error;
     return await run();
   }
 }

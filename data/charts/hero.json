@@ -51,6 +51,11 @@
       "id": "L0010",
       "section": "Consent",
       "text": "Patient able to understand and willing to sign informed consent."
+    },
+    {
+      "id": "L0011",
+      "section": "Assessment",
+      "text": "Prognosis: treating oncologist estimates life expectancy greater than 6 months."
     }
   ]
 }

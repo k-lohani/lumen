@@ -8,12 +8,12 @@ interface ReachabilityBadgeProps {
 
 const FORMULA = `Reachability rank (0–1):
 
-• ELIGIBLE: rank ≈ met_inclusions / total_inclusions
-• CONDITIONAL: base − weighted unknowns
-  − CHEAP gap: −0.05
-  − MODERATE gap: −0.15
-  − EXPENSIVE gap: −0.30
-• EXCLUDED: rank = 0
+• ELIGIBLE → 1.0
+• EXCLUDED → 0.0
+• CONDITIONAL → 1 − Σ(cost_weight of blocking UNKNOWN), floor 0.4
+  − CHEAP: 0.05
+  − MODERATE: 0.15
+  − EXPENSIVE: 0.30
 
 Higher rank = closer to enrollment.`;
 

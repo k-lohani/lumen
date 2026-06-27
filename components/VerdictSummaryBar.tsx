@@ -24,7 +24,7 @@ export function VerdictSummaryBar({
     );
   }
   if (conditional > 0) {
-    parts.push(`${conditional} one step away`);
+    parts.push(`${conditional} step away`);
   }
   if (excluded > 0) {
     parts.push(`${excluded} excluded`);

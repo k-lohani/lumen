@@ -98,6 +98,8 @@ export interface TrialVerdict {
   matched_cohort: string;
   cohort_label: string;
   registry_synced_at: string;
+  /** Latest protocol update from ClinicalTrials.gov registry. */
+  protocol_last_updated?: string;
   verdict: Verdict;
   criteria: CriterionResult[];
   actionable_gap: ActionableGap | null;
@@ -123,6 +125,7 @@ export interface IngestedTrial {
   relevant_cohort: string;
   cohort_label: string;
   registry_synced_at: string;
+  protocol_last_updated?: string;
 }
 
 export interface LabeledPair {
@@ -132,31 +135,24 @@ export interface LabeledPair {
   criterion_text: string;
   type: CriterionType;
   gold_state: CriterionState;
-  citing_chart_line?: string;
+  /** Human-authored supporting chart lines — independent of pipeline output. */
+  gold_supporting_line_ids: string[];
+}
+
+export interface EvalMetricBlock {
+  accuracy: number;
+  unknown_recall: number;
+  unknown_precision: number;
+  faithfulness_rate: number;
+  substring_faithfulness_rate?: number;
+  entailment_faithfulness_rate?: number;
+  exclusion_detection_rate: number;
 }
 
 export interface EvalMetrics {
-  lumen: {
-    accuracy: number;
-    unknown_recall: number;
-    unknown_precision: number;
-    faithfulness_rate: number;
-    exclusion_detection_rate: number;
-  };
-  baseline_naive: {
-    accuracy: number;
-    unknown_recall: number;
-    unknown_precision: number;
-    faithfulness_rate: number;
-    exclusion_detection_rate: number;
-  };
-  baseline_grounded?: {
-    accuracy: number;
-    unknown_recall: number;
-    unknown_precision: number;
-    faithfulness_rate: number;
-    exclusion_detection_rate: number;
-  };
+  lumen: EvalMetricBlock;
+  baseline_naive: EvalMetricBlock;
+  baseline_grounded?: EvalMetricBlock;
   total_pairs: number;
   generated_at: string;
 }
@@ -197,12 +193,46 @@ export interface DiscoveryMetadata {
 
 export interface PipelineOptions {
   useGoldenProfile?: boolean;
+  useRuleBased?: boolean;
   skipMatchCache?: boolean;
   skipDiscoveryCache?: boolean;
   pinnedMode?: boolean;
   patientUuid?: string | null;
   geoFilter?: GeoFilter;
+  onProgress?: (event: PipelineProgressEvent) => void;
 }
+
+export type PipelineStage = "profile" | "discovery" | "trial" | "complete";
+
+export type PipelineProgressEvent =
+  | { type: "stage_start"; stage: PipelineStage; message: string }
+  | {
+      type: "stage_end";
+      stage: PipelineStage;
+      message: string;
+      meta?: Record<string, unknown>;
+    }
+  | {
+      type: "trial_start";
+      nct_id: string;
+      title: string;
+      index: number;
+      total: number;
+    }
+  | {
+      type: "trial_step";
+      nct_id: string;
+      step: "cohort" | "decompose" | "evaluate" | "entailment";
+      meta?: Record<string, unknown>;
+    }
+  | {
+      type: "trial_done";
+      nct_id: string;
+      verdict: string;
+      index: number;
+      total: number;
+    }
+  | { type: "error"; message: string };
 
 export interface PipelineResult {
   verdicts: TrialVerdict[];

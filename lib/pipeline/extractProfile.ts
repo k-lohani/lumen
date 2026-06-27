@@ -1,7 +1,7 @@
-import { readFileSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { z } from "zod";
-import { cheapModel, hasApiKey, structured } from "../llm";
+import { cheapModel, formatLlmError, hasApiKey, isAnthropicUnavailableError, structured } from "../llm";
 import type { PatientProfile, RawChart } from "../types";
 
 const PatientProfileSchema = z.object({
@@ -33,7 +33,7 @@ const PatientProfileSchema = z.object({
   ),
   performance_status: z
     .object({
-      scale: z.enum(["ECOG", "KPS"]),
+      scale: z.string(),
       value: z.number(),
       source_line_ids: z.array(z.string()),
     })
@@ -49,6 +49,18 @@ const PatientProfileSchema = z.object({
   ),
 });
 
+type LlmPatientProfile = z.infer<typeof PatientProfileSchema>;
+
+export function hasGoldenProfile(patientId: string): boolean {
+  const path = join(
+    process.cwd(),
+    "data",
+    "charts",
+    `${patientId}.profile.golden.json`
+  );
+  return existsSync(path);
+}
+
 function loadGoldenProfile(patientId: string): PatientProfile {
   const path = join(
     process.cwd(),
@@ -59,7 +71,11 @@ function loadGoldenProfile(patientId: string): PatientProfile {
   return JSON.parse(readFileSync(path, "utf-8")) as PatientProfile;
 }
 
-function validateLineIds(profile: PatientProfile, chart: RawChart): PatientProfile {
+function normalizePerformanceScale(scale: string): "ECOG" | "KPS" {
+  return scale.trim().toUpperCase() === "KPS" ? "KPS" : "ECOG";
+}
+
+function validateLineIds(profile: LlmPatientProfile, chart: RawChart): PatientProfile {
   const validIds = new Set(chart.lines.map((l) => l.id));
 
   const filterIds = (ids: string[]) => ids.filter((id) => validIds.has(id));
@@ -81,6 +97,7 @@ function validateLineIds(profile: PatientProfile, chart: RawChart): PatientProfi
     performance_status: profile.performance_status
       ? {
           ...profile.performance_status,
+          scale: normalizePerformanceScale(profile.performance_status.scale),
           source_line_ids: filterIds(profile.performance_status.source_line_ids),
         }
       : undefined,
@@ -91,29 +108,18 @@ function validateLineIds(profile: PatientProfile, chart: RawChart): PatientProfi
   };
 }
 
+function loadGoldenForChart(chart: RawChart): PatientProfile {
+  const golden = loadGoldenProfile(chart.patient_id);
+  return validateLineIds({ ...golden, patient_id: chart.patient_id }, chart);
+}
+
 const EXTRACT_SYSTEM = `You are a clinical chart extractor. Build a structured PatientProfile from chart lines.
 Rules:
 - Every field must cite source_line_ids from the provided chart lines only.
 - Do NOT infer values not explicitly stated. If LVEF, echo, or biopsy details are absent, omit them.
 - Silence is signal: missing data must not appear in the profile.`;
 
-export async function extractProfile(
-  chart: RawChart,
-  opts?: { useGoldenProfile?: boolean }
-): Promise<PatientProfile> {
-  if (opts?.useGoldenProfile || !hasApiKey()) {
-    try {
-      const golden = loadGoldenProfile(chart.patient_id);
-      return validateLineIds({ ...golden, patient_id: chart.patient_id }, chart);
-    } catch {
-      if (!hasApiKey()) {
-        throw new Error(
-          `No ANTHROPIC_API_KEY and no golden profile for ${chart.patient_id}`
-        );
-      }
-    }
-  }
-
+async function extractWithLlm(chart: RawChart): Promise<PatientProfile> {
   const linesBlock = chart.lines
     .map((l) => `[${l.id} | ${l.section}] ${l.text}`)
     .join("\n");
@@ -128,4 +134,34 @@ export async function extractProfile(
   });
 
   return validateLineIds(profile, chart);
+}
+
+export async function extractProfile(
+  chart: RawChart,
+  opts?: { useGoldenProfile?: boolean }
+): Promise<PatientProfile> {
+  if (opts?.useGoldenProfile || !hasApiKey()) {
+    try {
+      return loadGoldenForChart(chart);
+    } catch {
+      if (!hasApiKey()) {
+        throw new Error(
+          `No ANTHROPIC_API_KEY and no golden profile for ${chart.patient_id}`
+        );
+      }
+    }
+  }
+
+  try {
+    return await extractWithLlm(chart);
+  } catch (error) {
+    if (hasGoldenProfile(chart.patient_id)) {
+      console.warn(
+        `Profile LLM failed for ${chart.patient_id}, using golden profile:`,
+        formatLlmError(error)
+      );
+      return loadGoldenForChart(chart);
+    }
+    throw error;
+  }
 }

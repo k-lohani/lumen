@@ -1,4 +1,5 @@
 import type { SearchSummary } from "../types";
+import { disableCache } from "../productConfig";
 import { tryGetSupabaseAdmin } from "../supabase/server";
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -13,6 +14,7 @@ export async function getDiscoveryCache(
   patientUuid: string,
   profileHash: string
 ): Promise<DiscoveryCacheEntry | null> {
+  if (disableCache()) return null;
   const db = tryGetSupabaseAdmin();
   if (!db) return null;
 
@@ -41,6 +43,7 @@ export async function saveDiscoveryCache(
   nctIds: string[],
   searchParams: SearchSummary
 ): Promise<void> {
+  if (disableCache()) return;
   const db = tryGetSupabaseAdmin();
   if (!db) return;
 
@@ -59,6 +62,7 @@ export async function saveDiscoveryCache(
 export async function getLastDiscoveryForPatient(
   patientUuid: string
 ): Promise<DiscoveryCacheEntry | null> {
+  if (disableCache()) return null;
   const db = tryGetSupabaseAdmin();
   if (!db) return null;
 

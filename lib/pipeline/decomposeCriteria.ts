@@ -4,7 +4,7 @@ import {
   getCachedCriteria as getDbCachedCriteria,
   setCachedCriteria,
 } from "../db/criteriaCache";
-import { cheapModel, hasApiKey, structured } from "../llm";
+import { cheapModel, hasApiKey, isAnthropicUnavailableError, structured } from "../llm";
 import type { Criterion, IngestedTrial } from "../types";
 
 const CriterionSchema = z.object({
@@ -37,6 +37,19 @@ Rules:
 - Only include criteria for the specified cohort plus shared "general" criteria.
 - Do not include criteria from other cohorts.`;
 
+function fallbackCriteria(trial: IngestedTrial, cohort: string): Criterion[] {
+  return [
+    {
+      criterion_id: `${trial.nct_id}:${cohort}:manual`,
+      trial_id: trial.nct_id,
+      cohort_scope: cohort,
+      type: "INCLUSION",
+      category: "OTHER",
+      text: `Review full eligibility for ${trial.nct_id} (LLM decompose unavailable).`,
+    },
+  ];
+}
+
 export async function decomposeCriteria(
   trial: IngestedTrial,
   cohort: string
@@ -50,28 +63,38 @@ export async function decomposeCriteria(
     );
   }
 
-  const result = await structured({
-    model: cheapModel(),
-    system: DECOMPOSE_SYSTEM,
-    user: `Trial: ${trial.nct_id}
+  try {
+    const result = await structured({
+      model: cheapModel(),
+      system: DECOMPOSE_SYSTEM,
+      user: `Trial: ${trial.nct_id}
 Cohort: ${cohort} (${trial.cohort_label})
 
 ELIGIBILITY TEXT:
 ${trial.eligibility_text}
 
 Return criteria scoped to cohort "${cohort}" and "general" only.`,
-    toolName: "decomposed_criteria",
-    schema: DecomposeSchema,
-    stage: "decomposeCriteria",
-  });
+      toolName: "decomposed_criteria",
+      schema: DecomposeSchema,
+      stage: "decomposeCriteria",
+    });
 
-  const criteria = result.criteria.map((c) => ({
-    ...c,
-    trial_id: trial.nct_id,
-  }));
+    const criteria = result.criteria.map((c) => ({
+      ...c,
+      trial_id: trial.nct_id,
+    }));
 
-  const hash = computeEligibilityHash(trial.eligibility_text);
-  await setCachedCriteria(trial.nct_id, cohort, criteria, hash);
+    const hash = computeEligibilityHash(trial.eligibility_text);
+    await setCachedCriteria(trial.nct_id, cohort, criteria, hash);
 
-  return criteria;
+    return criteria;
+  } catch (error) {
+    if (isAnthropicUnavailableError(error)) {
+      console.warn(
+        `Criteria decompose LLM failed for ${trial.nct_id}, using fallback criterion`
+      );
+      return fallbackCriteria(trial, cohort);
+    }
+    throw error;
+  }
 }

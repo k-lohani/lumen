@@ -1,48 +1,24 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GlossaryTerm } from "@/components/GlossaryTerm";
-import { NYC_GEO_DEFAULT } from "@/lib/demo/constants";
-import { useDemoParam, withDemoParam } from "@/lib/hooks/useDemoParam";
+import { NYC_GEO_DEFAULT } from "@/lib/constants/geo";
+import type {
+  HomeDiscoveryPreview,
+  HomePatientListItem,
+  InitialHomeData,
+} from "@/lib/server/initialHomeData";
 import {
-  DEMO_PASTE_SAMPLE,
+  PASTE_SAMPLE,
   parsePastedChart,
 } from "@/lib/intake/parsePastedChart";
 import { saveSessionChart } from "@/lib/intake/sessionChart";
 import type { GeoFilter, PatientPackage, PatientProfile } from "@/lib/types";
 
-interface DiscoveryPreview {
-  trials: {
-    nct_id: string;
-    title: string;
-    phase?: string;
-    status: string;
-    recruiting_sites_nearby?: number;
-  }[];
-  discovery: {
-    search_summary: {
-      condition: string;
-      terms: string[];
-      status: string[];
-      phases: string[];
-      geo?: GeoFilter;
-    };
-    discovered_at?: string;
-  } | null;
-}
+type PatientListItem = HomePatientListItem;
 
-type PatientListItem = {
-  slug: string;
-  mrn: string;
-  display_name: string;
-  primary_diagnosis: string;
-  chart_synced_at: string;
-  source_system: string;
-  line_count: number;
-};
-
-type Tab = "demo" | "paste";
+type Tab = "patients" | "import";
 
 const RADIUS_OPTIONS = [25, 50, 100];
 
@@ -52,19 +28,27 @@ function isPatientPackage(value: unknown): value is PatientPackage {
   return typeof pkg.slug === "string" && Array.isArray(pkg.lines);
 }
 
-export default function HomePageClient() {
+interface HomePageClientProps {
+  initial: InitialHomeData;
+}
+
+export default function HomePageClient({ initial }: HomePageClientProps) {
   const router = useRouter();
-  const demo = useDemoParam();
-  const [tab, setTab] = useState<Tab>("demo");
-  const [patients, setPatients] = useState<PatientListItem[]>([]);
-  const [patientSlug, setPatientSlug] = useState("hero");
+  const packageFetchGen = useRef(0);
+  const trialsFetchGen = useRef(0);
+  const [tab, setTab] = useState<Tab>("patients");
+  const [patients, setPatients] = useState<PatientListItem[]>(initial.patients);
+  const [patientSlug, setPatientSlug] = useState(initial.patientSlug);
   const [patientPackage, setPatientPackage] = useState<PatientPackage | null>(
-    null
+    initial.patientPackage
   );
   const [discoveryPreview, setDiscoveryPreview] =
-    useState<DiscoveryPreview | null>(null);
-  const [loadingPatients, setLoadingPatients] = useState(true);
-  const [loadingPackage, setLoadingPackage] = useState(true);
+    useState<HomeDiscoveryPreview | null>(initial.discoveryPreview);
+  const [loadingPatients, setLoadingPatients] = useState(
+    initial.patients.length === 0
+  );
+  const [loadingPackage, setLoadingPackage] = useState(false);
+  const [loadingTrials, setLoadingTrials] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [geo, setGeo] = useState<GeoFilter>(NYC_GEO_DEFAULT);
@@ -79,6 +63,8 @@ export default function HomePageClient() {
   const selected = patients.find((p) => p.slug === patientSlug);
 
   useEffect(() => {
+    if (initial.patients.length > 0) return;
+
     let cancelled = false;
 
     async function loadPatients() {
@@ -117,60 +103,109 @@ export default function HomePageClient() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [initial.patients.length]);
+
+  function trialsQuery(slug: string): string {
+    return `/api/trials?patientSlug=${encodeURIComponent(slug)}&geo=${encodeURIComponent(JSON.stringify(geo))}`;
+  }
 
   useEffect(() => {
-    if (!patientSlug || tab !== "demo") return;
-    let cancelled = false;
+    if (!patientSlug || tab !== "patients") return;
+
+    const fetchId = ++trialsFetchGen.current;
+    const controller = new AbortController();
+
+    async function loadTrials() {
+      setLoadingTrials(true);
+      try {
+        const trialsRes = await fetch(trialsQuery(patientSlug), {
+          signal: controller.signal,
+        });
+        if (fetchId !== trialsFetchGen.current) return;
+        if (trialsRes.ok) {
+          setDiscoveryPreview(
+            (await trialsRes.json()) as HomeDiscoveryPreview
+          );
+        } else {
+          setDiscoveryPreview(null);
+        }
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        if (fetchId === trialsFetchGen.current) {
+          setDiscoveryPreview(null);
+        }
+      } finally {
+        if (fetchId === trialsFetchGen.current) {
+          setLoadingTrials(false);
+        }
+      }
+    }
+
+    void loadTrials();
+    return () => controller.abort();
+  }, [patientSlug, tab, geo]);
+
+  useEffect(() => {
+    if (!patientSlug || tab !== "patients") return;
+
+    const isInitialSlug =
+      patientSlug === initial.patientSlug &&
+      initial.patientPackage &&
+      patientPackage?.slug === initial.patientSlug;
+    if (isInitialSlug) return;
+
+    const fetchId = ++packageFetchGen.current;
+    const controller = new AbortController();
 
     async function loadPackage() {
       setLoadingPackage(true);
       try {
-        const demoQ = demo ? "&demo=1" : "";
-        const [pkgRes, trialsRes] = await Promise.all([
-          fetch(`/api/patients/${patientSlug}`),
-          fetch(`/api/trials?patientSlug=${patientSlug}${demoQ}`),
-        ]);
-
+        const pkgRes = await fetch(`/api/patients/${patientSlug}`, {
+          signal: controller.signal,
+        });
         const pkgData: unknown = await pkgRes.json();
         if (!pkgRes.ok || !isPatientPackage(pkgData)) {
           throw new Error("Unable to load patient package.");
         }
-        if (!cancelled) setPatientPackage(pkgData);
-
-        if (trialsRes.ok) {
-          const trialsData = (await trialsRes.json()) as DiscoveryPreview;
-          if (!cancelled) setDiscoveryPreview(trialsData);
-        } else if (!cancelled) {
-          setDiscoveryPreview(null);
+        if (fetchId === packageFetchGen.current) {
+          setPatientPackage(pkgData);
         }
       } catch (err) {
-        if (!cancelled) {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        if (fetchId === packageFetchGen.current) {
           setPatientPackage(null);
           setLoadError(
             err instanceof Error ? err.message : "Unable to load patient package."
           );
         }
       } finally {
-        if (!cancelled) setLoadingPackage(false);
+        if (fetchId === packageFetchGen.current) {
+          setLoadingPackage(false);
+        }
       }
     }
 
-    loadPackage();
-    return () => {
-      cancelled = true;
-    };
-  }, [patientSlug, demo, tab]);
+    void loadPackage();
+    return () => controller.abort();
+  }, [
+    patientSlug,
+    tab,
+    initial.patientSlug,
+    initial.patientPackage,
+    patientPackage?.slug,
+  ]);
 
-  function runMatchDemo() {
+  function geoQuery(): string {
+    return `&geo=${encodeURIComponent(JSON.stringify(geo))}`;
+  }
+
+  function runPreScreen() {
     setLoading(true);
-    router.push(
-      withDemoParam(`/results?patientSlug=${patientSlug}`, demo)
-    );
+    router.push(`/results?patientSlug=${patientSlug}${geoQuery()}`);
   }
 
   function parsePaste() {
-    const chart = parsePastedChart(pasteText || DEMO_PASTE_SAMPLE, {
+    const chart = parsePastedChart(pasteText || PASTE_SAMPLE, {
       displayName: "Pasted patient note",
     });
     setParsedLines(chart.lines);
@@ -178,16 +213,23 @@ export default function HomePageClient() {
   }
 
   async function extractProfileFromPaste() {
-    const chart = parsePastedChart(pasteText || DEMO_PASTE_SAMPLE, {
-      displayName: "Pasted patient note",
-    });
+    const lines = parsedLines ?? [];
+    const chart = {
+      patient_id: "paste-import",
+      display_name: "Pasted patient note",
+      lines: lines.length
+        ? lines
+        : parsePastedChart(pasteText || PASTE_SAMPLE, {
+            displayName: "Pasted patient note",
+          }).lines,
+    };
     if (!parsedLines?.length) setParsedLines(chart.lines);
     setProfileLoading(true);
     try {
       const res = await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chart, demo }),
+        body: JSON.stringify({ chart }),
       });
       const data = (await res.json()) as {
         profile?: PatientProfile;
@@ -197,7 +239,7 @@ export default function HomePageClient() {
         throw new Error(data.error ?? "Profile extraction failed.");
       }
       setExtractedProfile(data.profile);
-      saveSessionChart(chart);
+      saveSessionChart(chart, data.profile);
     } catch (err) {
       setLoadError(
         err instanceof Error ? err.message : "Profile extraction failed."
@@ -208,10 +250,40 @@ export default function HomePageClient() {
   }
 
   function runPasteMatch() {
+    if (!parsedLines?.length) return;
+    const chart = {
+      patient_id: "paste-import",
+      display_name: "Pasted patient note",
+      lines: parsedLines,
+    };
+    saveSessionChart(chart, extractedProfile ?? undefined);
     setLoading(true);
-    router.push(
-      withDemoParam("/results?source=session&patientSlug=paste-demo", demo)
+    router.push(`/results?source=session${geoQuery()}`);
+  }
+
+  function handleFileDrop(file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = String(reader.result ?? "");
+      setPasteText(text);
+      const chart = parsePastedChart(text, {
+        displayName: "Pasted patient note",
+      });
+      setParsedLines(chart.lines);
+      setExtractedProfile(null);
+    };
+    reader.readAsText(file);
+  }
+
+  function updateParsedLine(
+    id: string,
+    field: "section" | "text",
+    value: string
+  ) {
+    setParsedLines((prev) =>
+      prev?.map((l) => (l.id === id ? { ...l, [field]: value } : l)) ?? null
     );
+    setExtractedProfile(null);
   }
 
   const summaryLines = patientPackage?.lines.length
@@ -260,11 +332,6 @@ export default function HomePageClient() {
             geo-aware trial discovery for the coordinator to review and hand off
             to the PI.
           </p>
-          {demo && (
-            <span className="mt-3 inline-block rounded-md border border-copper/30 bg-copper/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-copper">
-              Demo mode — offline fixtures
-            </span>
-          )}
         </header>
 
         {loadError && (
@@ -276,31 +343,31 @@ export default function HomePageClient() {
         <div className="mb-6 flex gap-2">
           <button
             type="button"
-            onClick={() => setTab("demo")}
+            onClick={() => setTab("patients")}
             className={`lumen-focus rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-              tab === "demo"
+              tab === "patients"
                 ? "bg-ink text-paper"
                 : "border border-rule text-ink-muted hover:text-ink"
             }`}
           >
-            Demo patients
+            Patients
           </button>
           <button
             type="button"
-            onClick={() => setTab("paste")}
+            onClick={() => setTab("import")}
             className={`lumen-focus rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-              tab === "paste"
+              tab === "import"
                 ? "bg-ink text-paper"
                 : "border border-rule text-ink-muted hover:text-ink"
             }`}
           >
-            Paste chart
+            Import chart
           </button>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-[1fr_340px] lg:items-start">
           <section className="animate-fade-up stagger-2 rounded-2xl border border-rule bg-paper shadow-[var(--shadow-soft)]">
-            {tab === "demo" ? (
+            {tab === "patients" ? (
               <>
                 <div className="border-b border-rule px-6 py-5 sm:px-8">
                   <label
@@ -321,9 +388,7 @@ export default function HomePageClient() {
                     ) : (
                       patients.map((p) => (
                         <option key={p.slug} value={p.slug}>
-                          {p.slug === "hero"
-                            ? `${p.display_name} · Recommended demo`
-                            : `${p.display_name} · ${p.mrn}`}
+                          {`${p.display_name} · ${p.mrn}`}
                         </option>
                       ))
                     )}
@@ -335,7 +400,7 @@ export default function HomePageClient() {
                     Patient site (geo filter)
                   </p>
                   <p className="mt-1 text-sm text-ink-muted">
-                    {geo.label} · default for demo
+                    {geo.label}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {RADIUS_OPTIONS.map((r) => (
@@ -416,7 +481,7 @@ export default function HomePageClient() {
                       <div className="mt-8">
                         <button
                           type="button"
-                          onClick={runMatchDemo}
+                          onClick={runPreScreen}
                           disabled={loading}
                           className="lumen-focus rounded-lg bg-ink px-5 py-2.5 text-sm font-semibold text-paper shadow-sm transition-all hover:bg-sage-dark disabled:opacity-50"
                         >
@@ -430,8 +495,9 @@ export default function HomePageClient() {
             ) : (
               <div className="px-6 py-6 sm:px-8">
                 <p className="text-sm text-ink-muted">
-                  Paste a de-identified oncology note. In demo mode, pre-cached
-                  results mirror the Margaret Chen case.
+                  Paste or upload a de-identified oncology note. Lumen parses
+                  chart lines, extracts a structured profile, and runs
+                  criterion-level pre-screening with cited evidence.
                 </p>
                 <textarea
                   value={pasteText}
@@ -440,10 +506,24 @@ export default function HomePageClient() {
                     setParsedLines(null);
                     setExtractedProfile(null);
                   }}
-                  placeholder={DEMO_PASTE_SAMPLE}
+                  placeholder={PASTE_SAMPLE}
                   rows={8}
                   className="lumen-focus mt-4 w-full rounded-lg border border-rule-strong bg-parchment px-4 py-3 text-sm leading-relaxed text-ink"
                 />
+                <div className="mt-3">
+                  <label className="text-xs font-semibold uppercase text-ink-faint">
+                    Or drop a .txt file
+                  </label>
+                  <input
+                    type="file"
+                    accept=".txt,text/plain"
+                    className="mt-1 block w-full text-sm text-ink-muted"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleFileDrop(file);
+                    }}
+                  />
+                </div>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <button
                     type="button"
@@ -465,13 +545,28 @@ export default function HomePageClient() {
                 {parsedLines && (
                   <div className="mt-6 rounded-xl border border-rule bg-parchment-deep/60 p-4">
                     <p className="text-xs font-semibold uppercase text-ink-faint">
-                      {parsedLines.length} chart lines
+                      Confirm chart lines ({parsedLines.length})
                     </p>
-                    <ul className="mt-2 space-y-1 text-sm text-ink-muted">
-                      {parsedLines.slice(0, 5).map((l) => (
-                        <li key={l.id}>
-                          <span className="font-mono text-copper/70">{l.id}</span>{" "}
-                          {l.text.slice(0, 80)}…
+                    <ul className="mt-3 space-y-3">
+                      {parsedLines.map((l) => (
+                        <li key={l.id} className="grid gap-1 sm:grid-cols-[4rem_6rem_1fr]">
+                          <span className="font-mono text-xs text-copper/70">
+                            {l.id}
+                          </span>
+                          <input
+                            value={l.section}
+                            onChange={(e) =>
+                              updateParsedLine(l.id, "section", e.target.value)
+                            }
+                            className="rounded border border-rule bg-paper px-2 py-1 text-xs"
+                          />
+                          <input
+                            value={l.text}
+                            onChange={(e) =>
+                              updateParsedLine(l.id, "text", e.target.value)
+                            }
+                            className="rounded border border-rule bg-paper px-2 py-1 text-sm"
+                          />
                         </li>
                       ))}
                     </ul>
@@ -514,7 +609,7 @@ export default function HomePageClient() {
                       disabled={loading}
                       className="lumen-focus mt-4 rounded-lg bg-ink px-5 py-2.5 text-sm font-semibold text-paper disabled:opacity-50"
                     >
-                      Run pre-screen
+                      Confirm & run pre-screen
                     </button>
                   </div>
                 )}
@@ -551,7 +646,12 @@ export default function HomePageClient() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-ink-faint">
                 Trial discovery
               </p>
-              {discoveryPreview?.trials?.length ? (
+              {loadingTrials && (
+                <p className="mt-3 text-sm text-ink-muted">
+                  Searching ClinicalTrials.gov…
+                </p>
+              )}
+              {!loadingTrials && discoveryPreview?.trials?.length ? (
                 <>
                   <p className="mt-2 text-xs text-ink-muted">
                     {discoveryPreview.discovery?.search_summary?.condition ??
@@ -572,7 +672,7 @@ export default function HomePageClient() {
                     )}
                   </p>
                   <ul className="mt-4 space-y-4">
-                    {discoveryPreview.trials.slice(0, 5).map((t) => (
+                    {discoveryPreview.trials.map((t) => (
                       <li key={t.nct_id} className="text-sm">
                         <p className="font-mono text-[11px] text-copper">
                           {t.nct_id}
@@ -592,12 +692,12 @@ export default function HomePageClient() {
                     ))}
                   </ul>
                 </>
-              ) : (
+              ) : !loadingTrials ? (
                 <p className="mt-3 text-sm leading-relaxed text-ink-muted">
                   Trials discovered based on diagnosis, biomarkers, and patient
                   location.
                 </p>
-              )}
+              ) : null}
             </div>
           </aside>
         </div>

@@ -11,8 +11,10 @@ import {
   getDiscoveryCache,
   saveDiscoveryCache,
 } from "../db/discoveryCache";
+import { usePinnedTrials } from "../productConfig";
 import { buildSearchQuery } from "./buildSearchQuery";
 import {
+  ctgovFetchLimit,
   fetchStudies,
   maxDiscoveredTrials,
   pinnedNctsForDiscovery,
@@ -41,7 +43,8 @@ export async function discoverTrialsForPatient(
   } = {}
 ): Promise<{ trials: IngestedTrial[]; discovery: DiscoveryMetadata }> {
   const profileHash = computeProfileHash(profile);
-  const topK = maxDiscoveredTrials();
+  const evaluateCap = maxDiscoveredTrials();
+  const fetchCap = ctgovFetchLimit();
 
   if (opts.patientUuid && !opts.skipCache) {
     const cached = await getDiscoveryCache(opts.patientUuid, profileHash);
@@ -74,14 +77,16 @@ export async function discoverTrialsForPatient(
     opts.geoFilter
   );
 
-  let studies = await searchAllStudies(params, topK * 2);
-  const pinned = pinnedNctsForDiscovery();
-  if (pinned.length) {
-    const pinnedStudies = await fetchStudies(pinned);
-    studies = mergeStudiesByNct(studies, pinnedStudies);
+  let studies = await searchAllStudies(params, fetchCap);
+  if (usePinnedTrials()) {
+    const pinned = pinnedNctsForDiscovery();
+    if (pinned.length) {
+      const pinnedStudies = await fetchStudies(pinned);
+      studies = mergeStudiesByNct(studies, pinnedStudies);
+    }
   }
 
-  const ranked = rankCandidates(studies, profile, topK, opts.geoFilter);
+  const ranked = rankCandidates(studies, profile, evaluateCap, opts.geoFilter);
   const nctIds = ranked.map((s) => s.nctId);
 
   if (opts.patientUuid) {
